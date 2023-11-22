@@ -1,0 +1,25 @@
+.about{
+  .borderLeft{
+    border-left: 1px darken($font-color, 0.95) solid;
+  }
+  .borderTop{
+    border-top: 1px darken($font-color, 0.95) solid;
+  }
+}
+
+.mainDescription{
+  height: 100vh;
+
+  .title{
+    font-size:3rem;
+    font-weight: bold;
+    horiz-align: center;
+    padding-bottom: 5vh;
+  }
+
+  .subTitle{
+    padding-top: 1vh;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+}

@@ -1,0 +1,26 @@
+nav#mainNav{
+    padding: 3vh;
+    padding-bottom: 5vh;
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: baseline;
+    font-size: 1.2rem;
+    position: absolute;
+    z-index: 10;
+    background: linear-gradient(180deg, rgba($body-bg-secondary,0.6) 0%, rgba($body-bg-secondary,0.5) 75%, rgba($body-bg-secondary,0) 100%);
+
+    .logo a{
+        text-align: center;
+        font-weight: bold;
+        font-size: 2.5rem;
+        &:hover{
+            color: $font-color;
+            text-decoration: none;
+        }
+    }
+
+    .menu-items{
+        display: inline-flex;
+        flex-wrap: wrap;
+    }
+}
