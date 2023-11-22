@@ -1,0 +1,17 @@
+{% extends 'layouts/app.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block content %}
+    <div id="loginForm" class="col-6 offset-3">
+        <h1>Sign in</h1>
+
+        {{ form_start(login_form) }}
+            {{ form_widget(login_form) }}
+        {{ form_end(login_form) }}
+    </div>
+
+    <div class="col-6 offset-3">
+        Don't have account yet? Click <a href="{{ url('app_register') }}">here</a> to register
+    </div>
+{% endblock %}
