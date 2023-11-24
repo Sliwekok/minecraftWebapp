@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Form\LoginFormType;
-use App\Repository\UserRepository;
+use App\Repository\LoginRepository;
 use App\Security\LoginAuthenticator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +21,7 @@ class LoginController extends AbstractController
         Request                     $request,
         UserAuthenticatorInterface  $userAuthenticator,
         LoginAuthenticator          $authenticator,
-        UserRepository              $userRepository,
+        LoginRepository             $loginRepository,
         AuthenticationUtils         $authenticationUtils
     ): Response
     {
@@ -36,7 +36,7 @@ class LoginController extends AbstractController
         ;
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $userRepository->findOneBy([
+            $user = $loginRepository->findOneBy([
                 'username' => $form->get('username')->getData()
             ]);
 
