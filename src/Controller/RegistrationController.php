@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\User;
+use App\Entity\Login;
 use App\Form\RegistrationFormType;
 use App\Security\LoginAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,7 +32,7 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('index');
         }
 
-        $user = new User();
+        $user = new Login();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 

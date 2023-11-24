@@ -1,0 +1,21 @@
+{% extends('layouts/app.html.twig') %}
+
+{% block content %}
+
+    <div class="col-12 userManagement userPanel">
+        <div class="col-6 servers">
+            <div class="col-12 mainDescription text-center">
+                <p class="title">Your servers</p>
+                <div class="col-12">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-6 user text-center">
+            <p>Username: {{ user.username }}</p>
+            <p>Email: {{ user.email }}</p>
+            <p><a href="{{ url('user_delete_account') }}"><button class="btn btn-outline-danger">Delete Account</button></a></p>
+        </div>
+    </div>
+
+{% endblock %}
