@@ -20,7 +20,7 @@ final class Version20231124012333 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE TABLE server (id INT IDENTITY NOT NULL, login_id INT NOT NULL, name NVARCHAR(255) NOT NULL, config VARCHAR(MAX), status NVARCHAR(255) NOT NULL, login_allowed VARCHAR(MAX), create_at DATE NOT NULL, modified_at DATE NOT NULL, PRIMARY KEY (id))');
+        $this->addSql('CREATE TABLE server (id INT IDENTITY NOT NULL, login_id INT NOT NULL, name NVARCHAR(255) NOT NULL, config VARCHAR(MAX), status NVARCHAR(255) NOT NULL, create_at DATE NOT NULL, modified_at DATE NOT NULL, PRIMARY KEY (id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_5A6DD5F6793459C3 ON server (login_id) WHERE login_id IS NOT NULL');
         $this->addSql('EXEC sp_addextendedproperty N\'MS_Description\', N\'(DC2Type:array)\', N\'SCHEMA\', \'dbo\', N\'TABLE\', \'server\', N\'COLUMN\', config');
         $this->addSql('EXEC sp_addextendedproperty N\'MS_Description\', N\'(DC2Type:array)\', N\'SCHEMA\', \'dbo\', N\'TABLE\', \'server\', N\'COLUMN\', login_allowed');
