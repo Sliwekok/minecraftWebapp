@@ -32,6 +32,9 @@ class Server
     #[ORM\OneToOne(inversedBy: 'server', cascade: ['persist', 'remove'])]
     private ?Login $login = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $directory_path = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -105,6 +108,18 @@ class Server
     public function setLogin(?Login $login): static
     {
         $this->login = $login;
+
+        return $this;
+    }
+
+    public function getDirectoryPath(): ?string
+    {
+        return $this->directory_path;
+    }
+
+    public function setDirectoryPath(?string $directory_path): static
+    {
+        $this->directory_path = $directory_path;
 
         return $this;
     }
