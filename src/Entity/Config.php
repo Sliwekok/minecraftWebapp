@@ -40,6 +40,9 @@ class Config
     #[ORM\ManyToOne(inversedBy: 'configs')]
     private ?Server $server = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $seed = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -149,6 +152,18 @@ class Config
     public function setServer(?Server $server): static
     {
         $this->server = $server;
+
+        return $this;
+    }
+
+    public function getSeed(): ?string
+    {
+        return $this->seed;
+    }
+
+    public function setSeed(string $seed): static
+    {
+        $this->seed = $seed;
 
         return $this;
     }
