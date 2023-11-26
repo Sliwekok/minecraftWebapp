@@ -29,7 +29,7 @@ class RegistrationController extends AbstractController
     {
         if ($this->getUser()) {
 
-            return $this->redirectToRoute('index');
+            return $this->redirectToRoute('user_management');
         }
 
         $user = new Login();
