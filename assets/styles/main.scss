@@ -10,6 +10,11 @@ html, body{
 }
 a{
     color: $font-color;
+
+    &:hover{
+        color: $font-color;
+        text-decoration: none;
+    }
 }
 a.special{
     text-decoration: underline;
