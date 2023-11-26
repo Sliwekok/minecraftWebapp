@@ -13,7 +13,7 @@ class ConfigService
 {
 
     public function __construct (
-        private ConfigRepository    $configRepository
+        private ConfigRepository        $configRepository,
     )
     {}
 
@@ -41,11 +41,10 @@ class ConfigService
 
     public function generatePort () :int {
         $configs = $this->configRepository->getPorts();
-        $maxPort = max($configs[ConfigInterface::ENTITY_PORT]);
-        if (null === $maxPort) {
-
+        if (0 === count($configs)) {
             return 25565;
         } else {
+            $maxPort = max($configs);
             $maxPort++;
 
             return $maxPort;

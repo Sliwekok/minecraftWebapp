@@ -8,6 +8,7 @@ use App\Entity\Login;
 use App\Exception\Server\CouldNotDownloadAndSaveServerFileException;
 use App\Service\Config\ConfigService;
 use App\UniqueNameInterface\ServerDirectoryInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use DateTime;
 use App\Entity\Server;
@@ -20,8 +21,10 @@ use Symfony\Component\Form\FormInterface;
 class CreateServerService
 {
     public function __construct (
-        private MinecraftVersions   $minecraftVersions,
-        private ConfigService       $configService
+        private MinecraftVersions       $minecraftVersions,
+        private ConfigService           $configService,
+        private EntityManagerInterface  $entityManager,
+
     )
     {}
 
@@ -42,7 +45,11 @@ class CreateServerService
         $file = $this->getServerFile($version);
         $fs->storeFile(ServerDirectoryInterface::DIRECTORY_MINECRAFT, $file);
         $server = $this->createServerEntity($user, $directory, $serverName);
-        $this->configService->createConfig($server, $seed);
+        $config = $this->configService->createConfig($server, $seed);
+
+        $this->entityManager->persist($server);
+        $this->entityManager->persist($config);
+        $this->entityManager->flush();
     }
 
     public function getServerFile (
