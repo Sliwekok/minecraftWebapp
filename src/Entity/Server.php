@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ServerRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -20,9 +22,6 @@ class Server
     #[ORM\Column(length: 255)]
     private ?string $status = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $config = [];
-
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $create_at = null;
 
@@ -34,6 +33,14 @@ class Server
 
     #[ORM\Column(length: 255)]
     private ?string $directory_path = null;
+
+    #[ORM\OneToMany(mappedBy: 'server', targetEntity: Config::class)]
+    private Collection $configs;
+
+    public function __construct()
+    {
+        $this->configs = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -60,18 +67,6 @@ class Server
     public function setStatus(string $status): static
     {
         $this->status = $status;
-
-        return $this;
-    }
-
-    public function getConfig(): array
-    {
-        return $this->config;
-    }
-
-    public function setConfig(array $config): static
-    {
-        $this->config = $config;
 
         return $this;
     }
@@ -120,6 +115,36 @@ class Server
     public function setDirectoryPath(?string $directory_path): static
     {
         $this->directory_path = $directory_path;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Config>
+     */
+    public function getConfigs(): Collection
+    {
+        return $this->configs;
+    }
+
+    public function addConfig(Config $config): static
+    {
+        if (!$this->configs->contains($config)) {
+            $this->configs->add($config);
+            $config->setServer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConfig(Config $config): static
+    {
+        if ($this->configs->removeElement($config)) {
+            // set the owning side to null (unless already changed)
+            if ($config->getServer() === $this) {
+                $config->setServer(null);
+            }
+        }
 
         return $this;
     }
