@@ -6,3 +6,4 @@ const $ = require('jquery');
 global.$ = global.jQuery = $;
 
 require('./user');
+require('./createNew');

@@ -4,14 +4,19 @@
 
     <div class="col-12 userManagement userPanel">
         <div class="col-6 servers">
-            <div class="col-12 mainDescription text-center">
-                <p class="title">Your servers</p>
+            <div class="col-12 text-center">
+                <p class="title">Your server</p>
                 <div class="col-12">
-
+                    {% if user.server is empty %}
+                        ...is not existing. Yet! You can start <a class="special" href="{{ url('server_create_new') }}">here</a>
+                    {% else %}
+                        {{ user.server.name }}
+                    {% endif %}
                 </div>
             </div>
         </div>
         <div class="col-6 user text-center">
+            <p class="title">Account data</p>
             <p>Username: {{ user.username }}</p>
             <p>Email: {{ user.email }}</p>
             <p><a href="{{ url('user_delete_account') }}"><button class="btn btn-outline-danger">Delete Account</button></a></p>

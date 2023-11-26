@@ -24,3 +24,32 @@ nav#mainNav{
         flex-wrap: wrap;
     }
 }
+
+nav#sideNav{
+    height: 100vh;
+    padding-top: 10vh;
+    padding-left: 0px;
+    display: inline-flex;
+    justify-content: baseline;
+    font-size: 1.2rem;
+    z-index: 10;
+    flex-direction: column;
+    background: linear-gradient(90deg, rgba($body-bg-secondary,0.6) 0%, rgba($body-bg-secondary,0.5) 75%, rgba($body-bg-secondary,0) 100%);
+
+    .logo{
+        padding-bottom: 15vh;
+    }
+
+    .navItem{
+        padding: 1vh;
+        cursor: pointer;
+        transition: 250ms;
+        transition-timing-function: ease-in;
+        border: 1px transparent solid;
+        margin-top: 0.25vh;
+
+        &:hover{
+            border-color: $font-color;
+        }
+    }
+}

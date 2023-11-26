@@ -21,4 +21,10 @@ class HomeController extends AbstractController
     {
         return $this->render('pricing.html.twig', []);
     }
+
+    #[Route('/terms_of_use', name: 'terms_of_use')]
+    public function termsOfUse(): Response
+    {
+        return $this->render('termsOfUse.html.twig', []);
+    }
 }

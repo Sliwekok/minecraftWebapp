@@ -16,10 +16,6 @@ class UserController extends AbstractController
     {
         $user = $this->getUser();
 
-        if (null === $user) {
-            return $this->redirectToRoute('app_login');
-        }
-
         return $this->render('user/user.html.twig', [
             'user'  => $user
         ]);
