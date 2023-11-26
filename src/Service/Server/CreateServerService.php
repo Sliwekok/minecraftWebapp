@@ -4,33 +4,34 @@ declare(strict_types=1);
 
 namespace App\Service\Server;
 
+use App\Entity\Login;
 use App\Exception\Server\CouldNotDownloadAndSaveServerFileException;
+use App\Service\Config\ConfigService;
 use App\UniqueNameInterface\ServerDirectoryInterface;
 use Exception;
+use DateTime;
 use App\Entity\Server;
-use App\Repository\ServerRepository;
 use App\Service\Filesystem\FilesystemService;
 use App\Service\Mojang\MinecraftVersions;
 use App\UniqueNameInterface\MojangInterface;
 use App\UniqueNameInterface\ServerInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class CreateServerService
 {
     public function __construct (
-        private ServerRepository    $serverRepository,
         private MinecraftVersions   $minecraftVersions,
+        private ConfigService       $configService
     )
     {}
 
     public function createServer (
-        FormInterface $data,
-        UserInterface $user
+        FormInterface   $data,
+        Login           $user
     ): void {
-        // add file creation, add server version validation (if exists in array of version from api)
         $version = $data->get(ServerInterface::FORM_STEP1)->get(ServerInterface::FORM_STEP1_VERSION)->getData();
         $serverName = $data->get(ServerInterface::FORM_STEP1)->get(ServerInterface::FORM_STEP1_NAME)->getData();
+        $seed = $data->get(ServerInterface::FORM_STEP1)->get(ServerInterface::FORM_STEP1_SEED)->getData();
         $directory = $user->getUsername() . '/' . $serverName;
         $fs = new FilesystemService($directory);
 
@@ -40,8 +41,8 @@ class CreateServerService
 
         $file = $this->getServerFile($version);
         $fs->storeFile(ServerDirectoryInterface::DIRECTORY_MINECRAFT, $file);
-
-        return;
+        $server = $this->createServerEntity($user, $directory, $serverName);
+        $this->configService->createConfig($server, $seed);
     }
 
     public function getServerFile (
@@ -59,5 +60,22 @@ class CreateServerService
         } catch (Exception $exception) {
             throw new CouldNotDownloadAndSaveServerFileException($exception->getMessage());
         }
+    }
+
+    public function createServerEntity (
+        Login           $user,
+        string          $path,
+        string          $serverName
+    ): ?Server {
+        $server = new Server();
+        $server ->setCreateAt(new DateTime('now'))
+                ->setModifiedAt(new DateTime('now'))
+                ->setLogin($user)
+                ->setDirectoryPath($path)
+                ->setName($serverName)
+                ->setStatus(ServerInterface::STATUS_OFFLINE)
+            ;
+
+        return $server;
     }
 }

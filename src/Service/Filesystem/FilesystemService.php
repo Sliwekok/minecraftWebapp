@@ -31,7 +31,6 @@ class FilesystemService
 
     public function createDirectories (): void {
         $this->filesystem->mkdir($this->path, self::ACCESS_VALUE);
-
         $this->filesystem->mkdir($this->path. "\\". ServerDirectoryInterface::DIRECTORY_MINECRAFT);
         $this->filesystem->mkdir($this->path. "\\". ServerDirectoryInterface::DIRECTORY_BACKUPS);
     }

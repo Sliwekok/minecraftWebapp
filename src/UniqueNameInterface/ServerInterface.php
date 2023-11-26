@@ -18,4 +18,9 @@ class ServerInterface
     public const FORM_STEP3_WHITELIST = 'whitelist';
     public const FORM_STEP4 = 'step_4';
 
+    public const STATUS = 'status';
+    public const STATUS_OFFLINE = 'offline';
+    public const STATUS_ONLINE = 'online';
+    public const STATUS_SUSPENDED = 'suspended';
+
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Repository\LoginRepository;
 use App\Service\Mojang\MinecraftVersions;
 use App\Service\Server\ServerService;
 use App\Form\CreateNewServerForm;
@@ -33,13 +34,14 @@ class ServerController extends AbstractController
     }
 
     #[Route('/create_new', name: 'server_create_new')]
-    public function createNew(
+    public function createNew (
         Request             $request,
         ServerService       $serverService,
-        MinecraftVersions   $minecraftVersions
+        MinecraftVersions   $minecraftVersions,
+        LoginRepository     $loginRepository
     ): Response
     {
-        $user = $this->getUser();
+        $user = $loginRepository->find($this->getUser()->getId());
         $urlTos = $this->generateUrl('terms_of_use');
         $versions = $minecraftVersions->getAllVersions();
         $defaultServerName = $user->getUsername(). "'s server";
