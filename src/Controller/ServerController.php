@@ -42,6 +42,10 @@ class ServerController extends AbstractController
     ): Response
     {
         $user = $loginRepository->find($this->getUser()->getId());
+        if (null !== $user->getServer()) {
+
+            return $this->redirectToRoute('server_preview');
+        }
         $urlTos = $this->generateUrl('terms_of_use');
         $versions = $minecraftVersions->getAllVersions();
         $defaultServerName = $user->getUsername(). "'s server";
