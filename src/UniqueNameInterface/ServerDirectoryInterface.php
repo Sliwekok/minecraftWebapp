@@ -20,6 +20,8 @@ class ServerDirectoryInterface
 
     public const DIRECTORY_MINECRAFT = 'minecraft';
     public const MINECRAFT_SERVER_FILE = 'server.jar';
+    public const MINECRAFT_EULA = 'eula.txt';
+    public const MINECRAFT_SERVERPROPERTIES = 'server.properties';
 
     public const DIRECTORY_BACKUPS = 'backups';
 }
