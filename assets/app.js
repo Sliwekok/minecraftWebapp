@@ -7,3 +7,5 @@ global.$ = global.jQuery = $;
 
 require('./user');
 require('./createNew');
+require('./serverPreview');
+require('./alert');
