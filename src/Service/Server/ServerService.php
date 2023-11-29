@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace App\Service\Server;
 
+use App\Entity\Config;
 use App\Entity\Login;
 use App\Entity\Server;
-use App\Repository\ServerRepository;
-use App\UniqueNameInterface\ServerInterface;
+use App\Service\Config\ConfigService;
 use Symfony\Component\Form\FormInterface;
 
 class ServerService
 {
 
     public function __construct (
-        private ServerRepository    $serverRepository,
-        private CreateServerService $createServerService,
+        private CreateServerService     $createServerService,
+        private ServerCommanderService  $serverCommanderService,
+        private ConfigService           $configService
     )
     {}
 
@@ -23,13 +24,34 @@ class ServerService
         FormInterface $data,
         Login         $user
     ): void {
-        $this->createServerService->createServer($data, $user);
+        $server = $this->createServerService->createServer($data, $user);
+        $this->initServer($server);
+    }
+
+    public function initServer (
+        Server  $server
+    ): void {
+        $this->serverCommanderService->startServer($server);
+        $this->updateConfig($server->getConfig());
+        $this->createServerService->updateEula($server);
+    }
+
+    public function startServer (
+        Server  $server
+    ): void {
+        $this->serverCommanderService->startServer($server);
+    }
+
+    public function stopServer (
+        Server  $server
+    ): void {
 
     }
 
-    public function userServer (Login $user): ?Server {
-        return $this->serverRepository->findOneBy([
-            ServerInterface::ENTITY_ID => $user->getId()
-        ]);
+    // alias to update config
+    public function updateConfig (
+        Config|array $config
+    ): bool {
+        return $this->configService->updateConfig($config);
     }
 }
