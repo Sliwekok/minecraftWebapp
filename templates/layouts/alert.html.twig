@@ -1,0 +1,23 @@
+<div class="alert alert-success col-6 offset-3 fade show" role="alert">
+    <div class="row">
+        <div class="col-9">
+            <h4 class="alert-heading" id="alertHeader"></h4>
+        </div>
+        <div class="col-1 offset-2">
+            <button type="button" class="btn-close" aria-label="Close"><i class="demo-icon icon-cancel"></i></button>
+        </div>
+    </div>
+    <div class="row">
+        <p class="col-12" id="alertContent"></p>
+        <div class="col-12" id="alertConfirmation">
+            <button class="col-4 btn btn-outline-primary" id="alertYes">Yes</button>
+            <button class="col-4 offset-3 btn btn-outline-danger" id="alertNo">No</button>
+        </div>
+    </div>
+</div>
+
+
+{% if error is defined and error is not null %}
+    {# create hidden input that stores error message #}
+    <input id="errorMessage" type="hidden" class="d-none" value="{{ error.message ?? 'Unknown error occured'}}">
+{% endif %}
