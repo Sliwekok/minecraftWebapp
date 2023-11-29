@@ -37,11 +37,11 @@ class Config
     #[ORM\Column]
     private ?bool $allow_flight = null;
 
-    #[ORM\ManyToOne(inversedBy: 'configs')]
-    private ?Server $server = null;
-
     #[ORM\Column(length: 255)]
     private ?string $seed = null;
+
+    #[ORM\OneToOne(inversedBy: 'config', cascade: ['persist', 'remove'])]
+    private ?Server $server = null;
 
     public function getId(): ?int
     {
@@ -144,18 +144,6 @@ class Config
         return $this;
     }
 
-    public function getServer(): ?Server
-    {
-        return $this->server;
-    }
-
-    public function setServer(?Server $server): static
-    {
-        $this->server = $server;
-
-        return $this;
-    }
-
     public function getSeed(): ?string
     {
         return $this->seed;
@@ -164,6 +152,18 @@ class Config
     public function setSeed(string $seed): static
     {
         $this->seed = $seed;
+
+        return $this;
+    }
+
+    public function getServer(): ?Server
+    {
+        return $this->server;
+    }
+
+    public function setServer(?Server $server): static
+    {
+        $this->server = $server;
 
         return $this;
     }

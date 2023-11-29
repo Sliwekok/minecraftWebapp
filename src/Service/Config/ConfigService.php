@@ -14,6 +14,7 @@ class ConfigService
 
     public function __construct (
         private ConfigRepository        $configRepository,
+        private UpdateConfigService     $updateConfigService
     )
     {}
 
@@ -23,6 +24,9 @@ class ConfigService
     ): ?Config {
         $config = new Config();
         $port = $this->generatePort();
+        if (!$seed) {
+            $seed = bin2hex(random_bytes(16));
+        }
         $config
             ->setAllowFlight(true)
             ->setDifficulty(ConfigInterface::DIFFICULTY_EASY)
@@ -49,6 +53,12 @@ class ConfigService
 
             return $maxPort;
         }
+    }
+
+    public function updateConfig (
+        Config|array  $config
+    ): bool {
+        return $this->updateConfigService->updateConfig($config);
     }
 
 }
