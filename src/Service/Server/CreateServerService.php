@@ -7,6 +7,7 @@ namespace App\Service\Server;
 use App\Entity\Login;
 use App\Exception\Server\CouldNotDownloadAndSaveServerFileException;
 use App\Service\Config\ConfigService;
+use App\UniqueNameInterface\ConfigInterface;
 use App\UniqueNameInterface\ServerDirectoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -24,21 +25,20 @@ class CreateServerService
         private MinecraftVersions       $minecraftVersions,
         private ConfigService           $configService,
         private EntityManagerInterface  $entityManager,
-
     )
     {}
 
     public function createServer (
         FormInterface   $data,
         Login           $user
-    ): void {
+    ): Server {
         $version = $data->get(ServerInterface::FORM_STEP1)->get(ServerInterface::FORM_STEP1_VERSION)->getData();
         $serverName = $data->get(ServerInterface::FORM_STEP1)->get(ServerInterface::FORM_STEP1_NAME)->getData();
         $seed = $data->get(ServerInterface::FORM_STEP1)->get(ServerInterface::FORM_STEP1_SEED)->getData();
         $directory = $user->getUsername() . '/' . $serverName;
         $fs = new FilesystemService($directory);
 
-        if ($fs->directoryExists($directory)) {
+        if ($fs->exists($directory)) {
             $fs->createDirectories();
         }
 
@@ -46,10 +46,13 @@ class CreateServerService
         $fs->storeFile(ServerDirectoryInterface::DIRECTORY_MINECRAFT, $file);
         $server = $this->createServerEntity($user, $directory, $serverName);
         $config = $this->configService->createConfig($server, $seed);
+        $server->setConfig($config);
 
         $this->entityManager->persist($server);
         $this->entityManager->persist($config);
         $this->entityManager->flush();
+
+        return $server;
     }
 
     public function getServerFile (
@@ -65,6 +68,7 @@ class CreateServerService
 
             return file_get_contents($serverFileUrl);
         } catch (Exception $exception) {
+
             throw new CouldNotDownloadAndSaveServerFileException($exception->getMessage());
         }
     }
@@ -84,5 +88,14 @@ class CreateServerService
             ;
 
         return $server;
+    }
+
+    public function updateEula (
+        Server $server
+    ): void {
+        $directory = $server->getDirectoryPath();
+        $fs = new FilesystemService($directory);
+        $path = $fs->getAbsoluteMinecraftPath();
+        $fs->dumpFile($path. '/' .ServerDirectoryInterface::MINECRAFT_EULA, ConfigInterface::EULA_AGREED);
     }
 }

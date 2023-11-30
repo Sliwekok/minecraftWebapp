@@ -34,8 +34,8 @@ class Server
     #[ORM\Column(length: 255)]
     private ?string $directory_path = null;
 
-    #[ORM\OneToMany(mappedBy: 'server', targetEntity: Config::class)]
-    private Collection $configs;
+    #[ORM\OneToOne(mappedBy: 'server', cascade: ['persist', 'remove'])]
+    private ?Config $config = null;
 
     public function __construct()
     {
@@ -119,33 +119,26 @@ class Server
         return $this;
     }
 
-    /**
-     * @return Collection<int, Config>
-     */
-    public function getConfigs(): Collection
+    public function getConfig(): ?Config
     {
-        return $this->configs;
+        return $this->config;
     }
 
-    public function addConfig(Config $config): static
+    public function setConfig(?Config $config): static
     {
-        if (!$this->configs->contains($config)) {
-            $this->configs->add($config);
+        // unset the owning side of the relation if necessary
+        if ($config === null && $this->config !== null) {
+            $this->config->setServer(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($config !== null && $config->getServer() !== $this) {
             $config->setServer($this);
         }
 
-        return $this;
-    }
-
-    public function removeConfig(Config $config): static
-    {
-        if ($this->configs->removeElement($config)) {
-            // set the owning side to null (unless already changed)
-            if ($config->getServer() === $this) {
-                $config->setServer(null);
-            }
-        }
+        $this->config = $config;
 
         return $this;
     }
+
 }

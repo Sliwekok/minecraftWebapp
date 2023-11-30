@@ -30,6 +30,8 @@
         <div class="col-10">
             <main class="row-fluid">
                 <div class="main">
+                    {{ include('layouts/alert.html.twig') }}
+
                     {% block content %}{% endblock %}
                 </div>
             </main>
