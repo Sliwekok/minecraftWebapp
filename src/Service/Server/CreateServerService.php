@@ -68,6 +68,7 @@ class CreateServerService
 
             return file_get_contents($serverFileUrl);
         } catch (Exception $exception) {
+
             throw new CouldNotDownloadAndSaveServerFileException($exception->getMessage());
         }
     }

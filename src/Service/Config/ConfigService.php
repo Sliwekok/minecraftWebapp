@@ -46,6 +46,7 @@ class ConfigService
     public function generatePort () :int {
         $configs = $this->configRepository->getPorts();
         if (0 === count($configs)) {
+
             return 25565;
         } else {
             $maxPort = max($configs);

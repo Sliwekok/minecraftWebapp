@@ -61,13 +61,13 @@ class UpdateConfigService
                 foreach ($consts as $const => $value) {
                     if (str_starts_with($line, $value)) {
                         $newLine = $value . '=' . $reflection->getConstant($const);
-
                         fwrite($file, $newLine);
                     }
                 }
             }
             fclose($file);
         } catch (Exception $exception) {
+
             throw new  CouldNotOpenServerPropertyFile($exception->getMessage());
         }
 
