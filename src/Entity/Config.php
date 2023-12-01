@@ -43,6 +43,12 @@ class Config
     #[ORM\OneToOne(inversedBy: 'config', cascade: ['persist', 'remove'])]
     private ?Server $server = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $motd = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $level_name = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -164,6 +170,30 @@ class Config
     public function setServer(?Server $server): static
     {
         $this->server = $server;
+
+        return $this;
+    }
+
+    public function getMotd(): ?string
+    {
+        return $this->motd;
+    }
+
+    public function setMotd(string $motd): static
+    {
+        $this->motd = $motd;
+
+        return $this;
+    }
+
+    public function getLevelName(): ?string
+    {
+        return $this->level_name;
+    }
+
+    public function setLevelName(string $level_name): static
+    {
+        $this->level_name = $level_name;
 
         return $this;
     }
