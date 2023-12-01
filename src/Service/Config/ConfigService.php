@@ -8,6 +8,7 @@ use App\Entity\Config;
 use App\Entity\Server;
 use App\Repository\ConfigRepository;
 use App\UniqueNameInterface\ConfigInterface;
+use Symfony\Component\Form\FormInterface;
 
 class ConfigService
 {
@@ -57,9 +58,10 @@ class ConfigService
     }
 
     public function updateConfig (
-        Config|array  $config
+        Config|FormInterface    $config,
+        int                     $configId = null
     ): bool {
-        return $this->updateConfigService->updateConfig($config);
+        return $this->updateConfigService->updateConfig($config, $configId);
     }
 
 }

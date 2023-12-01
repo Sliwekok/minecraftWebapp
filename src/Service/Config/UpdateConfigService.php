@@ -6,38 +6,45 @@ namespace App\Service\Config;
 
 use App\Entity\Config;
 use App\Exception\Server\CouldNotOpenServerPropertyFile;
+use App\Repository\ConfigRepository;
 use App\Service\Filesystem\FilesystemService;
 use App\UniqueNameInterface\ConfigInterface;
 use App\UniqueNameInterface\ServerDirectoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use ReflectionClass;
+use Symfony\Component\Form\FormInterface;
 
 class UpdateConfigService
 {
 
     public function __construct (
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface  $entityManager,
+        private ConfigRepository        $configRepository
     )
     {}
 
     public function updateConfig (
-        Config|array  $config
+        Config|FormInterface  $config,
+        int                   $configId = null
     ): bool {
-        if (is_array($config)) {
-            $config = (new Config)
-                ->setSeed($config[ConfigInterface::PROPERTY_SEED])
-                ->setPort($config[ConfigInterface::PROPERTY_PORT])
-                ->setWhitelist($config[ConfigInterface::PROPERTY_WHITELIST])
-                ->setPvp($config[ConfigInterface::PROPERTY_PVP])
-                ->setMaxRam($config[ConfigInterface::PROPERTY_MAXRAM])
-                ->setMaxPlayers($config[ConfigInterface::PROPERTY_MAXPLAYERS])
-                ->setHardcore($config[ConfigInterface::PROPERTY_HARDCORE])
-                ->setDifficulty($config[ConfigInterface::PROPERTY_DIFFICULTY])
-                ->setAllowFlight($config[ConfigInterface::PROPERTY_ALLOWFLIGHT])
-                ->setMotd($config[ConfigInterface::PROPERTY_MOTD])
-                ->setLevelName($config[ConfigInterface::PROPERTY_LEVELNAME])
+        if ($config instanceof FormInterface) {
+            $configNew = $this->configRepository->find($configId) ?? new Config;
+            $configNew
+                ->setSeed($config->get(ConfigInterface::ENTITY_SEED)->getData())
+                ->setPort($config->get(ConfigInterface::ENTITY_PORT)->getData())
+                ->setWhitelist($config->get(ConfigInterface::ENTITY_WHITELIST)->getData())
+                ->setPvp($config->get(ConfigInterface::ENTITY_PVP)->getData())
+                ->setMaxPlayers($config->get(ConfigInterface::ENTITY_MAXPLAYERS)->getData())
+                ->setHardcore($config->get(ConfigInterface::ENTITY_HARDCORE)->getData())
+                ->setDifficulty($config->get(ConfigInterface::ENTITY_DIFFICULTY)->getData())
+                ->setAllowFlight($config->get(ConfigInterface::ENTITY_ALLOWFLIGHT)->getData())
+                ->setMotd($config->get(ConfigInterface::ENTITY_MOTD)->getData())
+                ->setLevelName($config->get(ConfigInterface::ENTITY_LEVELNAME)->getData())
+                ->setMaxRam(4)
             ;
+
+            $config = $configNew;
         }
 
         $this->entityManager->persist($config);

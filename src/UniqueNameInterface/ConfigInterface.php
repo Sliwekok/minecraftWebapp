@@ -6,7 +6,7 @@ namespace App\UniqueNameInterface;
 
 class ConfigInterface
 {
-    public const ENTITY_ID = 'ID';
+    public const ENTITY_ID = 'id';
     public const ENTITY_PORT = 'port';
     public const ENTITY_DIFFICULTY = 'difficulty';
     public const ENTITY_ALLOWFLIGHT = 'allow_flight';

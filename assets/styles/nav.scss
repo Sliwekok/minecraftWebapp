@@ -26,7 +26,7 @@ nav#mainNav{
 }
 
 nav#sideNav{
-    height: 100vh;
+    height: 100%;
     padding-top: 10vh;
     padding-left: 0px;
     display: inline-flex;
@@ -34,7 +34,8 @@ nav#sideNav{
     font-size: 1.2rem;
     z-index: 10;
     flex-direction: column;
-    background: linear-gradient(90deg, rgba($body-bg-secondary,0.6) 0%, rgba($body-bg-secondary,0.5) 75%, rgba($body-bg-secondary,0) 100%);
+    background: linear-gradient(90deg, rgba($body-bg-secondary, 0.6) 0%, rgba($body-bg-secondary, 0.5) 75%, rgba($body-bg-secondary, 0) 100%);
+    position: absolute;
 
     .logo{
         padding-bottom: 15vh;

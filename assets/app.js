@@ -6,6 +6,8 @@ const $ = require('jquery');
 global.$ = global.jQuery = $;
 
 require('./user');
+require('./nav');
 require('./createNew');
 require('./serverPreview');
 require('./alert');
+require('./advanced');

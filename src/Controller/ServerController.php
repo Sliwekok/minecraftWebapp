@@ -9,9 +9,6 @@ use App\Repository\LoginRepository;
 use App\Service\Mojang\MinecraftVersions;
 use App\Service\Server\ServerService;
 use App\Form\CreateNewServerForm;
-use App\UniqueNameInterface\ConfigInterface;
-use App\UniqueNameInterface\JsonResponseInterface;
-use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -87,9 +84,7 @@ class ServerController extends AbstractController
             $code = $exception->getStatusCode();
         } else {
             $serverService->startServer($user->getServer());
-            $msg = [
-                JsonResponseInterface::MESSAGE => 'Server is online now'
-            ];
+            $msg = 'Server is online now';
         }
 
         return new JsonResponse($msg, $code ?? 200);
@@ -99,7 +94,7 @@ class ServerController extends AbstractController
     public function shutdown (
         ServerService       $serverService,
         LoginRepository     $loginRepository
-    ): JsonResponse
+    ): Response
     {
         $user = $loginRepository->find($this->getUser()->getId());
         if (null === $user->getServer()) {
@@ -107,12 +102,39 @@ class ServerController extends AbstractController
             $statusCode = 404;
         } else {
             $serverService->stopServer($user->getServer());
-            $msg = [
-                JsonResponseInterface::MESSAGE => 'Server is offline now'
-            ];
+            $msg = 'Server is offline now';
         }
 
         return new JsonResponse($msg, $statusCode ?? null);
+    }
+
+    #[Route('/advanced', name: 'server_advanced')]
+    public function advanced (
+        Request             $request,
+        ServerService       $serverService,
+        LoginRepository     $loginRepository
+    ): Response
+    {
+        $user = $loginRepository->find($this->getUser()->getId());
+        $server = $user->getServer();
+        if (null === $server) {
+
+            return $this->redirectToRoute('server_create_new');
+        }
+
+        $form = $this
+            ->createForm(CreateNewServerForm::class, [], [])
+            ->handleRequest($request)
+        ;
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            return $this->redirectToRoute('server_advanced');
+        }
+
+        return $this->render('server/advanced.html.twig', [
+            'user'  => $user,
+        ]);
     }
 
 }
