@@ -1,4 +1,5 @@
 import {showAlert} from "./alert";
+import {updateButton} from "./updateButton";
 
 $(document).on('click', ".confirmation", async function () {
     let div = $(this),
@@ -6,6 +7,10 @@ $(document).on('click', ".confirmation", async function () {
         message = div.data('message'),
         confirmation = div.data('confirmation')
     ;
+
+    if (div.hasClass('active')) {
+        return;
+    }
 
     if (confirmation) {
         if (await showAlert('warning', message, 'Be careful!', true)) {
@@ -15,7 +20,7 @@ $(document).on('click', ".confirmation", async function () {
                     error: function(message) {
                         showAlert(
                             'danger',
-                            message.responseJSON,
+                            message.statusText,
                             'Oops! Something went wrong'
                         );
 
@@ -28,6 +33,8 @@ $(document).on('click', ".confirmation", async function () {
                             message.responseJSON,
                             'Success'
                         );
+
+                        updateButton(div)
 
                         return true;
                     }

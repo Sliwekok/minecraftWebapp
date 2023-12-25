@@ -33,13 +33,23 @@ a.special{
 }
 
 .btn-outline-primary{
-    color: $font-color;
-    border-color: $font-color;
+    color: $font-color !important;
+    border-color: $font-color !important;
+
+    &.active{
+        background-color: $font-color !important;
+        color: $font-color-secondary !important;
+    }
 
     &:hover{
         background-color: $font-color;
-        color: rgb(0,0,0);
+        color: $font-color-secondary !important;
         border-color: transparent;
+    }
+
+    &:active{
+        background-color: $font-color !important;
+        color: $font-color-secondary !important;
     }
 }
 

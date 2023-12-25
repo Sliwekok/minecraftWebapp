@@ -37,6 +37,9 @@ class Server
     #[ORM\OneToOne(mappedBy: 'server', cascade: ['persist', 'remove'])]
     private ?Config $config = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $pid = null;
+
     public function __construct()
     {
         $this->configs = new ArrayCollection();
@@ -137,6 +140,18 @@ class Server
         }
 
         $this->config = $config;
+
+        return $this;
+    }
+
+    public function getPid(): ?int
+    {
+        return $this->pid;
+    }
+
+    public function setPid(?int $pid): static
+    {
+        $this->pid = $pid;
 
         return $this;
     }

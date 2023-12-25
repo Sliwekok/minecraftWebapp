@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Config;
 
 use App\Entity\Config;
-use App\Exception\Server\CouldNotOpenServerPropertyFile;
+use App\Exception\Server\CouldNotOpenServerPropertyFileException;
 use App\Repository\ConfigRepository;
 use App\Service\Filesystem\FilesystemService;
 use App\UniqueNameInterface\ConfigInterface;
@@ -87,7 +87,7 @@ class UpdateConfigService
             file_put_contents($filename, implode("\n", $fileContent));
         } catch (Exception $exception) {
 
-            throw new  CouldNotOpenServerPropertyFile($exception->getMessage());
+            throw new  CouldNotOpenServerPropertyFileException($exception->getMessage());
         }
 
         return true;
