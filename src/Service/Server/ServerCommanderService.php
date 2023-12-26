@@ -52,10 +52,8 @@ class ServerCommanderService
 
         $process = proc_open($command, [], $pipes);
         // check if process run successfully
-        sleep(3);
-        $processData = proc_get_status($process);
-        if (0 !== $processData[ServerCommandsInterface::PROCESS_EXITCODE]) {
-            throw new CouldNotExecuteServerStopException();
+        while (0 !== proc_get_status($process)[ServerCommandsInterface::PROCESS_EXITCODE]) {
+            usleep(250);
         }
         proc_close($process);
 
