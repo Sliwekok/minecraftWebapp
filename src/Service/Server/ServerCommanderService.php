@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Service\Server;
 
 use App\Entity\Server;
-use App\Exception\Server\CouldNotExecuteServerStopException;
 use App\Service\Filesystem\FilesystemService;
 use App\UniqueNameInterface\ServerCommandsInterface;
 use App\UniqueNameInterface\ServerDirectoryInterface;
