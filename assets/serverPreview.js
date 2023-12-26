@@ -30,7 +30,7 @@ $(document).on('click', ".confirmation", async function () {
                     success: function(message) {
                         showAlert(
                             'success',
-                            message.responseJSON,
+                            message,
                             'Success'
                         );
 

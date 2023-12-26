@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service\Server;
 
-use App\Entity\Config;
 use App\Entity\Server;
 use App\Exception\Server\CouldNotExecuteServerStopException;
 use App\Service\Filesystem\FilesystemService;
@@ -23,8 +22,8 @@ class ServerCommanderService
     {}
 
     /**
-     * start command via CommandLine for Minecraft Server. Once it's run we get PID of process - that's the way it's gonna be eventually killed.
-     * TODO: upgrade server to linux to use [screen] command that allows to run multiple tasks with run-live access to process
+     * start command via CommandLine for Minecraft Server. We create another CMD commandline with title based on Server name. The same way we kill process
+     * TODO: upgrade server to linux to use [screen] command that allows to run multiple tasks with run-live access to process that allows us to send direct world commands and store more logs
      */
     public function startServer (
         Server $server
@@ -38,10 +37,9 @@ class ServerCommanderService
         if (!$processData[ServerCommandsInterface::PROCESS_RUNNING]) {
             throw new CouldNotExecuteServerStartException();
         }
-        $pid = $processData[ServerCommandsInterface::PROCESS_PID];
         proc_close($process);
 
-        return $this->saveStartServer($server, $pid);
+        return $this->saveStartServer($server);
     }
 
     /**
@@ -50,12 +48,12 @@ class ServerCommanderService
     public function stopServer (
         Server $server
     ): Server {
-        $pid = $server->getPid();
-        $command = $this->getStopCommand($pid);
+        $command = $this->getStopCommand($server);
 
         $process = proc_open($command, [], $pipes);
-        $processData = proc_get_status($process);
         // check if process run successfully
+        sleep(3);
+        $processData = proc_get_status($process);
         if (0 !== $processData[ServerCommandsInterface::PROCESS_EXITCODE]) {
             throw new CouldNotExecuteServerStopException();
         }
@@ -66,44 +64,41 @@ class ServerCommanderService
 
     /**
      * create server booting command to CLI
+     *
+     * final command looks like: start cmd /k "title server_XYZ & java --Xmx4G -jar server.jar --nogui"
      */
     private function getStartupCommand (
         Server  $server,
     ): string {
         $ram = $server->getConfig()->getMaxRam();
 
-        $cmd = ServerCommandsInterface::CMD_START. '"'. ServerCommandsInterface::CMD_SERVER. $server->getId() .'" ';
+        $command = str_replace(ServerCommandsInterface::REPLACEMENT_RAM, (string)$ram, ServerCommandsInterface::RUN_JAVA);
+        $command = str_replace(ServerCommandsInterface::REPLACEMENT_NAME, (string)$server->getName(), $command);
 
-        $java = ServerCommandsInterface::RUN_JAVA;
-        $java .= ' '. str_replace(ServerCommandsInterface::REPLACEMENT_RAM, (string)$ram, ServerCommandsInterface::RUN_JAVA_RAM);
-        $java .= ' '. ServerCommandsInterface::RUN_JAVA_FILE;
-        $java .= ' '. ServerCommandsInterface::RUN_JAVA_NOGUI;
-
-        return $java. $cmd;
+        return $command;
     }
 
     /**
      * create server killing command to CLI
+     *
+     * final command looks like: taskkill /fi "windowtitle eq server_XYZ*"
+     * that '*' is important due to some magical characters somewhere are put - I don't know where it is added (php, cmd title or some other magical place) but it is required
      */
     private function getStopCommand (
-        int $pid
+        Server $server
     ): string {
-        $commands = ServerCommandsInterface::STOP_JAVA;
-        $commands .= ' '. str_replace(ServerCommandsInterface::REPLACEMENT_PID, (string)$pid, ServerCommandsInterface::STOP_JAVA_PID);
-        $commands .= ' '. ServerCommandsInterface::STOP_JAVA_FORCE;
+        $command = str_replace(ServerCommandsInterface::REPLACEMENT_NAME, (string)$server->getName(), ServerCommandsInterface::STOP_JAVA);
 
-        return $commands;
+        return $command;
     }
 
     /**
-     * save process PID to enitity
+     * save status to enitity
      */
     private function saveStartServer (
         Server  $server,
-        int     $pid
     ): Server {
         $server = $server
-            ->setPid($pid)
             ->setStatus(ServerInterface::STATUS_ONLINE)
         ;
 
@@ -120,7 +115,6 @@ class ServerCommanderService
         Server  $server,
     ): Server {
         $server = $server
-            ->setPid(null)
             ->setStatus(ServerInterface::STATUS_OFFLINE)
         ;
 
