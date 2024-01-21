@@ -46,7 +46,7 @@ class ConfigService
         return $config;
     }
 
-    public function generatePort () :int {
+    public function generatePort (): int {
         $configs = $this->configRepository->getPorts();
         if (0 === count($configs)) {
 

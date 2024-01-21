@@ -23,6 +23,9 @@ class Backup
     #[ORM\ManyToOne(inversedBy: 'backups')]
     private ?Server $server = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $name = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +63,18 @@ class Backup
     public function setServer(?Server $server): static
     {
         $this->server = $server;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
 
         return $this;
     }

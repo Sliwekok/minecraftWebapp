@@ -1,0 +1,48 @@
+{% extends('layouts/app.html.twig') %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-12">
+            <p class="title text-center">Backups</p>
+            <p class="subTitle text-center">Because they are more important than you think</p>
+            <div class="col-12 backupSegment">
+                <div class="col-6 backupList">
+                    {% if backups|length > 0 %}
+                        <div class="col-12">
+                            <div class="col-3"><span>Server</span></div>
+                            <div class="col-3"><span>Created at</span></div>
+                            <div class="col-3"><span>Size</span></div>
+                            <div class="col-3"><span>Actions</span></div>
+                        </div>
+                        {% for backup in backups %}
+                            <div class="col-12 backupItem">
+                                <div class="col-3"><span>{{ server.name }}</span></div>
+                                <div class="col-3"><span>{{ backup.created_at }}</span></div>
+                                <div class="col-3"><span>{{ backup.size }}</span></div>
+                                <div class="col-3 d-inline-flex">
+                                    <a href="{{ url('backup_download') }}" class="col-6"><button>Download</button></a>
+{#                                  <a href="{{ url('backup_download') }}" class="col-6"><button></button></a>#}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12 text-center">
+                            <p class="subTitle">... are empty</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-6 backupSettings">
+                    <div class="col-12 newBackup text-center">
+                        <p class="subTitle">New backup</p>
+                        <span>Create backup of current world in such shape as it is now</span>
+                        {{ form_start(createNewBackup) }}
+                            {{ form_widget(createNewBackup) }}
+                        {{ form_end(createNewBackup) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

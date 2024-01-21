@@ -4,20 +4,21 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Backup;
 use App\Repository\LoginRepository;
-use App\Form\CreateNewServerForm;
+use App\Service\Backup\BackupService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
-use App\Entity\Backup;
+use App\Form\BackupCreateNewFormType;
+use DateTime;
 
 #[Route('/backup')]
 class BackupController extends AbstractController
 {
-    #[Route('/advanced', name: 'backup_list')]
+    #[Route('/list', name: 'backup_list')]
     public function list (
-        Request             $request,
         LoginRepository     $loginRepository
     ): Response
     {
@@ -28,9 +29,44 @@ class BackupController extends AbstractController
             return $this->redirectToRoute('server_create_new');
         }
 
-        return $this->render('server/advanced.html.twig', [
-            'user'  => $user,
+        $backups = $server->getBackups();
+        $defaultBackupName = 'backup_' . $server->getName(). '_' . (new DateTime('now'))->format('Y-m-d_H.i.s');
+        $createNewForm = $this->createForm(BackupCreateNewFormType::class, [], [
+            'defaultBackupName' => $defaultBackupName
         ]);
+
+        return $this->render('backup/list.html.twig', [
+            'user'              => $user,
+            'backups'           => $backups,
+            'server'            => $server,
+            'createNewBackup'   => $createNewForm,
+        ]);
+    }
+
+    #[Route('/createNew', name: 'backup_create_new')]
+    public function createNew (
+        LoginRepository     $loginRepository,
+        BackupService       $backupService,
+        Request             $request
+    ): Response
+    {
+        $user = $loginRepository->find($this->getUser()->getId());
+        $server = $user->getServer();
+        if (null === $server) {
+
+            return $this->redirectToRoute('server_create_new');
+        }
+
+        $form = $this
+            ->createForm(BackupCreateNewFormType::class)
+            ->handleRequest($request)
+        ;
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $backupService->createNewBackup($form, $server);
+        }
+
+        return $this->redirectToRoute('backup_list');
     }
 
 }
