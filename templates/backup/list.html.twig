@@ -9,16 +9,16 @@
             <div class="col-12 backupSegment">
                 <div class="col-6 backupList">
                     {% if backups|length > 0 %}
-                        <div class="col-12">
-                            <div class="col-3"><span>Server</span></div>
-                            <div class="col-3"><span>Created at</span></div>
-                            <div class="col-3"><span>Size</span></div>
-                            <div class="col-3"><span>Actions</span></div>
+                        <div class="col-12 d-inline-flex legend">
+                            <div class="col-3 font-weight-bold"><span>Server</span></div>
+                            <div class="col-3 font-weight-bold"><span>Created at</span></div>
+                            <div class="col-3 font-weight-bold"><span>Size</span></div>
+                            <div class="col-3 font-weight-bold"><span>Actions</span></div>
                         </div>
                         {% for backup in backups %}
-                            <div class="col-12 backupItem">
+                            <div class="col-12 backupItem d-inline-flex">
                                 <div class="col-3"><span>{{ server.name }}</span></div>
-                                <div class="col-3"><span>{{ backup.created_at }}</span></div>
+                                <div class="col-3"><span>{{ backup.createdat|date('d/m/Y') }}</span></div>
                                 <div class="col-3"><span>{{ backup.size }}</span></div>
                                 <div class="col-3 d-inline-flex">
                                     <a href="{{ url('backup_download') }}" class="col-6"><button>Download</button></a>

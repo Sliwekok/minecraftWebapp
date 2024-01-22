@@ -5,23 +5,22 @@ declare(strict_types=1);
 namespace App\Service\Backup;
 
 use App\Entity\Server;
-use App\Exception\Backup\CouldNotCreateBackupFile;
-use ZipArchive;
+use App\Exception\Backup\BackupAlreadyExists;
+use App\UniqueNameInterface\ServerCommandsInterface;
 use App\Service\Filesystem\FilesystemService;
-use Symfony\Component\Finder\SplFileInfo;
-use Symfony\Bundle\SecurityBundle\Security;
 use Exception;
+use SplFileInfo;
 
 class ArchiveService
 {
 
     public function __construct (
         string              $name,
-        private Security    $security
     )
     {}
 
     /**
+     * function executes shell comands since it's faster and doesn't mess up with permissions
      * @param string $name
      * @return int that's total file size
      */
@@ -31,54 +30,40 @@ class ArchiveService
     ): int {
         try {
             $filesystem = new FilesystemService($server->getDirectoryPath());
-            $absolutePath = $filesystem->getAbsolutePath();
-            $backupPath = $filesystem->makePathRelative($filesystem->getAbsoluteBackupPath(), $absolutePath);
-            $name = $absolutePath. '/'.  $name. '.zip';
-            $zip = new ZipArchive();
-            $zip->open($name, ZipArchive::CREATE|ZipArchive::OVERWRITE);
-            $t = $zip;
-            $filesystem->setPathToMinecraft();
-            $files = $filesystem->getAllFiles();
-            $user = $this->security->getUser();
+            $backupPath = $filesystem->getAbsoluteBackupPath(). '/'. $name. '.zip';
+            if ($filesystem->exists($backupPath)) {
 
-            $ZIP_ERROR = [
-                ZipArchive::ER_EXISTS => 'File already exists.',
-                ZipArchive::ER_INCONS => 'Zip archive inconsistent.',
-                ZipArchive::ER_INVAL => 'Invalid argument.',
-                ZipArchive::ER_MEMORY => 'Malloc failure.',
-                ZipArchive::ER_NOENT => 'No such file.',
-                ZipArchive::ER_NOZIP => 'Not a zip archive.',
-                ZipArchive::ER_OPEN => "Can't open file.",
-                ZipArchive::ER_READ => 'Read error.',
-                ZipArchive::ER_SEEK => 'Seek error.',
-            ];
-
-            $result_code = $zip->open($backupPath);
-            if( $result_code !== true ){
-                $msg = isset($ZIP_ERROR[$result_code])? $ZIP_ERROR[$result_code] : 'Unknown error.';
-                die ($msg);
+                throw new BackupAlreadyExists();
             }
 
-            /** @var SplFileInfo $file */
-            foreach ($files as $file) {
-                $filePath = $file->getRealPath();
-                $zip->addFile($filePath, substr($filePath, strlen($absolutePath) + 1));
+            $command = str_replace(ServerCommandsInterface::ARCHIVE_NAME, $name, ServerCommandsInterface::ARCHIVE_COMMAND);
+            $proc = proc_open($command, [], $pipes, $filesystem->getAbsoluteMinecraftPath());
+            $procData = proc_get_status($proc);
+            /**
+             * wait until file is already stored
+             */
+            while ($procData[ServerCommandsInterface::PROCESS_RUNNING]) {
+                usleep(250);
+                $procData = proc_get_status($proc);
             }
-//          $zip->setPassword($user->getPassword());
-            $zip->close();
-            $filesystem->copy(
-                $name,
-                $filesystem->getBackupPath(). '/'. $name
-            );
-//          $size = filesize($filesystem->getBackupPath(). '/'. $name);
+            proc_close($proc);
 
-//          return $size;
-            return 2137;
+            return $this->getArchiveSize($backupPath);
         } catch (Exception $exception) {
-            throw new CouldNotCreateBackupFile(
-                $exception->getMessage(),
+
+            throw new Exception(
+                $exception->getMessage()
             );
         }
+    }
+
+    private function getArchiveSize (
+        string  $path
+    ): int {
+        $file = new SplFileInfo($path);
+        $size = (int)round($file->getSize() / 1024);
+
+        return $size;
     }
 
 }

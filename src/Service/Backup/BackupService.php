@@ -8,6 +8,7 @@ use App\Entity\Backup;
 use App\Entity\Server;
 use App\UniqueNameInterface\BackupInterface;
 use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
@@ -15,7 +16,9 @@ class BackupService
 {
 
     public function __construct (
-        private Security    $security
+        private Security                $security,
+        private EntityManagerInterface  $entityManager,
+
     )
     {}
 
@@ -29,6 +32,10 @@ class BackupService
         $fileSize = $archive->createArchive($name, $server);
 
         $backup = $this->makeBackupEntity($name, $time, $server, $fileSize);
+        $server->addBackup($backup);
+        $this->entityManager->persist($backup);
+        $this->entityManager->persist($server);
+        $this->entityManager->flush();
 
         return $backup;
     }

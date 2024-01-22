@@ -27,7 +27,7 @@ class ServerCommanderService
     public function startServer (
         Server $server
     ): Server {
-        $path = (new FilesystemService($server->getDirectoryPath()))->getAbsolutePath(). '/'. ServerDirectoryInterface::DIRECTORY_MINECRAFT. '/';
+        $path = (new FilesystemService($server->getDirectoryPath()))->getAbsoluteMinecraftPath();
         $command = $this->getStartupCommand($server);
 
         $process = proc_open($command, [], $pipes, $path);

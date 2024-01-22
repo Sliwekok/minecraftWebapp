@@ -6,7 +6,7 @@ use App\Repository\BackupRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BackupRepository::class)]
-#[ORM\Table(name: '`backup`')]
+#[ORM\Table(name: '[backup]')]
 class Backup
 {
     #[ORM\Id]

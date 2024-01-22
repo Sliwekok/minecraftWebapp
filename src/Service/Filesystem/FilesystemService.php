@@ -31,8 +31,6 @@ class FilesystemService extends Filesystem
         $this->path = ServerDirectoryInterface::DIRECTORY. '/' . $path;
         $this->userServer = $path;
         $this->absolutePath = $this->createAbsolutePath();
-
-        $this->recalculatePermissions();
     }
 
     public function getPath (): string {
@@ -59,9 +57,15 @@ class FilesystemService extends Filesystem
         return $this->path. '/'. ServerDirectoryInterface::DIRECTORY_BACKUPS;
     }
 
-    public function createAbsolutePath (): string {
+    public function getAbsolutePublicPath (): string {
         $path = explode('\\', realpath(__DIR__));
         $path = implode('/', array_slice($path,0 , count($path) - 3)) . '/public/';
+
+        return $path;
+    }
+
+    public function createAbsolutePath (): string {
+        $path = $this->getAbsolutePublicPath();
 
         return Path::makeAbsolute($this->path, $path);
     }
@@ -94,20 +98,9 @@ class FilesystemService extends Filesystem
 
     public function getAllFiles (): Finder {
         $finder = new Finder();
-        $finder->in($this->getAbsolutePath());
+        $finder->in($this->getAbsoluteMinecraftPath());
 
         return $finder;
-    }
-
-    private function recalculatePermissions(): void {
-        $path = explode('\\', realpath(__DIR__));
-        $path = implode('/', array_slice($path,0 , count($path) - 3)) . '/public/servers';
-
-        $this->filesystem->chmod(
-            files:      $path,
-            mode:       self::ACCESS_VALUE,
-            recursive:  true
-        );
     }
 
 }

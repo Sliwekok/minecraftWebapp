@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Backup;
 use App\Repository\LoginRepository;
 use App\Service\Backup\BackupService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -67,6 +66,16 @@ class BackupController extends AbstractController
         }
 
         return $this->redirectToRoute('backup_list');
+    }
+
+    #[Route('/download', name: 'backup_download')]
+    public function download (
+        LoginRepository     $loginRepository,
+        BackupService       $backupService,
+        Request             $request
+    ): Response
+    {
+
     }
 
 }
