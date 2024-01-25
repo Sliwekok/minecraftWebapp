@@ -7,3 +7,18 @@
       padding-top: 15px;
     }
 }
+.userBackup {
+  margin-top: 5vh;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+label[for=backup_load_user_world_file] {
+  border: 1px dotted $font-color;
+  display: inline-block;
+  padding: 10px 15px;
+  cursor: pointer;
+  margin-top: 10px;
+}

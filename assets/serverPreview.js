@@ -12,33 +12,31 @@ $(document).on('click', ".confirmation", async function () {
         return;
     }
 
-    if (confirmation) {
-        if (await showAlert('warning', message, 'Be careful!', true)) {
-                $.ajax({
-                    url: url,
-                    method: 'get',
-                    error: function(message) {
-                        showAlert(
-                            'danger',
-                            message.statusText,
-                            'Oops! Something went wrong'
-                        );
+    if (await showAlert('warning', message, 'Be careful!', confirmation)) {
+        $.ajax({
+            url: url,
+            method: 'get',
+            error: function(message) {
+                showAlert(
+                    'danger',
+                    message.statusText,
+                    'Oops! Something went wrong'
+                );
 
-                        return false;
-                    },
+                return false;
+            },
 
-                    success: function(message) {
-                        showAlert(
-                            'success',
-                            message,
-                            'Success'
-                        );
+            success: function(message) {
+                showAlert(
+                    'success',
+                    message,
+                    'Success'
+                );
 
-                        updateButton(div)
+                updateButton(div)
 
-                        return true;
-                    }
-                });
-        }
+                return true;
+            }
+        });
     }
 });

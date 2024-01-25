@@ -63,7 +63,17 @@ class ConfigService
         Config|FormInterface    $config,
         int                     $configId = null
     ): bool {
-        return $this->updateConfigService->updateConfig($config, $configId);
+        return $this->updateConfigService->updateConfigEntity($config, $configId);
+    }
+
+    public function createConfigFromPropertyFile (
+        Server  $server
+    ): Config {
+        $newConfig = $this->updateConfigService->updateConfigEntityFromFile($server);
+        /** we need to ensure that whole config is properly written - and adjust ip and ports */
+        $this->updateConfigService->updateConfigEntity($newConfig);
+
+        return $newConfig;
     }
 
 }

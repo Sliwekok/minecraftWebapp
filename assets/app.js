@@ -11,3 +11,4 @@ require('./createNew');
 require('./serverPreview');
 require('./alert');
 require('./advanced');
+require('./fetchFile');

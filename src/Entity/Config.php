@@ -54,6 +54,12 @@ class Config
         return $this->id;
     }
 
+    /** this is only added due to serialization of data */
+    public function setId (?int $id): void
+    {
+        $this->id = $id;
+    }
+
     public function getPort(): ?int
     {
         return $this->port;

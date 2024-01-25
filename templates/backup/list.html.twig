@@ -7,22 +7,28 @@
             <p class="title text-center">Backups</p>
             <p class="subTitle text-center">Because they are more important than you think</p>
             <div class="col-12 backupSegment">
-                <div class="col-6 backupList">
+                <div class="col-8 backupList text-center">
                     {% if backups|length > 0 %}
-                        <div class="col-12 d-inline-flex legend">
+                        <div class="col-12 d-inline-flex legend justify-content-center">
                             <div class="col-3 font-weight-bold"><span>Server</span></div>
                             <div class="col-3 font-weight-bold"><span>Created at</span></div>
-                            <div class="col-3 font-weight-bold"><span>Size</span></div>
-                            <div class="col-3 font-weight-bold"><span>Actions</span></div>
+                            <div class="col-2 font-weight-bold"><span>Size</span></div>
+                            <div class="col-4 font-weight-bold"><span>Actions</span></div>
                         </div>
                         {% for backup in backups %}
-                            <div class="col-12 backupItem d-inline-flex">
-                                <div class="col-3"><span>{{ server.name }}</span></div>
+                            <div class="col-12 backupItem d-inline-flex justify-content-center">
+                                <div class="col-3"><span>{{ backup.name }}</span></div>
                                 <div class="col-3"><span>{{ backup.createdat|date('d/m/Y') }}</span></div>
-                                <div class="col-3"><span>{{ backup.size }}</span></div>
-                                <div class="col-3 d-inline-flex">
-                                    <a href="{{ url('backup_download') }}" class="col-6"><button>Download</button></a>
-{#                                  <a href="{{ url('backup_download') }}" class="col-6"><button></button></a>#}
+                                <div class="col-2"><span>{{ backup.size }} Kb</span></div>
+                                <div class="col-4 d-inline-flex">
+                                    <button data-message="Downloading will begin soon"
+                                            data-url="{{ path('backup_download', {"id": backup.id}) }}"
+                                            data-filename="{{ backup.name }}"
+                                            class="download btn btn-outline-primary col-5 offset-2">Download</button>
+                                    <button data-message="Are you sure you want to load this backup? Any current not-saved progress will be lost"
+                                            data-url="{{ path('backup_load', {"id": backup.id}) }}"
+                                            data-confirmation="true"
+                                            class="confirmation btn btn-outline-info col-5 offset-2">Load</button>
                                 </div>
                             </div>
                         {% endfor %}
@@ -32,13 +38,21 @@
                         </div>
                     {% endif %}
                 </div>
-                <div class="col-6 backupSettings">
+                <div class="col-4 backupSettings">
                     <div class="col-12 newBackup text-center">
                         <p class="subTitle">New backup</p>
                         <span>Create backup of current world in such shape as it is now</span>
                         {{ form_start(createNewBackup) }}
                             {{ form_widget(createNewBackup) }}
                         {{ form_end(createNewBackup) }}
+                    </div>
+                    <div class="col-12 newBackup userBackup text-center">
+                        <p class="subTitle">Load your world</p>
+                        <span>Load your own Minecraft world</span>
+                        {{ form_start(userBackup) }}
+                        {{ form_errors(userBackup) }}
+                        {{ form_widget(userBackup) }}
+                        {{ form_end(userBackup) }}
                     </div>
                 </div>
             </div>

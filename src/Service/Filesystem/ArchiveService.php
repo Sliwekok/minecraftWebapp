@@ -2,20 +2,21 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Backup;
+namespace App\Service\Filesystem;
 
 use App\Entity\Server;
 use App\Exception\Backup\BackupAlreadyExists;
+use App\Exception\Backup\CouldNotCreateBackupFile;
+use App\Exception\Backup\CouldNotUnpackArchive;
 use App\UniqueNameInterface\ServerCommandsInterface;
-use App\Service\Filesystem\FilesystemService;
 use Exception;
 use SplFileInfo;
+use App\Service\Filesystem\BetterZipArchive;
 
 class ArchiveService
 {
 
     public function __construct (
-        string              $name,
     )
     {}
 
@@ -51,7 +52,7 @@ class ArchiveService
             return $this->getArchiveSize($backupPath);
         } catch (Exception $exception) {
 
-            throw new Exception(
+            throw new CouldNotCreateBackupFile(
                 $exception->getMessage()
             );
         }
@@ -66,4 +67,30 @@ class ArchiveService
         return $size;
     }
 
+
+    public function unpackArchive (
+        string  $file,
+        string  $backupPath,
+        string  $minecraftPath
+    ): void {
+        try {
+            $fileName = str_replace('.zip', '', $file);
+            $zip = new BetterZipArchive();
+            $zip->open($backupPath. '/'. $file);
+            /** we need to check if archived file is in root or has subdirectory */
+            if ($zip->getNameIndex(0) === "$fileName/") {
+                $filePath = $zip->getNameIndex(0);
+                if (strpos($filePath, "$fileName/") === 0) {
+                    $zip->extractSubdirTo($minecraftPath, $filePath);
+                }
+            } else {
+                $zip->extractTo($minecraftPath);
+            }
+            $zip->close();
+        } catch (Exception $exception) {
+
+            throw new CouldNotUnpackArchive($exception->getMessage());
+        }
+
+    }
 }

@@ -2,17 +2,16 @@
 
 namespace App\Form;
 
-use App\Entity\Backup;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Validator\Constraints\Length;
 use App\UniqueNameInterface\BackupInterface;
+use Symfony\Component\Validator\Constraints\File;
 
-class BackupCreateNewFormType extends AbstractType
+class BackupLoadUserWorld extends AbstractType
 {
     public function __construct(
         private RouterInterface $router
@@ -22,28 +21,32 @@ class BackupCreateNewFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add(BackupInterface::FORM_CREATENEW_NAME, TextType::class, [
-                'label'         => 'Backup name',
+            ->add(BackupInterface::FORM_USERUPLOAD_FILE, FileType::class, [
+                'label'         => 'Zip archive',
                 'attr'          => [
                         'required'  => 'true',
                         'class'     => 'form-control',
-                        'value'     => $options['defaultBackupName']
                 ],
-                'constraints'   => [
-                    new Length([
-                        'min'           => 6,
-                        'minMessage'    => 'Your backup name must be at least 6 characters long',
-                        'max'           => 4096,
-                    ]),
+                'constraints' => [
+                    new File([
+                        'maxSize'           => '500M',
+                        'maxSizeMessage'    => 'File must not be bigger than 500 MB',
+                        'mimeTypes'         => [
+                                                'application/zip',
+                                                'application/x-zip-compressed',
+                        ],
+                        'mimeTypesMessage'  => 'Upload valid ZIP file',
+                    ])
                 ],
+
             ])
             ->add('submit', SubmitType::class, [
                 'attr'  => [
                     'class'     => 'btn btn-lg btn-primary',
                 ],
-                'label' => 'Backup'
+                'label' => 'Upload'
             ])
-            ->setAction($this->router->generate('backup_create_new'))
+            ->setAction($this->router->generate('backup_loadcustom'))
         ;
     }
 
@@ -57,7 +60,6 @@ class BackupCreateNewFormType extends AbstractType
             // an arbitrary string used to generate the value of the token
             // using a different string for each form improves its security
             'csrf_token_id'         => 'login_form',
-            'defaultBackupName'     => null
         ]);
     }
 }

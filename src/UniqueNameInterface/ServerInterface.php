@@ -7,6 +7,11 @@ namespace App\UniqueNameInterface;
 class ServerInterface
 {
     public const ENTITY_ID = 'id';
+    public const ENTITY_CREATEDAT = 'created_at';
+    public const ENTITY_MODIFIEDAT = 'modified_at';
+
+    public const ENTITY_PASCAL_CREATEDTA = 'createAt';
+    public const ENTITY_PASCAL_MODIFIEDAT = 'modifiedAt';
 
     public const FORM_STEP1 = 'step_1';
     public const FORM_STEP1_NAME = 'name';
