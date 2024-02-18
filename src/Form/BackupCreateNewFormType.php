@@ -27,7 +27,7 @@ class BackupCreateNewFormType extends AbstractType
                 'attr'          => [
                         'required'  => 'true',
                         'class'     => 'form-control',
-                        'value'     => $options['defaultBackupName']
+                        'value'     => $options['defaultBackupName'],
                 ],
                 'constraints'   => [
                     new Length([

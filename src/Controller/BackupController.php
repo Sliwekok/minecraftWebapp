@@ -9,7 +9,6 @@ use App\Exception\Server\NoServerFoundException;
 use App\Form\BackupLoadUserWorld;
 use App\Repository\LoginRepository;
 use App\Service\Backup\BackupService;
-use App\Service\Backup\UserBackupService;
 use App\Service\Config\ConfigService;
 use App\UniqueNameInterface\BackupInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

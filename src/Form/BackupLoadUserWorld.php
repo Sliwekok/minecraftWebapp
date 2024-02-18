@@ -41,10 +41,11 @@ class BackupLoadUserWorld extends AbstractType
 
             ])
             ->add('submit', SubmitType::class, [
-                'attr'  => [
+                'attr'      => [
                     'class'     => 'btn btn-lg btn-primary',
                 ],
-                'label' => 'Upload'
+                'disabled'  => true,
+                'label'     => 'Upload'
             ])
             ->setAction($this->router->generate('backup_loadcustom'))
         ;
