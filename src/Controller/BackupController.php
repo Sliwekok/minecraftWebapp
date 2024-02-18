@@ -80,7 +80,8 @@ class BackupController extends AbstractController
         ;
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $backupService->createNewBackup($form->get(BackupInterface::FORM_CREATENEW_NAME)->getData(), $server);
+            $fileName = $form->get(BackupInterface::FORM_CREATENEW_NAME)->getData(). BackupInterface::FILE_EXTENSION_ZIP;
+            $backupService->createNewBackup($fileName, $server);
         }
 
         return $this->redirectToRoute('backup_list');

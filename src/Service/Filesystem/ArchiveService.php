@@ -8,6 +8,7 @@ use App\Entity\Server;
 use App\Exception\Backup\BackupAlreadyExists;
 use App\Exception\Backup\CouldNotCreateBackupFile;
 use App\Exception\Backup\CouldNotUnpackArchive;
+use App\UniqueNameInterface\BackupInterface;
 use App\UniqueNameInterface\ServerCommandsInterface;
 use Exception;
 use SplFileInfo;
@@ -31,7 +32,7 @@ class ArchiveService
     ): int {
         try {
             $filesystem = new FilesystemService($server->getDirectoryPath());
-            $backupPath = $filesystem->getAbsoluteBackupPath(). '/'. $name. '.zip';
+            $backupPath = $filesystem->getAbsoluteBackupPath(). '/'. $name;
             if ($filesystem->exists($backupPath)) {
 
                 throw new BackupAlreadyExists();
@@ -74,7 +75,7 @@ class ArchiveService
         string  $minecraftPath
     ): void {
         try {
-            $fileName = str_replace('.zip', '', $file);
+            $fileName = str_replace(BackupInterface::FILE_EXTENSION_ZIP, '', $file);
             $zip = new BetterZipArchive();
             $zip->open($backupPath. '/'. $file);
 

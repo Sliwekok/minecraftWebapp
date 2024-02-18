@@ -10,6 +10,7 @@ use App\Entity\Server;
 use App\Repository\BackupRepository;
 use App\Service\Filesystem\ArchiveService;
 use App\Service\Filesystem\FilesystemService;
+use App\UniqueNameInterface\BackupInterface;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use SplFileInfo;
@@ -78,7 +79,7 @@ class BackupService
         }
 
         $filesystem = new FilesystemService($server->getDirectoryPath());
-        $backupPath = $filesystem->getAbsoluteBackupPath(). '/'. $backup->getName(). '.zip';
+        $backupPath = $filesystem->getAbsoluteBackupPath(). '/'. $backup->getName();
         $backupFile = new SplFileInfo($backupPath);
 
         return $backupFile;
@@ -93,7 +94,7 @@ class BackupService
         $fs->remove($fs->getAllFiles());
 
         $this->archiveService->unpackArchive(
-            $backup->getName(). '.zip',
+            $backup->getName(),
             $fs->getAbsoluteBackupPath(),
             $fs->getAbsoluteMinecraftPath()
         );

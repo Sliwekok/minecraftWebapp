@@ -10,6 +10,7 @@ use App\Exception\Backup\BackupAlreadyExists;
 use App\Exception\Backup\CouldNotCreateBackupFile;
 use App\Service\Filesystem\ArchiveService;
 use App\Service\Filesystem\FilesystemService;
+use App\UniqueNameInterface\BackupInterface;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -32,7 +33,10 @@ class UserBackupService
         $fs = new FilesystemService($server->getDirectoryPath());
         $backupPath = $fs->getBackupPath();
         $fileName = $file->getClientOriginalName();
-
+        // if file has not .zip extension in name - add it
+        if (!str_ends_with($fileName, BackupInterface::FILE_EXTENSION_ZIP)) {
+            $fileName = $fileName. BackupInterface::FILE_EXTENSION_ZIP;
+        }
         if ($fs->exists($backupPath. '/'. $fileName)) {
 
             throw new BackupAlreadyExists();

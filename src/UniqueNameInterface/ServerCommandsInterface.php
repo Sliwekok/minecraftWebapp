@@ -17,6 +17,6 @@ class ServerCommandsInterface
 
     // this path is relative - minecraft directory is next to backups, so we give right path instantly
     public const ARCHIVE_NAME = '{archiveName}';
-    public const ARCHIVE_COMMAND = 'tar.exe -a -c -f "../backups/'. self::ARCHIVE_NAME .'.zip" *';
+    public const ARCHIVE_COMMAND = 'tar.exe -a -c -f "../backups/'. self::ARCHIVE_NAME .'" *';
 
 }

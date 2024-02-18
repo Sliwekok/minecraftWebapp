@@ -13,7 +13,7 @@ class BetterZipArchive extends ZipArchive
 
     public function extractSubdirTo ($destination, $subdir)
     {
-        $errors = array();
+        $errors = [];
         // Prepare dirs
         $destination = str_replace(array("/", "\\"), DIRECTORY_SEPARATOR, $destination);
         $subdir = str_replace(array("/", "\\"), "/", $subdir);
