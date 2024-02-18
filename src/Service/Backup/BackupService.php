@@ -10,11 +10,9 @@ use App\Entity\Server;
 use App\Repository\BackupRepository;
 use App\Service\Filesystem\ArchiveService;
 use App\Service\Filesystem\FilesystemService;
-use App\UniqueNameInterface\BackupInterface;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use SplFileInfo;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class BackupService
@@ -90,13 +88,12 @@ class BackupService
         int     $backupId,
         Server  $server
     ): void {
-        $config = $server->getConfig();
         $backup = $this->backupRepository->find($backupId);
         $fs = new FilesystemService($server->getDirectoryPath());
         $fs->remove($fs->getAllFiles());
 
         $this->archiveService->unpackArchive(
-            $backup->getName(),
+            $backup->getName(). '.zip',
             $fs->getAbsoluteBackupPath(),
             $fs->getAbsoluteMinecraftPath()
         );

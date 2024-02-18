@@ -10,7 +10,6 @@ use App\Exception\Backup\BackupAlreadyExists;
 use App\Exception\Backup\CouldNotCreateBackupFile;
 use App\Service\Filesystem\ArchiveService;
 use App\Service\Filesystem\FilesystemService;
-use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -21,7 +20,6 @@ class UserBackupService
 
     public function __construct (
         private ArchiveService          $archiveService,
-        private BackupService           $backupService,
         private EntityManagerInterface  $entityManager,
     )
     {}
@@ -62,15 +60,9 @@ class UserBackupService
 
     public function unpackUserBackup (
         string  $newArchiveName,
-        Server  $server
+        Server  $server,
     ): void {
         $fs = new FilesystemService($server->getDirectoryPath());
-        /** create current world archive and delete current world*/
-        $oldWorldName = 'backup_' . $server->getName(). '_' . (new DateTime('now'))->format('Y-m-d_H.i.s');
-        $size = $this->archiveService->createArchive($oldWorldName, $server);
-        $backup = $this->backupService->makeBackupEntity($oldWorldName, $server, $size);
-        $this->entityManager->persist($backup);
-        $this->entityManager->flush();
         /** remove all current minecraft files */
         $fs->remove($fs->getAllFiles());
         $this->archiveService->unpackArchive(

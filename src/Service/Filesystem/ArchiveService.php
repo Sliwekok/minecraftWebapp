@@ -77,6 +77,7 @@ class ArchiveService
             $fileName = str_replace('.zip', '', $file);
             $zip = new BetterZipArchive();
             $zip->open($backupPath. '/'. $file);
+
             /** we need to check if archived file is in root or has subdirectory */
             if ($zip->getNameIndex(0) === "$fileName/") {
                 $filePath = $zip->getNameIndex(0);

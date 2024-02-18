@@ -39,7 +39,11 @@ class BackupController extends AbstractController
             return $this->redirectToRoute('server_create_new');
         }
 
-        $backups = $server->getBackups();
+        $backups = $server->getBackups()->toArray();
+        // sort by newest backup
+        usort($backups, function($a, $b) {
+            return $a->getId() < $b->getId();
+        });
         $defaultBackupName = 'backup_' . $server->getName(). '_' . (new DateTime('now'))->format('Y-m-d_H.i.s');
         $createNewForm = $this->createForm(BackupCreateNewFormType::class, [], [
             'defaultBackupName' => $defaultBackupName
@@ -151,7 +155,7 @@ class BackupController extends AbstractController
         BackupService       $backupService,
         ConfigService       $configService,
         int                 $id
-    ): Response
+    ): JsonResponse|Response
     {
         $user = $loginRepository->find($this->getUser()->getId());
         $server = $user->getServer();
@@ -163,7 +167,9 @@ class BackupController extends AbstractController
         $backupService->loadBackup($id, $server);
         $configService->createConfigFromPropertyFile($server);
 
-        return $this->redirectToRoute('server_preview');
+        $alert = Alert::success("Updated config");
+
+        return new JsonResponse($alert->getMessage(), $alert->getCode());
     }
 
 }
