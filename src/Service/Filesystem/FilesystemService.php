@@ -7,22 +7,45 @@ namespace App\Service\Filesystem;
 use App\UniqueNameInterface\ServerDirectoryInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
+use Symfony\Component\Finder\Finder;
 
 class FilesystemService extends Filesystem
 {
 
-    private const ACCESS_VALUE = 0770;
+    /**
+     * Default path is in public directory, so we don't need to initialize absolute path at start.
+     * Next we add user path to server.
+     * So the path looks like: {symfony}/public/servers/{user}/{serverName}
+     */
+
+    private const ACCESS_VALUE = 0755;
     private string $path;
+    private string $userServer;
     private Filesystem $filesystem;
+    private string $absolutePath;
 
     public function __construct (
         string $path,
     ) {
         $this->filesystem = new Filesystem();
         $this->path = ServerDirectoryInterface::DIRECTORY. '/' . $path;
+        $this->userServer = $path;
+        $this->absolutePath = $this->createAbsolutePath();
     }
 
     public function getPath (): string {
+        return $this->path;
+    }
+
+    public function setPathToMinecraft (): string {
+        $this->path = ServerDirectoryInterface::DIRECTORY. '/'. $this->userServer . '/'. ServerDirectoryInterface::DIRECTORY_MINECRAFT;
+
+        return $this->path;
+    }
+
+    public function setPathToBackup (): string {
+        $this->path = ServerDirectoryInterface::DIRECTORY. '/'. $this->userServer . '/'. ServerDirectoryInterface::DIRECTORY_BACKUPS;
+
         return $this->path;
     }
 
@@ -34,29 +57,50 @@ class FilesystemService extends Filesystem
         return $this->path. '/'. ServerDirectoryInterface::DIRECTORY_BACKUPS;
     }
 
-    public function getAbsolutePath (): string {
+    public function getAbsolutePublicPath (): string {
         $path = explode('\\', realpath(__DIR__));
         $path = implode('/', array_slice($path,0 , count($path) - 3)) . '/public/';
+
+        return $path;
+    }
+
+    public function createAbsolutePath (): string {
+        $path = $this->getAbsolutePublicPath();
 
         return Path::makeAbsolute($this->path, $path);
     }
 
+    public function getAbsolutePath (): string {
+        return $this->absolutePath;
+    }
+
     public function getAbsoluteMinecraftPath (): string {
-        return $this->getAbsolutePath(). '/'. ServerDirectoryInterface::DIRECTORY_MINECRAFT;
+        return $this->absolutePath. '/'. ServerDirectoryInterface::DIRECTORY_MINECRAFT;
+    }
+
+    public function getAbsoluteBackupPath (): string {
+        return $this->absolutePath. '/'. ServerDirectoryInterface::DIRECTORY_BACKUPS;
     }
 
     public function createDirectories (): void {
-        $this->filesystem->mkdir($this->path, self::ACCESS_VALUE);
-        $this->filesystem->mkdir($this->path. "/". ServerDirectoryInterface::DIRECTORY_MINECRAFT);
-        $this->filesystem->mkdir($this->path. "/". ServerDirectoryInterface::DIRECTORY_BACKUPS);
+        $this->filesystem->mkdir($this->getAbsolutePath(), self::ACCESS_VALUE);
+        $this->filesystem->mkdir($this->getAbsolutePath(). "/". ServerDirectoryInterface::DIRECTORY_MINECRAFT);
+        $this->filesystem->mkdir($this->getAbsolutePath(). "/". ServerDirectoryInterface::DIRECTORY_BACKUPS);
     }
 
     public function storeFile (
         string $subDirectory,
-        mixed $file
+        mixed  $file
     ): void {
         $totalPath = $this->path . '/'. $subDirectory. '/'. ServerDirectoryInterface::MINECRAFT_SERVER_FILE;
         $this->filesystem->dumpFile($totalPath, $file);
+    }
+
+    public function getAllFiles (): Finder {
+        $finder = new Finder();
+        $finder->in($this->getAbsoluteMinecraftPath());
+
+        return $finder;
     }
 
 }

@@ -37,9 +37,13 @@ class Server
     #[ORM\OneToOne(mappedBy: 'server', cascade: ['persist', 'remove'])]
     private ?Config $config = null;
 
+    #[ORM\OneToMany(mappedBy: 'server', targetEntity: Backup::class)]
+    private Collection $backups;
+
     public function __construct()
     {
         $this->configs = new ArrayCollection();
+        $this->backups = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -137,6 +141,36 @@ class Server
         }
 
         $this->config = $config;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Backup>
+     */
+    public function getBackups(): Collection
+    {
+        return $this->backups;
+    }
+
+    public function addBackup(Backup $backup): static
+    {
+        if (!$this->backups->contains($backup)) {
+            $this->backups->add($backup);
+            $backup->setServer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBackup(Backup $backup): static
+    {
+        if ($this->backups->removeElement($backup)) {
+            // set the owning side to null (unless already changed)
+            if ($backup->getServer() === $this) {
+                $backup->setServer(null);
+            }
+        }
 
         return $this;
     }

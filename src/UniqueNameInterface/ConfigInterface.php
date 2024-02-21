@@ -6,6 +6,8 @@ namespace App\UniqueNameInterface;
 
 class ConfigInterface
 {
+
+    public const ENTITY_SERVER = 'server';
     public const ENTITY_ID = 'id';
     public const ENTITY_PORT = 'port';
     public const ENTITY_DIFFICULTY = 'difficulty';
@@ -38,6 +40,9 @@ class ConfigInterface
     public const PROPERTY_MOTD = 'motd';
     public const PROPERTY_PORT = 'server-port';
     public const PROPERTY_MAXRAM = 'max-ram';
+    public const PROPERTY_STATIC_IP = 'server-ip';
+    public const PROPERTY_STATIC_SERVERPORT = 'server-port';
+    public const PROPERTY_STATIC_QUERYPORT = 'query.port';
 
     public const EULA_AGREED = 'eula=true';
 }

@@ -17,7 +17,7 @@ class ConfigController extends AbstractController
 {
 
     #[Route('/update', name: 'config_update')]
-    public function shutdown (
+    public function update (
         ConfigService       $configService,
         LoginRepository     $loginRepository,
         Request             $request

@@ -14,6 +14,11 @@ class ServerDirectoryInterface
      *     |->minecraft
      *     |->backups
      * |-> user directory ...
+     *
+     * Cache (that holds temporary backups)
+     * |->dev|prod
+     *      |->minecraft
+     *          |->temp name file
      */
 
     public const DIRECTORY = 'servers';

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Alert;
 use App\Exception\Server\NoServerFoundException;
 use App\Repository\LoginRepository;
 use App\Service\Mojang\MinecraftVersions;
@@ -80,14 +81,13 @@ class ServerController extends AbstractController
         $user = $loginRepository->find($this->getUser()->getId());
         if (null === $user->getServer()) {
             $exception = new NoServerFoundException();
-            $msg = $exception->getMessage();
-            $code = $exception->getStatusCode();
+            $alert = Alert::error($exception->getMessage());
         } else {
             $serverService->startServer($user->getServer());
-            $msg = 'Server is online now';
+            $alert = Alert::success('Server is online now');
         }
 
-        return new JsonResponse($msg, $code ?? 200);
+        return new JsonResponse($alert->getMessage(), $alert->getCode());
     }
 
     #[Route('/shutdown', name: 'server_shutdown')]
@@ -98,14 +98,14 @@ class ServerController extends AbstractController
     {
         $user = $loginRepository->find($this->getUser()->getId());
         if (null === $user->getServer()) {
-            $msg = new NoServerFoundException();
-            $statusCode = 404;
+            $exception = new NoServerFoundException();
+            $alert = Alert::error($exception->getMessage());
         } else {
             $serverService->stopServer($user->getServer());
-            $msg = 'Server is offline now';
+            $alert = Alert::success('Server is offline now');
         }
 
-        return new JsonResponse($msg, $statusCode ?? 200);
+        return new JsonResponse($alert->getMessage(), $alert->getCode());
     }
 
     #[Route('/advanced', name: 'server_advanced')]

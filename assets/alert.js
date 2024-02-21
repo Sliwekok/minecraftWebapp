@@ -1,5 +1,5 @@
 // show alert with return message from server
-export function showAlert(status, message, header, alertConfirmation = false, isTemporary = false) {
+export function showAlert(status, message, header, alertConfirmation, isTemporary = false) {
     switch (status) {
         case 'success':
             var className = 'primary';
@@ -45,6 +45,9 @@ export function showAlert(status, message, header, alertConfirmation = false, is
     }
 
     return new Promise((resolve) => {
+        if (alertConfirmation === false) {
+            resolve(true);
+        }
         $(document).on('click', ".btn-close, #alertNo", function() {
             hideAlertMethod();
 
