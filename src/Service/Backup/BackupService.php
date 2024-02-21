@@ -91,7 +91,7 @@ class BackupService
     ): void {
         $backup = $this->backupRepository->find($backupId);
         $fs = new FilesystemService($server->getDirectoryPath());
-        $fs->remove($fs->getAllFiles());
+        $fs->remove($fs->getAllMinecraftFiles());
 
         $this->archiveService->unpackArchive(
             $backup->getName(),

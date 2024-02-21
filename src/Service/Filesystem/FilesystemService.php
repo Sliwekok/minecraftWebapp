@@ -37,22 +37,6 @@ class FilesystemService extends Filesystem
         return $this->path;
     }
 
-    public function setPathToMinecraft (): string {
-        $this->path = ServerDirectoryInterface::DIRECTORY. '/'. $this->userServer . '/'. ServerDirectoryInterface::DIRECTORY_MINECRAFT;
-
-        return $this->path;
-    }
-
-    public function setPathToBackup (): string {
-        $this->path = ServerDirectoryInterface::DIRECTORY. '/'. $this->userServer . '/'. ServerDirectoryInterface::DIRECTORY_BACKUPS;
-
-        return $this->path;
-    }
-
-    public function getMinecraftPath (): string {
-        return $this->path. '/'. ServerDirectoryInterface::DIRECTORY_MINECRAFT;
-    }
-
     public function getBackupPath (): string {
         return $this->path. '/'. ServerDirectoryInterface::DIRECTORY_BACKUPS;
     }
@@ -96,11 +80,17 @@ class FilesystemService extends Filesystem
         $this->filesystem->dumpFile($totalPath, $file);
     }
 
-    public function getAllFiles (): Finder {
+    public function getAllMinecraftFiles (): Finder {
         $finder = new Finder();
         $finder->in($this->getAbsoluteMinecraftPath());
 
         return $finder;
     }
 
+    public function getAllBackupsFiles (): Finder {
+        $finder = new Finder();
+        $finder->in($this->getAbsoluteBackupPath());
+
+        return $finder;
+    }
 }

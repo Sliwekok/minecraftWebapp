@@ -28,7 +28,7 @@ class Server
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $modified_at = null;
 
-    #[ORM\OneToOne(inversedBy: 'server', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'server', cascade: ['persist'])]
     private ?Login $login = null;
 
     #[ORM\Column(length: 255)]

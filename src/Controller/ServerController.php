@@ -8,6 +8,7 @@ use App\Entity\Alert;
 use App\Exception\Server\NoServerFoundException;
 use App\Repository\LoginRepository;
 use App\Service\Mojang\MinecraftVersions;
+use App\Service\Server\DeleteServerService;
 use App\Service\Server\ServerService;
 use App\Form\CreateNewServerForm;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -134,6 +135,24 @@ class ServerController extends AbstractController
         return $this->render('server/advanced.html.twig', [
             'user'  => $user,
         ]);
+    }
+
+    #[Route('/delete', name: 'server_delete')]
+    public function delete (
+        LoginRepository     $loginRepository,
+        DeleteServerService $deleteServerService
+    ): Response
+    {
+        $user = $loginRepository->find($this->getUser()->getId());
+        $server = $user->getServer();
+        if (null === $server) {
+
+            return $this->redirectToRoute('server_create_new');
+        }
+
+        $deleteServerService->deleteServer($server);
+
+        return $this->redirectToRoute('server_create_new');
     }
 
 }
