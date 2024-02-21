@@ -105,13 +105,12 @@ class ServerController extends AbstractController
             $msg = 'Server is offline now';
         }
 
-        return new JsonResponse($msg, $statusCode ?? null);
+        return new JsonResponse($msg, $statusCode ?? 200);
     }
 
     #[Route('/advanced', name: 'server_advanced')]
     public function advanced (
         Request             $request,
-        ServerService       $serverService,
         LoginRepository     $loginRepository
     ): Response
     {

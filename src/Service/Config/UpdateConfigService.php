@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Config;
 
 use App\Entity\Config;
-use App\Exception\Server\CouldNotOpenServerPropertyFile;
+use App\Exception\Server\CouldNotOpenServerPropertyFileException;
 use App\Repository\ConfigRepository;
 use App\Service\Filesystem\FilesystemService;
 use App\UniqueNameInterface\ConfigInterface;
@@ -60,7 +60,14 @@ class UpdateConfigService
             $server = $config->getServer();
             $path = (new FilesystemService($server->getDirectoryPath()))->getAbsoluteMinecraftPath();
             $filename = $path . '/' .ServerDirectoryInterface::MINECRAFT_SERVERPROPERTIES;
-            $file = file_get_contents($filename);
+            $file = @file_get_contents($filename);
+            $fileChecked = 0;
+            // check if file is generated - if server is created then might be some delay
+            while (false === $file && $fileChecked < 3) {
+                sleep(3);
+                $file = @file_get_contents($filename);
+                $fileChecked++;
+            }
             $fileContent = explode("\n", $file);
             $reflection = new ReflectionClass(ConfigInterface::class);
             $configArr = (array) $config;
@@ -87,7 +94,7 @@ class UpdateConfigService
             file_put_contents($filename, implode("\n", $fileContent));
         } catch (Exception $exception) {
 
-            throw new  CouldNotOpenServerPropertyFile($exception->getMessage());
+            throw new  CouldNotOpenServerPropertyFileException($exception->getMessage());
         }
 
         return true;

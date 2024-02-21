@@ -39,6 +39,8 @@ class ConfigService
             ->setPort($port)
             ->setServer($server)
             ->setSeed($seed)
+            ->setMotd($server->getName())
+            ->setLevelName($server->getName())
         ;
 
         return $config;

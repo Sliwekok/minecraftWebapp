@@ -19,7 +19,7 @@
                     </button>
                     <button data-message="Are you sure you want to set server offline"
                             data-url="{{ url('server_shutdown') }}"
-                            data-confirmation="false"
+                            data-confirmation="true"
                             class="confirmation col-5 btn btn-outline-danger {% if user.server.status is same as ('offline') %} active {% endif %}"
                             id="setServerOffline">
                         Offline

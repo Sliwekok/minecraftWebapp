@@ -6,8 +6,13 @@ namespace App\UniqueNameInterface;
 
 class ServerCommandsInterface
 {
-    public const RUN_REPLACEMENT_RAM = '{ram}';
-    public const RUN_REPLACEMENT_PORT = '{port}';
-    public const RUN_REPLACEMENT_PATH = '{path}';
-    public const RUN_JAVA_SERVER = 'java -Xmx'.self::RUN_REPLACEMENT_RAM.'G -jar "'.self::RUN_REPLACEMENT_PATH.'server.jar" --port '.self::RUN_REPLACEMENT_PORT.' --nogui';
+    public const REPLACEMENT_RAM = '{ram}';
+    public const REPLACEMENT_NAME = '{name}';
+
+    public const RUN_JAVA = 'start cmd /k "title server_'. self::REPLACEMENT_NAME.' & java -Xmx'. self::REPLACEMENT_RAM. 'G -jar server.jar --nogui"';
+    public const STOP_JAVA = 'taskkill /fi "windowtitle eq server_'. self::REPLACEMENT_NAME. '*"';
+
+    public const PROCESS_RUNNING = 'running';
+    public const PROCESS_EXITCODE = 'exitcode';
+
 }
