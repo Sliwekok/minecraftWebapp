@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-12">
             <p class="title text-center">Advanced settings</p>
-            <div class="col-12 d-inline-flex">
+            <div class="col-12 d-inline-flex flex-wrap">
                 <div class="col-6">
                     <p class="subTitle text-center">Server properties</p>
                     <a href="{{ url('config_update') }}"><button class="col-4 offset-4 btn btn-outline-primary"><span>Update Config</span></button></a>
@@ -13,6 +13,17 @@
                 <div class="col-6">
                     <p class="subTitle text-center">Backups</p>
                     <a href="{{ url('backup_list') }}"><button class="col-4 offset-4 btn btn-outline-primary"><span>Menage backups</span></button></a>
+                </div>
+                <div class="col-6 mt-3">
+                    <p class="subTitle text-center">Delete server</p>
+                    <p><b>Note</b> Deleting server means permanently deleting <i>all</i> files from existence - be sure you have downloaded latest backup</p>
+                    <button
+                        class="col-4 offset-4 btn btn-outline-danger confirmation"
+                        data-message="Are you sure you want to delete server?"
+                        data-url="{{ url('server_delete') }}"
+                        data-confirmation="true">
+                            <span>Delete server</span>
+                    </button>
                 </div>
             </div>
         </div>

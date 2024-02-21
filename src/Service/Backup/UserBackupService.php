@@ -68,7 +68,7 @@ class UserBackupService
     ): void {
         $fs = new FilesystemService($server->getDirectoryPath());
         /** remove all current minecraft files */
-        $fs->remove($fs->getAllFiles());
+        $fs->remove($fs->getAllMinecraftFiles());
         $this->archiveService->unpackArchive(
             $newArchiveName,
             $fs->getAbsoluteBackupPath(),
