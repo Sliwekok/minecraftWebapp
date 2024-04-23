@@ -40,6 +40,9 @@ class Server
     #[ORM\OneToMany(mappedBy: 'server', targetEntity: Backup::class)]
     private Collection $backups;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $pid = null;
+
     public function __construct()
     {
         $this->configs = new ArrayCollection();
@@ -171,6 +174,18 @@ class Server
                 $backup->setServer(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPid(): ?int
+    {
+        return $this->pid;
+    }
+
+    public function setPid(?int $pid): static
+    {
+        $this->pid = $pid;
 
         return $this;
     }

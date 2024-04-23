@@ -8,7 +8,7 @@ use App\Entity\Config;
 use App\Entity\Login;
 use App\Entity\Server;
 use App\Service\Config\ConfigService;
-use App\UniqueNameInterface\ServerInterface;
+use App\Service\Server\Commander\ServerCommanderService;
 use Symfony\Component\Form\FormInterface;
 
 class ServerService

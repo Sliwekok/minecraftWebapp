@@ -9,7 +9,7 @@ use App\Exception\Backup\BackupAlreadyExists;
 use App\Exception\Backup\CouldNotCreateBackupFile;
 use App\Exception\Backup\CouldNotUnpackArchive;
 use App\UniqueNameInterface\BackupInterface;
-use App\UniqueNameInterface\ServerCommandsInterface;
+use App\UniqueNameInterface\ServerWindowsCommandsInterface;
 use Exception;
 use SplFileInfo;
 use App\Service\Filesystem\BetterZipArchive;
@@ -38,13 +38,13 @@ class ArchiveService
                 throw new BackupAlreadyExists();
             }
 
-            $command = str_replace(ServerCommandsInterface::ARCHIVE_NAME, $name, ServerCommandsInterface::ARCHIVE_COMMAND);
+            $command = str_replace(ServerWindowsCommandsInterface::ARCHIVE_NAME, $name, ServerWindowsCommandsInterface::ARCHIVE_COMMAND);
             $proc = proc_open($command, [], $pipes, $filesystem->getAbsoluteMinecraftPath());
             $procData = proc_get_status($proc);
             /**
              * wait until file is already stored
              */
-            while ($procData[ServerCommandsInterface::PROCESS_RUNNING]) {
+            while ($procData[ServerWindowsCommandsInterface::PROCESS_RUNNING]) {
                 usleep(250);
                 $procData = proc_get_status($proc);
             }

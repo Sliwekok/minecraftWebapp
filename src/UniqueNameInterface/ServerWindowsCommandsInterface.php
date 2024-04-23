@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\UniqueNameInterface;
 
-class ServerCommandsInterface
+class ServerWindowsCommandsInterface
 {
     public const REPLACEMENT_RAM = '{ram}';
     public const REPLACEMENT_NAME = '{name}';

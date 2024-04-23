@@ -43,6 +43,7 @@ class FilesystemService extends Filesystem
 
     public function getAbsolutePublicPath (): string {
         $path = explode('\\', realpath(__DIR__));
+        // trim last 3 parts of path since it's path to service directory
         $path = implode('/', array_slice($path,0 , count($path) - 3)) . '/public/';
 
         return $path;
