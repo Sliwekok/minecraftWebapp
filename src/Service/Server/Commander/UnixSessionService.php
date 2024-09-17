@@ -6,6 +6,7 @@ namespace App\Service\Server\Commander;
 
 use App\Entity\Server;
 use App\Exception\Screen\CouldNotCreateNewScreenSessionException;
+use App\Service\Helper\RunCommandHelper;
 use App\UniqueNameInterface\ServerUnixCommandsInterface;
 
 class UnixSessionService
@@ -16,25 +17,16 @@ class UnixSessionService
     public static function checkScreenExists (
         Server  $server
     ): bool {
+        // find screen id in screen sessions
         $command = str_replace(
             ServerUnixCommandsInterface::REPLACEMENT_NAME,
             $server->getName(),
             ServerUnixCommandsInterface::SCREEN_GETSPECIFICPID
         );
 
-        $descriptorSpec = array(
-            0 => array("pipe", "r"),  // stdin
-            1 => array("pipe", "w"),  // stdout -> we use this
-            2 => array("pipe", "w")   // stderr
-        );
-
-        $process = proc_open($command, $descriptorSpec[1], $pipes);
-        // check if process run successfully
-        while (0 !== proc_get_status($process)[ServerUnixCommandsInterface::PROCESS_EXITCODE]) {
-            usleep(250);
-        }
-        $pid = fgets($pipes[1], 1024);
-        proc_close($process);
+        $commandHelper = new RunCommandHelper;
+        $commandHelper->runCommand($command);
+        $pid = $commandHelper->getReturnedValue();
         // we need to get PID of new screen, it's like this: 1234.{name}
         $pid = substr($pid, 0, strpos($pid, "."));
 
@@ -61,27 +53,53 @@ class UnixSessionService
             ServerUnixCommandsInterface::SCREEN_CREATE
         );
 
-        $descriptorSpec = array(
-            0 => array("pipe", "r"),  // stdin
-            1 => array("pipe", "w"),  // stdout -> we use this
-            2 => array("pipe", "w")   // stderr
-        );
-
-        $process = proc_open($command, $descriptorSpec[1], $pipes);
-        // check if process run successfully
-        while (0 !== proc_get_status($process)[ServerUnixCommandsInterface::PROCESS_EXITCODE]) {
-            usleep(250);
-        }
-        $pid = fgets($pipes[1], 1024);
-        proc_close($process);
+        $commandHelper = new RunCommandHelper;
+        $commandHelper->runCommand($command);
+        $pid = $commandHelper->getReturnedValue();
+        // we need to get PID of new screen, it's like this: 1234.{name}
         $pid = substr($pid, 0, strpos($pid, "."));
 
-        if (false === $pid) {
+        if (false !== $pid && is_int( (int)$pid)) {
 
             throw new CouldNotCreateNewScreenSessionException();
         }
 
         return (int)$pid;
+    }
+
+    public static function attachToSession (
+        Server  $server
+    ): void {
+        $commandHelper1 = new RunCommandHelper();
+        $currentPid = $commandHelper1->runCommand(ServerUnixCommandsInterface::SCREEN_GETCURRENTPID);
+
+        $specificPid = self::getSpecificPid($server);
+
+        if ($currentPid !== $specificPid) {
+
+            $command = str_replace(
+                ServerUnixCommandsInterface::REPLACEMENT_NAME,
+                $server->getName(),
+                ServerUnixCommandsInterface::SCREEN_SWITCH
+            );
+            $commandHelper2 = new RunCommandHelper();
+            $commandHelper2->runCommand($command);
+        }
+    }
+
+    public static function getSpecificPid (
+        Server  $server
+    ): string {
+        $command = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_NAME,
+            $server->getName(),
+            ServerUnixCommandsInterface::SCREEN_CREATE
+        );
+
+        $commandHelper = new RunCommandHelper;
+        $commandHelper->runCommand($command);
+
+        return $commandHelper->getReturnedValue();
     }
 
 }

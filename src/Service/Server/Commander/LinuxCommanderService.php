@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace App\Service\Server\Commander;
 
-use App\Entity\Alert;
 use App\Entity\Server;
-use App\Exception\Server\CouldNotExecuteServerStartException;
 use App\Exception\Server\ServerIsAlreadyRunningException;
 use App\Service\Filesystem\FilesystemService;
-use App\UniqueNameInterface\ServerInterface;
+use App\Service\Helper\RunCommandHelper;
 use App\UniqueNameInterface\ServerUnixCommandsInterface;
 use App\UniqueNameInterface\ServerWindowsCommandsInterface;
-use Doctrine\ORM\EntityManagerInterface;
 
 class LinuxCommanderService
 {
@@ -26,13 +23,15 @@ class LinuxCommanderService
         $screenExists = UnixSessionService::checkScreenExists($server);
         if ($screenExists) {
             // show error to user about server that is already running
-            Alert::error(
-                (new ServerIsAlreadyRunningException())->getMessage(),
-            );
+            throw new ServerIsAlreadyRunningException();
         }
 
-        $pid = UnixSessionService::createNewSession($server);
-
+        // create new session
+        UnixSessionService::createNewSession($server);
+        // run server
+        $command = $this->getStartupCommand($server);
+        $commandHelper = new RunCommandHelper();
+        $commandHelper->runCommand($command, $path);
     }
 
     /**
@@ -41,14 +40,10 @@ class LinuxCommanderService
     public function stopServer (
         Server $server
     ): void {
+        UnixSessionService::attachToSession($server);
         $command = $this->getStopCommand($server);
 
-        $process = proc_open($command, [], $pipes);
-        // check if process run successfully
-        while (0 !== proc_get_status($process)[ServerWindowsCommandsInterface::PROCESS_EXITCODE]) {
-            usleep(250);
-        }
-        proc_close($process);
+        (new RunCommandHelper)->runCommand($command);
     }
 
     /**
@@ -57,16 +52,15 @@ class LinuxCommanderService
      */
     private function getStartupCommand (
         Server  $server,
-    ): string {
+    ): array {
         $ram = $server->getConfig()->getMaxRam();
-        $serverName = (string)$server->getName();
-        $nameReplace = ServerUnixCommandsInterface::REPLACEMENT_NAME;
+        $java = ServerUnixCommandsInterface::RUN_SERVER;
+        $java = str_replace(ServerUnixCommandsInterface::REPLACEMENT_RAM, (string)$ram, $java);
 
-//        $screenCreate = str_replace($nameReplace, $serverName, ServerUnixCommandsInterface::SCREEN_CREATE);
-//        $screenGetPid = str_replace($nameReplace, $serverName, ServerUnixCommandsInterface::SCREEN_GETPID);
-//
-//        return $command
-        return '';
+        $screen = ServerUnixCommandsInterface::SCREEN_CREATE;
+        $screen = str_replace(ServerUnixCommandsInterface::REPLACEMENT_NAME, (string)$server->getName(), $screen);
+
+        return [$screen, $java];
     }
 
     /**

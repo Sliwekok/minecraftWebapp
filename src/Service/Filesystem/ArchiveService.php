@@ -8,6 +8,7 @@ use App\Entity\Server;
 use App\Exception\Backup\BackupAlreadyExists;
 use App\Exception\Backup\CouldNotCreateBackupFile;
 use App\Exception\Backup\CouldNotUnpackArchive;
+use App\Service\Helper\RunCommandHelper;
 use App\UniqueNameInterface\BackupInterface;
 use App\UniqueNameInterface\ServerWindowsCommandsInterface;
 use Exception;
@@ -39,16 +40,7 @@ class ArchiveService
             }
 
             $command = str_replace(ServerWindowsCommandsInterface::ARCHIVE_NAME, $name, ServerWindowsCommandsInterface::ARCHIVE_COMMAND);
-            $proc = proc_open($command, [], $pipes, $filesystem->getAbsoluteMinecraftPath());
-            $procData = proc_get_status($proc);
-            /**
-             * wait until file is already stored
-             */
-            while ($procData[ServerWindowsCommandsInterface::PROCESS_RUNNING]) {
-                usleep(250);
-                $procData = proc_get_status($proc);
-            }
-            proc_close($proc);
+            (new RunCommandHelper)->runCommand($command, $filesystem->getAbsoluteMinecraftPath());
 
             return $this->getArchiveSize($backupPath);
         } catch (Exception $exception) {

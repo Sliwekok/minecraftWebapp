@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Service\Server\Commander;
 
 use App\Entity\Server;
-use App\Exception\Server\CouldNotExecuteServerStartException;
 use App\Service\Filesystem\FilesystemService;
+use App\Service\Helper\RunCommandHelper;
 use App\UniqueNameInterface\ServerWindowsCommandsInterface;
 
 class WindowsCommanderService
@@ -21,14 +21,7 @@ class WindowsCommanderService
     ): void {
         $path = (new FilesystemService($server->getDirectoryPath()))->getAbsoluteMinecraftPath();
         $command = $this->getStartupCommand($server);
-
-        $process = proc_open($command, [], $pipes, $path);
-        $processData = proc_get_status($process);
-        // check if process run successfully
-        if (!$processData[ServerWindowsCommandsInterface::PROCESS_RUNNING]) {
-            throw new CouldNotExecuteServerStartException();
-        }
-        proc_close($process);
+        (new RunCommandHelper)->runCommand($command, $path);
     }
 
     /**
@@ -39,12 +32,7 @@ class WindowsCommanderService
     ): void {
         $command = $this->getStopCommand($server);
 
-        $process = proc_open($command, [], $pipes);
-        // check if process run successfully
-        while (0 !== proc_get_status($process)[ServerWindowsCommandsInterface::PROCESS_EXITCODE]) {
-            usleep(250);
-        }
-        proc_close($process);
+        (new RunCommandHelper)->runCommand($command);
     }
 
     /**
