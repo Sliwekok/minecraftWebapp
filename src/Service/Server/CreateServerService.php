@@ -33,7 +33,8 @@ class CreateServerService
         Login           $user
     ): Server {
         $version = $data->get(ServerInterface::FORM_STEP1)->get(ServerInterface::FORM_STEP1_VERSION)->getData();
-        $serverName = $data->get(ServerInterface::FORM_STEP1)->get(ServerInterface::FORM_STEP1_NAME)->getData();
+        $serverName = trim($data->get(ServerInterface::FORM_STEP1)->get(ServerInterface::FORM_STEP1_NAME)->getData());
+        $serverName = str_replace(['"', "'"], '', $serverName);
         $seed = $data->get(ServerInterface::FORM_STEP1)->get(ServerInterface::FORM_STEP1_SEED)->getData();
         $directory = $user->getUsername() . '/' . $serverName;
         $fs = new FilesystemService($directory);
