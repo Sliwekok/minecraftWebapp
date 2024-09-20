@@ -25,7 +25,7 @@ class ServerCommanderService
     public function startServer (
         Server $server
     ): Server {
-        if (PHP_OS === ServerInterface::OS_WINDOWS) {
+        if (php_uname('s') === ServerInterface::OS_WINDOWS) {
             $this->linuxCommander->startServer($server);
         } else {
             $this->windowsCommander->startServer($server);

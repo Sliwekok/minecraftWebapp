@@ -10,13 +10,14 @@ use App\Service\Filesystem\FilesystemService;
 use App\Service\Helper\RunCommandHelper;
 use App\UniqueNameInterface\ServerUnixCommandsInterface;
 use App\UniqueNameInterface\ServerWindowsCommandsInterface;
+use App\Service\Server\Commander\UnixSessionService;
 
 class LinuxCommanderService
 {
 
     public function __construct (
         private RunCommandHelper    $commandHelper,
-        private UnixSessionService  $unixSessionService
+        private UnixSessionService  $unixSessionService,
     ) {}
 
     /**
@@ -33,7 +34,7 @@ class LinuxCommanderService
         }
 
         // create new session
-        UnixSessionService::createNewSession($server);
+        $this->unixSessionService->createNewSession($server);
         // run server
         $command = $this->getStartupCommand($server);
         $this->commandHelper->runCommand($command, $path);
@@ -45,7 +46,7 @@ class LinuxCommanderService
     public function stopServer (
         Server $server
     ): void {
-        UnixSessionService::attachToSession($server);
+        $this->unixSessionService->attachToSession($server);
         $command = $this->getStopCommand($server);
 
         $this->commandHelper->runCommand($command);
