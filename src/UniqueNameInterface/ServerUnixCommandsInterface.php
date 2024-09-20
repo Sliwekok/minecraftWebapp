@@ -12,7 +12,8 @@ class ServerUnixCommandsInterface
 
     public const SCREEN_CREATE = 'screen -S '. self::REPLACEMENT_NAME. ';';
     public const SCREEN_SWITCH = 'screen -dr '. self::REPLACEMENT_NAME. ';';
-    public const SCREEN_GETSPECIFICPID = 'screen -ls | awk "/\.'. self::REPLACEMENT_NAME .'\t/ {print strtonum($1)}";';
+//    public const SCREEN_GETSPECIFICPID = 'screen -ls | awk "/\.'. self::REPLACEMENT_NAME .'\t/ {print strtonum($1)}";';
+    public const SCREEN_GETSPECIFICPID = "screen -ls | grep -w '". self::REPLACEMENT_NAME ."' | awk '{print $1}' | cut -d. -f1";
     public const SCREEN_GETCURRENTPID = 'echo $STY;';
 
     public const RUN_SERVER = 'java -Xmx'. self::REPLACEMENT_RAM. 'G -jar server.jar --nogui"';
