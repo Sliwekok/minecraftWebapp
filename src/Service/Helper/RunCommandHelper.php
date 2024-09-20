@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Service\Helper;
 
 use App\Exception\Command\CouldNotExecuteCommandException;
-use App\Exception\Server\CouldNotExecuteServerStartException;
 use App\UniqueNameInterface\ServerWindowsCommandsInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use App\Service\Filesystem\FilesystemService;
 
 class RunCommandHelper
 {
@@ -23,7 +23,7 @@ class RunCommandHelper
     /**
      * run command line command
      * @var string|array $commands executable command
-     * @var string $path path where tu run command. If not provided - default directory
+     * @var string $path path where tu run command. If not provided - default public directory
      * @return bool
      */
     public function runCommand (
@@ -31,12 +31,15 @@ class RunCommandHelper
         string          $path = ''
     ): bool {
         try {
+            if ($path === '') {
+                $path = FilesystemService::getAbsolutePublicPath();
+            }
             $descriptorspec = array(
                 0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
                 1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
             );
-            $options = ['bypass_shell' => true];
-//            $options = [];
+//            $options = ['bypass_shell' => true];
+            $options = [];
             $process = proc_open($commands, $descriptorspec, $pipes, $path, options: $options);
 
             $this->commandLogger->info('Exec command', [

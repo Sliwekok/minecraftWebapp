@@ -41,7 +41,7 @@ class FilesystemService extends Filesystem
         return $this->path. '/'. ServerDirectoryInterface::DIRECTORY_BACKUPS;
     }
 
-    public function getAbsolutePublicPath (): string {
+    public static function getAbsolutePublicPath (): string {
         $path = explode('\\', realpath(__DIR__));
         // trim last 3 parts of path since it's path to service directory
         $path = implode('/', array_slice($path,0 , count($path) - 3)) . '/public/';
