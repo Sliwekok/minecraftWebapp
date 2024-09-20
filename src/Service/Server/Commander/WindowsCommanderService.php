@@ -11,6 +11,11 @@ use App\UniqueNameInterface\ServerWindowsCommandsInterface;
 
 class WindowsCommanderService
 {
+
+    public function __construct (
+        private RunCommandHelper    $commandHelper
+    ) {}
+
     /**
      * start command via CommandLine for Minecraft Server.
      * We create another CMD commandline with title based on Server name.
@@ -21,7 +26,7 @@ class WindowsCommanderService
     ): void {
         $path = (new FilesystemService($server->getDirectoryPath()))->getAbsoluteMinecraftPath();
         $command = $this->getStartupCommand($server);
-        (new RunCommandHelper)->runCommand($command, $path);
+        $this->commandHelper->runCommand($command, $path);
     }
 
     /**
@@ -32,7 +37,7 @@ class WindowsCommanderService
     ): void {
         $command = $this->getStopCommand($server);
 
-        (new RunCommandHelper)->runCommand($command);
+        $this->commandHelper->runCommand($command);
     }
 
     /**

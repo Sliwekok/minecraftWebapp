@@ -13,12 +13,12 @@ use App\UniqueNameInterface\BackupInterface;
 use App\UniqueNameInterface\ServerWindowsCommandsInterface;
 use Exception;
 use SplFileInfo;
-use App\Service\Filesystem\BetterZipArchive;
 
 class ArchiveService
 {
 
     public function __construct (
+        private RunCommandHelper    $commandHelper
     )
     {}
 
@@ -40,7 +40,7 @@ class ArchiveService
             }
 
             $command = str_replace(ServerWindowsCommandsInterface::ARCHIVE_NAME, $name, ServerWindowsCommandsInterface::ARCHIVE_COMMAND);
-            (new RunCommandHelper)->runCommand($command, $filesystem->getAbsoluteMinecraftPath());
+            $this->commandHelper->runCommand($command, $filesystem->getAbsoluteMinecraftPath());
 
             return $this->getArchiveSize($backupPath);
         } catch (Exception $exception) {

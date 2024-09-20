@@ -11,10 +11,15 @@ use App\UniqueNameInterface\ServerUnixCommandsInterface;
 
 class UnixSessionService
 {
+
+    public function __construct (
+        private RunCommandHelper    $commandHelper
+    ) {}
+
     /**
      * check if screen with given PID exists
      */
-    public static function checkScreenExists (
+    public function checkScreenExists (
         Server  $server
     ): bool {
         // find screen id in screen sessions
@@ -24,9 +29,8 @@ class UnixSessionService
             ServerUnixCommandsInterface::SCREEN_GETSPECIFICPID
         );
 
-        $commandHelper = new RunCommandHelper;
-        $commandHelper->runCommand($command);
-        $pid = $commandHelper->getReturnedValue();
+        $this->commandHelper->runCommand($command);
+        $pid = $this->commandHelper->getReturnedValue();
         // we need to get PID of new screen, it's like this: 1234.{name}
         $pid = substr($pid, 0, strpos($pid, "."));
 
@@ -44,7 +48,7 @@ class UnixSessionService
     /**
      * create new named screen session. Returns PID of screen session
      */
-    public static function createNewSession (
+    public function createNewSession (
         Server  $server
     ): int {
         $command = str_replace(
@@ -53,9 +57,8 @@ class UnixSessionService
             ServerUnixCommandsInterface::SCREEN_CREATE
         );
 
-        $commandHelper = new RunCommandHelper;
-        $commandHelper->runCommand($command);
-        $pid = $commandHelper->getReturnedValue();
+        $this->commandHelper->runCommand($command);
+        $pid = $this->commandHelper->getReturnedValue();
         // we need to get PID of new screen, it's like this: 1234.{name}
         $pid = substr($pid, 0, strpos($pid, "."));
 
@@ -67,13 +70,13 @@ class UnixSessionService
         return (int)$pid;
     }
 
-    public static function attachToSession (
+    public function attachToSession (
         Server  $server
     ): void {
-        $commandHelper1 = new RunCommandHelper();
-        $currentPid = $commandHelper1->runCommand(ServerUnixCommandsInterface::SCREEN_GETCURRENTPID);
+        $this->commandHelper->runCommand(ServerUnixCommandsInterface::SCREEN_GETCURRENTPID);
+        $currentPid = $this->commandHelper->getReturnedValue();
 
-        $specificPid = self::getSpecificPid($server);
+        $specificPid = $this->getSpecificPid($server);
 
         if ($currentPid !== $specificPid) {
 
@@ -82,12 +85,11 @@ class UnixSessionService
                 $server->getName(),
                 ServerUnixCommandsInterface::SCREEN_SWITCH
             );
-            $commandHelper2 = new RunCommandHelper();
-            $commandHelper2->runCommand($command);
+            $this->commandHelper->runCommand($command);
         }
     }
 
-    public static function getSpecificPid (
+    public function getSpecificPid (
         Server  $server
     ): string {
         $command = str_replace(
@@ -96,10 +98,9 @@ class UnixSessionService
             ServerUnixCommandsInterface::SCREEN_CREATE
         );
 
-        $commandHelper = new RunCommandHelper;
-        $commandHelper->runCommand($command);
+        $this->commandHelper->runCommand($command);
 
-        return $commandHelper->getReturnedValue();
+        return $this->commandHelper->getReturnedValue();
     }
 
 }

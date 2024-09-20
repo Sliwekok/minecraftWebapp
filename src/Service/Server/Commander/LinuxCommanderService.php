@@ -13,6 +13,12 @@ use App\UniqueNameInterface\ServerWindowsCommandsInterface;
 
 class LinuxCommanderService
 {
+
+    public function __construct (
+        private RunCommandHelper    $commandHelper,
+        private UnixSessionService  $unixSessionService
+    ) {}
+
     /**
      * creates separate screen that holds session
      */
@@ -20,7 +26,7 @@ class LinuxCommanderService
         Server $server
     ): void {
         $path = (new FilesystemService($server->getDirectoryPath()))->getAbsoluteMinecraftPath();
-        $screenExists = UnixSessionService::checkScreenExists($server);
+        $screenExists = $this->unixSessionService->checkScreenExists($server);
         if ($screenExists) {
             // show error to user about server that is already running
             throw new ServerIsAlreadyRunningException();
@@ -30,8 +36,7 @@ class LinuxCommanderService
         UnixSessionService::createNewSession($server);
         // run server
         $command = $this->getStartupCommand($server);
-        $commandHelper = new RunCommandHelper();
-        $commandHelper->runCommand($command, $path);
+        $this->commandHelper->runCommand($command, $path);
     }
 
     /**
@@ -43,7 +48,7 @@ class LinuxCommanderService
         UnixSessionService::attachToSession($server);
         $command = $this->getStopCommand($server);
 
-        (new RunCommandHelper)->runCommand($command);
+        $this->commandHelper->runCommand($command);
     }
 
     /**

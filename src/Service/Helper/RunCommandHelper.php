@@ -4,13 +4,21 @@ declare(strict_types=1);
 
 namespace App\Service\Helper;
 
+use App\Exception\Command\CouldNotExecuteCommandException;
 use App\Exception\Server\CouldNotExecuteServerStartException;
 use App\UniqueNameInterface\ServerWindowsCommandsInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class RunCommandHelper
 {
 
     private string $returned = '';
+
+    public function __construct (
+        private LoggerInterface $commandLogger,
+        private Security        $security
+    ) {}
 
     /**
      * run command line command
@@ -22,47 +30,38 @@ class RunCommandHelper
         string|array    $commands,
         string          $path = ''
     ): bool {
-        if (is_array($commands)) {
-            $process = proc_open($commands[0], [], $pipes, $path);
-        } else {
-            $process = proc_open($commands, [], $pipes, $path);
-        }
+        try {
+            $descriptorspec = array(
+                0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
+                1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
+            );
+            $options = ['bypass_shell' => true];
+//            $options = [];
+            $process = proc_open($commands, $descriptorspec, $pipes, $path, options: $options);
 
-        if (is_resource($process)) {
-            if (is_array($commands)) {
-                $first_array_skipped = false;
-                foreach ($commands as $command) {
-                    // we need to skip first array key since it was used in creating proc open
-                    if (!$first_array_skipped) {
-                        continue;
-                    }
-                    fwrite($pipes[0], $command . "\n");
-                }
-                fclose($pipes[0]);
-            }
-        }
+            $this->commandLogger->info('Exec command', [
+                'command' => $commands,
+                'userId' => $this->security->getUser()->getId()
+            ]
+            );
 
-        $procData = proc_get_status($process);
-
-        // check if process run successfully
-        while (0 !== proc_get_status($process)[ServerWindowsCommandsInterface::PROCESS_EXITCODE]) {
-            usleep(250);
-        }
-        /**
-         * wait until finished
-         */
-        $count = 0;
-        while ($procData[ServerWindowsCommandsInterface::PROCESS_RUNNING]) {
-            usleep(250);
+            $count = 0;
             $procData = proc_get_status($process);
-            $count++;
-            if ($count > 2) {
-                throw new CouldNotExecuteServerStartException();
-            }
-        }
-        $this->returned = fgets($pipes[1], 1024);
-        proc_close($process);
 
+            while ($count < 3) {
+                if (!$procData[ServerWindowsCommandsInterface::PROCESS_RUNNING] && $procData[ServerWindowsCommandsInterface::PROCESS_EXITCODE]) {
+                    $this->returned = stream_get_contents($pipes[1]);
+                    fclose($pipes[1]);
+                }
+                sleep(1);
+                $count++;
+            }
+            proc_close($process);
+        } catch (\Exception $exception) {
+            $commands = is_array($commands) ? implode(',', $commands) : $commands;
+
+            throw new CouldNotExecuteCommandException($exception->getMessage(). ' when executing command: '. $commands);
+        }
         return true;
     }
 

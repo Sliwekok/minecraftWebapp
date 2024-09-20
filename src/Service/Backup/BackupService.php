@@ -13,6 +13,7 @@ use App\Service\Filesystem\FilesystemService;
 use App\UniqueNameInterface\BackupInterface;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use SplFileInfo;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -23,7 +24,8 @@ class BackupService
         private EntityManagerInterface  $entityManager,
         private UserBackupService       $userBackupService,
         private BackupRepository        $backupRepository,
-        private ArchiveService          $archiveService
+        private ArchiveService          $archiveService,
+        private LoggerInterface         $backupLogger,
     )
     {}
 
@@ -37,6 +39,14 @@ class BackupService
         $this->entityManager->persist($backup);
         $this->entityManager->persist($server);
         $this->entityManager->flush();
+
+        $this->backupLogger->info('Created new backup', [
+            'server_id'     => $server->getId(),
+            'backup_name'   => $backup->getName(),
+            'backup_size'   => $backup->getSize(),
+            'user_id'       => $server->getLogin()->getId(),
+            'created_at'    => $backup->getCreatedAt()
+        ]);
 
         return $backup;
     }
@@ -98,6 +108,14 @@ class BackupService
             $fs->getAbsoluteBackupPath(),
             $fs->getAbsoluteMinecraftPath()
         );
+
+        $this->backupLogger->info('Loaded existing backup', [
+            'server_id'     => $server->getId(),
+            'backup_name'   => $backup->getName(),
+            'backup_size'   => $backup->getSize(),
+            'user_id'       => $server->getLogin()->getId(),
+            'action_at'     => time()
+        ]);
     }
 
     public function storeCustomBackup (
