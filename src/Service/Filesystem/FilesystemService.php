@@ -28,8 +28,8 @@ class FilesystemService extends Filesystem
         string $path,
     ) {
         $this->filesystem = new Filesystem();
-        $this->path = ServerDirectoryInterface::DIRECTORY. '/' . $path;
-        $this->userServer = $path;
+        $this->path = ServerDirectoryInterface::DIRECTORY. '/' . str_replace(['"',"'"], "", $path);
+        $this->userServer = str_replace(['"',"'"], "", $path);
         $this->absolutePath = $this->createAbsolutePath();
     }
 
@@ -69,8 +69,8 @@ class FilesystemService extends Filesystem
 
     public function createDirectories (): void {
         $this->filesystem->mkdir($this->getAbsolutePath(), self::ACCESS_VALUE);
-        $this->filesystem->mkdir($this->getAbsolutePath(). "/". ServerDirectoryInterface::DIRECTORY_MINECRAFT);
-        $this->filesystem->mkdir($this->getAbsolutePath(). "/". ServerDirectoryInterface::DIRECTORY_BACKUPS);
+        $this->filesystem->mkdir($this->getAbsolutePath(). "/". ServerDirectoryInterface::DIRECTORY_MINECRAFT, self::ACCESS_VALUE);
+        $this->filesystem->mkdir($this->getAbsolutePath(). "/". ServerDirectoryInterface::DIRECTORY_BACKUPS, self::ACCESS_VALUE);
     }
 
     public function storeFile (
