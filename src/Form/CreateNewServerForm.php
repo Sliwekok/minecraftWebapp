@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class CreateNewServerForm extends AbstractType
 {
@@ -34,6 +35,11 @@ class CreateNewServerForm extends AbstractType
                                 'min'           => 6,
                                 'minMessage'    => 'Your server name must be least 6 characters long',
                                 'max'           => 100,
+                            ]),
+                            new Regex([
+                                'pattern'   => '/[ "\'\s]+/',
+                                'match'     => false,
+                                'message'   => 'Your server name must not include quotes nor spaces'
                             ])
                         ]
                     ])

@@ -31,10 +31,8 @@ class UnixSessionService
 
         $this->commandHelper->runCommand($command);
         $pid = $this->commandHelper->getReturnedValue();
-        // we need to get PID of new screen, it's like this: 1234.{name}
-        $pid = substr($pid, 0, strpos($pid, "."));
 
-        if (false !== $pid && is_int( (int)$pid )) {
+        if (false !== $pid && is_int((int) $pid) && $pid !== '') {
 
             return true;
         }
@@ -59,10 +57,7 @@ class UnixSessionService
 
         $this->commandHelper->runCommand($command);
         $pid = $this->commandHelper->getReturnedValue();
-        // we need to get PID of new screen, it's like this: 1234.{name}
-        $pid = substr($pid, 0, strpos($pid, "."));
-
-        if (false !== $pid && is_int( (int)$pid)) {
+        if (false !== $pid && is_int((int) $pid) && $pid !== '') {
 
             throw new CouldNotCreateNewScreenSessionException();
         }
