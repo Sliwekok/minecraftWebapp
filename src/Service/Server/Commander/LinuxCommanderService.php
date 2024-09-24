@@ -66,7 +66,7 @@ class LinuxCommanderService
         $screen = ServerUnixCommandsInterface::SCREEN_SWITCH;
         $screen = str_replace(ServerUnixCommandsInterface::REPLACEMENT_NAME, (string)$server->getName(), $screen);
 
-        $changeDir = "cd ".$path;
+        $changeDir = "cd ". $path;
         return [$screen, $changeDir, $java];
     }
 
