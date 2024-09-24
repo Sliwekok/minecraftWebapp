@@ -43,9 +43,9 @@ class ServerCommanderService
     ): Server {
         $os = strtolower(php_uname('s'));
         if (str_contains($os, strtolower(ServerInterface::OS_WINDOWS))) {
-            $this->linuxCommander->stopServer($server);
-        } else {
             $this->windowsCommander->stopServer($server);
+        } else {
+            $this->linuxCommander->stopServer($server);
         }
 
         return $this->saveStopServer($server);
