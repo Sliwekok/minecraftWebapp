@@ -49,14 +49,10 @@ class UnixSessionService
      * create new named screen session. Returns PID of screen session
      */
     public function createNewSession (
-        Server  $server
+        Server  $server,
+        string  $path
     ): int {
-        $command = str_replace(
-            ServerUnixCommandsInterface::REPLACEMENT_NAME,
-            $server->getName(),
-            ServerUnixCommandsInterface::SCREEN_CREATE
-        );
-
+        $command = $this->getScreenCreateCommand($server, $path);
         $this->commandHelper->runCommand($command);
         $pid = $this->commandHelper->getReturnedValue();
         if (false !== $pid && is_int((int) $pid) && $pid !== '') {
@@ -92,12 +88,37 @@ class UnixSessionService
         $command = str_replace(
             ServerUnixCommandsInterface::REPLACEMENT_NAME,
             $server->getName(),
-            ServerUnixCommandsInterface::SCREEN_CREATE
+            ServerUnixCommandsInterface::SCREEN_GETSPECIFICPID
         );
 
         $this->commandHelper->runCommand($command);
 
         return $this->commandHelper->getReturnedValue();
+    }
+
+    private function getScreenCreateCommand (
+        Server  $server,
+        string  $path
+    ): string {
+        $command = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_NAME,
+            $server->getName(),
+            ServerUnixCommandsInterface::SCREEN_CREATE
+        );
+
+        $command = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_LOG_PATH,
+            $path,
+            $command
+        );
+
+        $command = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_LOG_FILENAME,
+            $server->getName(). '_console.log',
+            $command
+        );
+
+        return $command;
     }
 
 }

@@ -33,7 +33,7 @@ class LinuxCommanderService
         }
 
         // create new session
-        $this->unixSessionService->createNewSession($server);
+        $this->unixSessionService->createNewSession($server, $path);
         // run server
         $command = $this->getStartupCommand($server, $path);
         $this->commandHelper->runCommand($command, $path);
