@@ -34,10 +34,14 @@ class RunCommandHelper
             if ($path === '') {
                 $path = FilesystemService::getAbsolutePublicPath();
             }
-            $descriptorspec = array(
-                0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
-                1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
-            );
+            $descriptorspec = [
+                0 => ["pipe", "r"],  // stdin is a pipe that the child will read from
+                1 => ["pipe", "w"],  // stdout is a pipe that the child will write to
+                2 => ['pipe', 'w']   // stderr is a pipe that the child will write to
+            ];
+            if (is_array($commands)) {
+                $commands = implode("/n", $commands);
+            }
             $process = proc_open($commands, $descriptorspec, $pipes, $path);
 
             $count = 0;
@@ -47,7 +51,6 @@ class RunCommandHelper
                 if (!$procData[ServerWindowsCommandsInterface::PROCESS_RUNNING] && $procData[ServerWindowsCommandsInterface::PROCESS_EXITCODE]) {
                     if (is_resource($pipes[1])) {
                         $this->returned = @stream_get_contents($pipes[1]);
-                        fclose($pipes[1]);
                     }
                 }
                 sleep(1);
@@ -55,6 +58,21 @@ class RunCommandHelper
                 $count++;
             }
 
+            $errorMsg = stream_get_contents($pipes[2]);
+            if (!empty($errorMsg)) {
+                $this->commandLogger->info('Error occurred', [
+                    'command'   => $commands,
+                    'returned'  => $this->getReturnedValue(),
+                    'error'     => $errorMsg,
+                    'path'      => $path,
+                    'userId'    => $this->security->getUser()->getId(),
+                ]);
+                
+                throw new \Exception($errorMsg);
+            }
+
+            fclose($pipes[1]);
+            fclose($pipes[2]);
             proc_close($process);
 
             $this->commandLogger->info('Exec command', [

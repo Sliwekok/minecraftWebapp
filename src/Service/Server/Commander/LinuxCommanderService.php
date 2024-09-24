@@ -45,7 +45,6 @@ class LinuxCommanderService
     public function stopServer (
         Server $server
     ): void {
-        $this->unixSessionService->attachToSession($server);
         $command = $this->getStopCommand($server);
 
         $this->commandHelper->runCommand($command);
@@ -53,21 +52,33 @@ class LinuxCommanderService
 
     /**
      * create server booting command to CLI
-     * creates new screen with commands
+     * append to already existing screen by bypassing command
      */
     private function getStartupCommand (
         Server  $server,
         string  $path
     ): array {
-        $ram = $server->getConfig()->getMaxRam();
-        $java = ServerUnixCommandsInterface::RUN_SERVER;
-        $java = str_replace(ServerUnixCommandsInterface::REPLACEMENT_RAM, (string)$ram, $java);
-
         $screen = ServerUnixCommandsInterface::SCREEN_SWITCH;
         $screen = str_replace(ServerUnixCommandsInterface::REPLACEMENT_NAME, (string)$server->getName(), $screen);
 
-        $changeDir = "cd ". $path;
-        return [$screen, $changeDir, $java];
+        $changeDir = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_COMMAND,
+            "cd ". $path,
+            $screen
+        );
+
+        $java = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_RAM,
+            (string)$server->getConfig()->getMaxRam(),
+            ServerUnixCommandsInterface::RUN_SERVER
+        );
+        $java = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_COMMAND,
+            $java,
+            $screen
+        );
+
+        return [$changeDir, $java];
     }
 
     /**

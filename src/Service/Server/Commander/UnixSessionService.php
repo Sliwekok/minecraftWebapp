@@ -63,39 +63,6 @@ class UnixSessionService
         return (int)$pid;
     }
 
-    public function attachToSession (
-        Server  $server
-    ): void {
-        $this->commandHelper->runCommand(ServerUnixCommandsInterface::SCREEN_GETCURRENTPID);
-        $currentPid = $this->commandHelper->getReturnedValue();
-
-        $specificPid = $this->getSpecificPid($server);
-
-        if (trim($currentPid) !== trim($specificPid)) {
-
-            $command = str_replace(
-                ServerUnixCommandsInterface::REPLACEMENT_NAME,
-                $server->getName(),
-                ServerUnixCommandsInterface::SCREEN_SWITCH
-            );
-            $this->commandHelper->runCommand($command);
-        }
-    }
-
-    public function getSpecificPid (
-        Server  $server
-    ): string {
-        $command = str_replace(
-            ServerUnixCommandsInterface::REPLACEMENT_NAME,
-            $server->getName(),
-            ServerUnixCommandsInterface::SCREEN_GETSPECIFICPID
-        );
-
-        $this->commandHelper->runCommand($command);
-
-        return $this->commandHelper->getReturnedValue();
-    }
-
     private function getScreenCreateCommand (
         Server  $server,
         string  $path
