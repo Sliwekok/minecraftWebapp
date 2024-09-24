@@ -38,21 +38,23 @@ class RunCommandHelper
                 0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
                 1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
             );
-//            $options = ['bypass_shell' => true];
-            $options = [];
-            $process = proc_open($commands, $descriptorspec, $pipes, $path, options: $options);
+            $process = proc_open($commands, $descriptorspec, $pipes, $path);
 
             $count = 0;
             $procData = proc_get_status($process);
 
             while ($count < 3) {
                 if (!$procData[ServerWindowsCommandsInterface::PROCESS_RUNNING] && $procData[ServerWindowsCommandsInterface::PROCESS_EXITCODE]) {
-                    $this->returned = stream_get_contents($pipes[1]);
-                    fclose($pipes[1]);
+                    if (is_resource($pipes[1])) {
+                        $this->returned = @stream_get_contents($pipes[1]);
+                        fclose($pipes[1]);
+                    }
                 }
                 sleep(1);
+                $procData = proc_get_status($process);
                 $count++;
             }
+
             proc_close($process);
 
             $this->commandLogger->info('Exec command', [

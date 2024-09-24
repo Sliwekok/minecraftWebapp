@@ -75,7 +75,7 @@ class UnixSessionService
 
         $specificPid = $this->getSpecificPid($server);
 
-        if ($currentPid !== $specificPid) {
+        if (trim($currentPid) !== trim($specificPid)) {
 
             $command = str_replace(
                 ServerUnixCommandsInterface::REPLACEMENT_NAME,

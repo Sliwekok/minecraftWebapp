@@ -35,7 +35,7 @@ class LinuxCommanderService
         // create new session
         $this->unixSessionService->createNewSession($server);
         // run server
-        $command = $this->getStartupCommand($server);
+        $command = $this->getStartupCommand($server, $path);
         $this->commandHelper->runCommand($command, $path);
     }
 
@@ -57,15 +57,17 @@ class LinuxCommanderService
      */
     private function getStartupCommand (
         Server  $server,
+        string  $path
     ): array {
         $ram = $server->getConfig()->getMaxRam();
         $java = ServerUnixCommandsInterface::RUN_SERVER;
         $java = str_replace(ServerUnixCommandsInterface::REPLACEMENT_RAM, (string)$ram, $java);
 
-        $screen = ServerUnixCommandsInterface::SCREEN_CREATE;
+        $screen = ServerUnixCommandsInterface::SCREEN_SWITCH;
         $screen = str_replace(ServerUnixCommandsInterface::REPLACEMENT_NAME, (string)$server->getName(), $screen);
 
-        return [$screen, $java];
+        $changeDir = "cd ".$path;
+        return [$screen, $changeDir, $java];
     }
 
     /**
