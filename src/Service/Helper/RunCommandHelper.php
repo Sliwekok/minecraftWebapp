@@ -42,12 +42,6 @@ class RunCommandHelper
             $options = [];
             $process = proc_open($commands, $descriptorspec, $pipes, $path, options: $options);
 
-            $this->commandLogger->info('Exec command', [
-                'command' => $commands,
-                'userId' => $this->security->getUser()->getId()
-            ]
-            );
-
             $count = 0;
             $procData = proc_get_status($process);
 
@@ -60,6 +54,14 @@ class RunCommandHelper
                 $count++;
             }
             proc_close($process);
+
+            $this->commandLogger->info('Exec command', [
+                'command'   => $commands,
+                'returned'  => $this->getReturnedValue(),
+                'path'      => $path,
+                'userId'    => $this->security->getUser()->getId(),
+            ]);
+
         } catch (\Exception $exception) {
             $commands = is_array($commands) ? implode(',', $commands) : $commands;
 

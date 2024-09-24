@@ -18,6 +18,8 @@ class UnixSessionService
 
     /**
      * check if screen with given PID exists
+     * example:
+     *      sudo screen -ls | grep -w 'server_name' | awk '{print $1}' | cut -d. -f1
      */
     public function checkScreenExists (
         Server  $server
