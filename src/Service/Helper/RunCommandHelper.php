@@ -42,18 +42,18 @@ class RunCommandHelper
             $options = [];
             $process = proc_open($commands, $descriptorspec, $pipes, $path, options: $options);
 
-            $this->commandLogger->info('Exec command', [
-                'command' => $commands,
-                'userId' => $this->security->getUser()->getId()
-            ]
-            );
-
             $count = 0;
             $procData = proc_get_status($process);
 
             while ($count < 3) {
                 if (!$procData[ServerWindowsCommandsInterface::PROCESS_RUNNING] && $procData[ServerWindowsCommandsInterface::PROCESS_EXITCODE]) {
                     $this->returned = stream_get_contents($pipes[1]);
+                    $this->commandLogger->info('Exec command', [
+                        'command'   => $commands,
+                        'returned'  => $this->getReturnedValue(),
+                        'path'      => $path,
+                        'userId'    => $this->security->getUser()->getId(),
+                    ]);
                     fclose($pipes[1]);
                 }
                 sleep(1);

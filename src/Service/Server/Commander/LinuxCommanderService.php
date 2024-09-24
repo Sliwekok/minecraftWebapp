@@ -9,7 +9,6 @@ use App\Exception\Server\ServerIsAlreadyRunningException;
 use App\Service\Filesystem\FilesystemService;
 use App\Service\Helper\RunCommandHelper;
 use App\UniqueNameInterface\ServerUnixCommandsInterface;
-use App\UniqueNameInterface\ServerWindowsCommandsInterface;
 use App\Service\Server\Commander\UnixSessionService;
 
 class LinuxCommanderService
@@ -76,7 +75,7 @@ class LinuxCommanderService
     private function getStopCommand (
         Server $server
     ): string {
-        $command = str_replace(ServerWindowsCommandsInterface::REPLACEMENT_NAME, (string)$server->getName(), ServerWindowsCommandsInterface::STOP_JAVA);
+        $command = str_replace(ServerUnixCommandsInterface::REPLACEMENT_NAME, (string)$server->getName(), ServerUnixCommandsInterface::KILL_SERVER);
 
         return $command;
     }
