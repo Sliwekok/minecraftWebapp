@@ -53,7 +53,7 @@ class LinuxCommanderService
         $this->commandHelper->runCommand($getPids);
         $pids = explode("\n", $this->commandHelper->getReturnedValue());
         foreach ($pids as $pid) {
-            if (posix_getpgid($pid)) {
+            if (posix_getpgid((int)$pid)) {
                 if (!posix_kill((int) $pid, 0)) {
                     throw new CouldNotExecuteServerStopException();
                 }
