@@ -91,7 +91,7 @@ class CreateServerService
                 ->setLogin($user)
                 ->setDirectoryPath($path)
                 ->setName($serverName)
-                ->setStatus($version)
+                ->setVersion($version)
                 ->setStatus(ServerInterface::STATUS_OFFLINE)
             ;
 
