@@ -8,7 +8,7 @@
         </div>
         <div class="col-12 serverManagement">
             <div class="col-6 text-center serverStatus">
-                <p>Server status</p>
+                <p class="font-weight-bold">Server status</p>
                 <div class="col-12">
                     <button data-message="Are you sure you want to set server online?"
                             data-url="{{ url('server_start') }}"
@@ -24,6 +24,15 @@
                             id="setServerOffline">
                         Offline
                     </button>
+                </div>
+            </div>
+            <div class="col-16 serverInfo">
+                <div class="font-weight-bold text-center col-12">Server information</div>
+                <div class="col-6">Server version: {{ server.version }}</div>
+                <div class="col-6">World level name: {{ server.config.levelname }}</div>
+                <div class="col-6">Welcome message: {{ server.config.motd }}</div>
+                <div class="col-6">Connect to server:
+                    <code class="connectToServer" title="Click to copy">{{ ip }}:{{ server.config.port }}</code>
                 </div>
             </div>
         </div>

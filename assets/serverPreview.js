@@ -40,3 +40,18 @@ $(document).on('click', ".confirmation", async function () {
         });
     }
 });
+
+
+$(document).on('click', '.connectToServer', function (e) {
+    e.preventDefault();
+    $(this).attr('title','Copied');
+    $(this).hover();
+    var $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val($(this).text()).select();
+    document.execCommand("copy");
+    $temp.remove();
+    setTimeout(() => {
+        $(this).attr('title','Click to copy');
+    }, 5000);
+})
