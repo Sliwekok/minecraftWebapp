@@ -105,6 +105,7 @@ class UpdateConfigService
                     continue;
                 }
                 foreach ($configArr as $entity => $value) {
+                    if (is_bool($value)) $value ? $value = "true" : $value = "false";
                     $entityName = preg_replace('/[^\da-z]/i', '', strtoupper(str_replace(Config::class, '', $entity)));
                     $propertyName = ConfigInterface::PROPERTY. $entityName;
                     $property = $reflection->getConstant($propertyName);
