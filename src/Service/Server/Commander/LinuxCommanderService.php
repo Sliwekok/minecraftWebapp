@@ -57,15 +57,9 @@ class LinuxCommanderService
     private function getStartupCommand (
         Server  $server,
         string  $path
-    ): array {
+    ): string {
         $screen = ServerUnixCommandsInterface::SCREEN_SWITCH;
         $screen = str_replace(ServerUnixCommandsInterface::REPLACEMENT_NAME, (string)$server->getName(), $screen);
-
-        $changeDir = str_replace(
-            ServerUnixCommandsInterface::REPLACEMENT_COMMAND,
-            "cd ". $path,
-            $screen
-        );
 
         $java = str_replace(
             ServerUnixCommandsInterface::REPLACEMENT_RAM,
@@ -73,12 +67,17 @@ class LinuxCommanderService
             ServerUnixCommandsInterface::RUN_SERVER
         );
         $java = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_PATH,
+            $path,
+            $java
+        );
+        $command = str_replace(
             ServerUnixCommandsInterface::REPLACEMENT_COMMAND,
             $java,
             $screen
         );
 
-        return [$changeDir, $java];
+        return $command;
     }
 
     /**
