@@ -13,8 +13,8 @@
         public const REPLACEMENT_LOG_PATH = '{log_path}';
         public const REPLACEMENT_LOG_FILENAME = '{log_file}';
 
-        public const SCREEN_CREATE = 'sudo screen -dmS '. self::REPLACEMENT_NAME. ' -L '.  self::REPLACEMENT_LOG_PATH. DIRECTORY_SEPARATOR. self::REPLACEMENT_LOG_FILENAME;
-        public const SCREEN_SWITCH = 'sudo screen -S '. self::REPLACEMENT_NAME. ' -X stuff "'. self::REPLACEMENT_COMMAND. '"';
+        public const SCREEN_CREATE = 'sudo screen -dmS '. self::REPLACEMENT_NAME. ' -L -LogFile '.  self::REPLACEMENT_LOG_PATH. DIRECTORY_SEPARATOR. self::REPLACEMENT_LOG_FILENAME;
+        public const SCREEN_SWITCH = 'sudo screen -S '. self::REPLACEMENT_NAME. " -X stuff '". self::REPLACEMENT_COMMAND. "\n'";
         public const SCREEN_GETSPECIFICPID = "sudo screen -ls | grep -w '". self::REPLACEMENT_NAME ."' | awk '{print $1}' | cut -d. -f1";
         public const SCREEN_GETCURRENTPID = 'echo $STY';
 
