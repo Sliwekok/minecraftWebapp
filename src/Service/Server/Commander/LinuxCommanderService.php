@@ -45,9 +45,11 @@ class LinuxCommanderService
     public function stopServer (
         Server $server
     ): void {
-        $command = $this->getStopCommand($server);
+        $getPids = $this->getPids($server);
 
-        $this->commandHelper->runCommand($command);
+        $this->commandHelper->runCommand($getPids);
+        $pids = $this->commandHelper->getReturnedValue();
+        throw new \Exception($pids);
     }
 
     /**
@@ -92,4 +94,12 @@ class LinuxCommanderService
         return $command;
     }
 
+
+    private function getPids (
+        Server  $server
+    ): string {
+        $command = str_replace(ServerUnixCommandsInterface::REPLACEMENT_NAME, (string)$server->getName(), ServerUnixCommandsInterface::GET_RELATED_SCREEN_PID);
+
+        return $command;
+    }
 }

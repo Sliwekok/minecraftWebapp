@@ -73,17 +73,17 @@ class UnixSessionService
             ServerUnixCommandsInterface::SCREEN_CREATE
         );
 
-        $command = str_replace(
-            ServerUnixCommandsInterface::REPLACEMENT_LOG_PATH,
-            $path,
-            $command
-        );
-
-        $command = str_replace(
-            ServerUnixCommandsInterface::REPLACEMENT_LOG_FILENAME,
-            $server->getName(). '_console.log',
-            $command
-        );
+//        $command = str_replace(
+//            ServerUnixCommandsInterface::REPLACEMENT_LOG_PATH,
+//            $path,
+//            $command
+//        );
+//
+//        $command = str_replace(
+//            ServerUnixCommandsInterface::REPLACEMENT_LOG_FILENAME,
+//            $server->getName(). '_console.log',
+//            $command
+//        );
 
         return $command;
     }
