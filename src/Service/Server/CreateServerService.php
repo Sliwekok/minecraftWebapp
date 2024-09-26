@@ -7,6 +7,7 @@ namespace App\Service\Server;
 use App\Entity\Login;
 use App\Exception\Server\CouldNotDownloadAndSaveServerFileException;
 use App\Service\Config\ConfigService;
+use App\Service\Helper\OperatingSystemHelper;
 use App\UniqueNameInterface\ConfigInterface;
 use App\UniqueNameInterface\ServerDirectoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -52,6 +53,10 @@ class CreateServerService
         $this->entityManager->persist($server);
         $this->entityManager->persist($config);
         $this->entityManager->flush();
+
+        if (OperatingSystemHelper::isUnix()) {
+            $fs->createLogFile($serverName);
+        }
 
         return $server;
     }

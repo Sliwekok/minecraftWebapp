@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Server\Commander;
 
 use App\Entity\Server;
+use App\Service\Helper\OperatingSystemHelper;
 use App\UniqueNameInterface\ServerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -25,8 +26,7 @@ class ServerCommanderService
     public function startServer (
         Server $server
     ): Server {
-        $os = strtolower(php_uname('s'));
-        if (str_contains($os, strtolower(ServerInterface::OS_WINDOWS))) {
+        if (OperatingSystemHelper::isWindows()) {
             $this->windowsCommander->startServer($server);
         } else {
             $this->linuxCommander->startServer($server);
@@ -41,8 +41,7 @@ class ServerCommanderService
     public function stopServer (
         Server $server
     ): Server {
-        $os = strtolower(php_uname('s'));
-        if (str_contains($os, strtolower(ServerInterface::OS_WINDOWS))) {
+        if (OperatingSystemHelper::isWindows()) {
             $this->windowsCommander->stopServer($server);
         } else {
             $this->linuxCommander->stopServer($server);

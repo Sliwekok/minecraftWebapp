@@ -20,7 +20,6 @@ class FilesystemService extends Filesystem
 
     private const ACCESS_VALUE = 0755;
     private string $path;
-    private string $userServer;
     private Filesystem $filesystem;
     private string $absolutePath;
 
@@ -30,7 +29,6 @@ class FilesystemService extends Filesystem
         $path = str_replace(['"',"'"], "", $path);
         $this->filesystem = new Filesystem();
         $this->path = ServerDirectoryInterface::DIRECTORY. DIRECTORY_SEPARATOR . $path;
-        $this->userServer = $path;
         $this->absolutePath = $this->createAbsolutePath();
     }
 
@@ -70,8 +68,8 @@ class FilesystemService extends Filesystem
 
     public function createDirectories (): void {
         $this->filesystem->mkdir($this->getAbsolutePath(), self::ACCESS_VALUE);
-        $this->filesystem->mkdir($this->getAbsolutePath(). DIRECTORY_SEPARATOR. ServerDirectoryInterface::DIRECTORY_MINECRAFT, self::ACCESS_VALUE);
-        $this->filesystem->mkdir($this->getAbsolutePath(). DIRECTORY_SEPARATOR. ServerDirectoryInterface::DIRECTORY_BACKUPS, self::ACCESS_VALUE);
+        $this->filesystem->mkdir($this->getAbsoluteMinecraftPath(), self::ACCESS_VALUE);
+        $this->filesystem->mkdir($this->getAbsoluteBackupPath(),  self::ACCESS_VALUE);
     }
 
     public function storeFile (
@@ -94,5 +92,14 @@ class FilesystemService extends Filesystem
         $finder->in($this->getAbsoluteBackupPath());
 
         return $finder;
+    }
+
+    public function createLogFile (
+        string  $name
+    ): void {
+        $this->filesystem->dumpFile(
+            $this->getAbsoluteMinecraftPath(). DIRECTORY_SEPARATOR. $name. "_console.log",
+            ''
+        );
     }
 }
