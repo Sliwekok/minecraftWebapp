@@ -53,7 +53,7 @@ class UnixSessionService
         string  $path
     ): int {
         $command = $this->getScreenCreateCommand($server, $path);
-        $this->commandHelper->runCommand($command);
+        $this->commandHelper->runCommand($command, $path);
         $pid = $this->commandHelper->getReturnedValue();
         if (false !== $pid && is_int((int) $pid) && $pid !== '') {
 

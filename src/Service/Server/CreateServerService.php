@@ -46,7 +46,7 @@ class CreateServerService
 
         $file = $this->getServerFile($version);
         $fs->storeFile(ServerDirectoryInterface::DIRECTORY_MINECRAFT, $file);
-        $server = $this->createServerEntity($user, $directory, $serverName);
+        $server = $this->createServerEntity($user, $directory, $serverName, $version);
         $config = $this->configService->createConfig($server, $seed);
         $server->setConfig($config);
 
@@ -82,7 +82,8 @@ class CreateServerService
     public function createServerEntity (
         Login           $user,
         string          $path,
-        string          $serverName
+        string          $serverName,
+        string          $version
     ): ?Server {
         $server = new Server();
         $server ->setCreateAt(new DateTime('now'))
@@ -90,6 +91,7 @@ class CreateServerService
                 ->setLogin($user)
                 ->setDirectoryPath($path)
                 ->setName($serverName)
+                ->setStatus($version)
                 ->setStatus(ServerInterface::STATUS_OFFLINE)
             ;
 
