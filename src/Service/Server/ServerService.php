@@ -38,9 +38,9 @@ class ServerService
     public function initServer (
         Server  $server
     ): void {
+        $this->createServerService->updateEula($server);
         $this->startServer($server);
         $this->stopServer($server);
-        $this->createServerService->updateEula($server);
         $this->updateConfig($server->getConfig());
     }
 

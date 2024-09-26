@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Server\Commander;
 
 use App\Entity\Server;
+use App\Exception\Server\CouldNotExecuteServerStopException;
 use App\Exception\Server\ServerIsAlreadyRunningException;
 use App\Service\Filesystem\FilesystemService;
 use App\Service\Helper\RunCommandHelper;
@@ -41,15 +42,26 @@ class LinuxCommanderService
 
     /**
      * end process server via CommandLine
+     * first we stop all processes that are running in the screen
+     * next we delete screen session itself
+     * we can't just use screen -X quit due to java holding space (never ending process)
      */
     public function stopServer (
         Server $server
     ): void {
         $getPids = $this->getPids($server);
-
         $this->commandHelper->runCommand($getPids);
-        $pids = $this->commandHelper->getReturnedValue();
-        throw new \Exception($pids);
+        $pids = explode("\n", $this->commandHelper->getReturnedValue());
+        foreach ($pids as $pid) {
+            if (posix_getpgid($pid)) {
+                if (!posix_kill((int) $pid, 0)) {
+                    throw new CouldNotExecuteServerStopException();
+                }
+            }
+        }
+
+        $closeScreen = $this->getStopCommand($server);
+        $this->commandHelper->runCommand($closeScreen);
     }
 
     /**
