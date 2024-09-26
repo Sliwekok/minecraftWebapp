@@ -12,3 +12,4 @@ require('./alert');
 require('./advanced');
 require('./fetchFile');
 require('./backup');
+require('./createNewServer');

@@ -51,7 +51,8 @@ class ServerController extends AbstractController
         }
         $urlTos = $this->generateUrl('terms_of_use');
         $versions = $minecraftVersions->getAllVersions();
-        $defaultServerName = $user->getUsername(). "'s server";
+        $defaultServerName = $user->getUsername(). " server";
+        $defaultServerName = str_replace(' ', '_', $defaultServerName);
         $form = $this
             ->createForm(CreateNewServerForm::class, [], [
                 'urlTos'            => $urlTos,

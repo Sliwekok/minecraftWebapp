@@ -9,6 +9,7 @@ class ServerInterface
     public const ENTITY_ID = 'id';
     public const ENTITY_CREATEDAT = 'created_at';
     public const ENTITY_MODIFIEDAT = 'modified_at';
+    public const ENTITY_PID = 'pid';
 
     public const ENTITY_PASCAL_CREATEDTA = 'createAt';
     public const ENTITY_PASCAL_MODIFIEDAT = 'modifiedAt';
@@ -28,4 +29,5 @@ class ServerInterface
     public const STATUS_ONLINE = 'online';
     public const STATUS_SUSPENDED = 'suspended';
 
+    public const OS_WINDOWS = 'WIN';
 }

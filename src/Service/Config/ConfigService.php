@@ -8,6 +8,7 @@ use App\Entity\Config;
 use App\Entity\Server;
 use App\Repository\ConfigRepository;
 use App\UniqueNameInterface\ConfigInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormInterface;
 
 class ConfigService
@@ -15,7 +16,8 @@ class ConfigService
 
     public function __construct (
         private ConfigRepository        $configRepository,
-        private UpdateConfigService     $updateConfigService
+        private UpdateConfigService     $updateConfigService,
+        private LoggerInterface         $configLogger
     )
     {}
 
@@ -63,6 +65,11 @@ class ConfigService
         Config|FormInterface    $config,
         int                     $configId = null
     ): bool {
+        $this->configLogger->info('Updated config', [
+            'config_new_values' => (array)$config,
+            'config_id'         => $configId
+        ]);
+
         return $this->updateConfigService->updateConfigEntity($config, $configId);
     }
 
@@ -72,6 +79,11 @@ class ConfigService
         $newConfig = $this->updateConfigService->updateConfigEntityFromFile($server);
         /** we need to ensure that whole config is properly written - and adjust ip and ports */
         $this->updateConfigService->updateConfigEntity($newConfig);
+
+        $this->configLogger->info('Updated config from property file', [
+            'server_id' => $server->getId(),
+            'user_id'   => $server->getLogin()->getId()
+        ]);
 
         return $newConfig;
     }

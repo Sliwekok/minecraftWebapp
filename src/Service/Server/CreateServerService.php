@@ -7,6 +7,7 @@ namespace App\Service\Server;
 use App\Entity\Login;
 use App\Exception\Server\CouldNotDownloadAndSaveServerFileException;
 use App\Service\Config\ConfigService;
+use App\Service\Helper\OperatingSystemHelper;
 use App\UniqueNameInterface\ConfigInterface;
 use App\UniqueNameInterface\ServerDirectoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,7 +34,8 @@ class CreateServerService
         Login           $user
     ): Server {
         $version = $data->get(ServerInterface::FORM_STEP1)->get(ServerInterface::FORM_STEP1_VERSION)->getData();
-        $serverName = $data->get(ServerInterface::FORM_STEP1)->get(ServerInterface::FORM_STEP1_NAME)->getData();
+        $serverName = trim($data->get(ServerInterface::FORM_STEP1)->get(ServerInterface::FORM_STEP1_NAME)->getData());
+        $serverName = str_replace(['"', "'"], '', $serverName);
         $seed = $data->get(ServerInterface::FORM_STEP1)->get(ServerInterface::FORM_STEP1_SEED)->getData();
         $directory = $user->getUsername() . '/' . $serverName;
         $fs = new FilesystemService($directory);
@@ -44,13 +46,17 @@ class CreateServerService
 
         $file = $this->getServerFile($version);
         $fs->storeFile(ServerDirectoryInterface::DIRECTORY_MINECRAFT, $file);
-        $server = $this->createServerEntity($user, $directory, $serverName);
+        $server = $this->createServerEntity($user, $directory, $serverName, $version);
         $config = $this->configService->createConfig($server, $seed);
         $server->setConfig($config);
 
         $this->entityManager->persist($server);
         $this->entityManager->persist($config);
         $this->entityManager->flush();
+
+        if (OperatingSystemHelper::isUnix()) {
+            $fs->createLogFile($serverName);
+        }
 
         return $server;
     }
@@ -76,7 +82,8 @@ class CreateServerService
     public function createServerEntity (
         Login           $user,
         string          $path,
-        string          $serverName
+        string          $serverName,
+        string          $version
     ): ?Server {
         $server = new Server();
         $server ->setCreateAt(new DateTime('now'))
@@ -84,6 +91,7 @@ class CreateServerService
                 ->setLogin($user)
                 ->setDirectoryPath($path)
                 ->setName($serverName)
+                ->setStatus($version)
                 ->setStatus(ServerInterface::STATUS_OFFLINE)
             ;
 

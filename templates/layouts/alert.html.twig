@@ -16,8 +16,13 @@
     </div>
 </div>
 
-
-{% if error is defined and error is not null %}
-    {# create hidden input that stores error message #}
-    <input id="errorMessage" type="hidden" class="d-none" value="{{ error.message ?? 'Unknown error occured'}}">
-{% endif %}
+{% for message, status, header in app.flashes('alert') %}
+    <input
+            id="alertInputHolder"
+            type="hidden"
+            class="d-none"
+            data-message="{{ message }}"
+            data-status="{{ status }}"
+            data-header="{{ header }}"
+    >
+{% endfor %}

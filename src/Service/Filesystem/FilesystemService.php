@@ -20,16 +20,15 @@ class FilesystemService extends Filesystem
 
     private const ACCESS_VALUE = 0755;
     private string $path;
-    private string $userServer;
     private Filesystem $filesystem;
     private string $absolutePath;
 
     public function __construct (
         string $path,
     ) {
+        $path = str_replace(['"',"'"], "", $path);
         $this->filesystem = new Filesystem();
-        $this->path = ServerDirectoryInterface::DIRECTORY. '/' . $path;
-        $this->userServer = $path;
+        $this->path = ServerDirectoryInterface::DIRECTORY. DIRECTORY_SEPARATOR . $path;
         $this->absolutePath = $this->createAbsolutePath();
     }
 
@@ -38,12 +37,13 @@ class FilesystemService extends Filesystem
     }
 
     public function getBackupPath (): string {
-        return $this->path. '/'. ServerDirectoryInterface::DIRECTORY_BACKUPS;
+        return $this->path. DIRECTORY_SEPARATOR. ServerDirectoryInterface::DIRECTORY_BACKUPS;
     }
 
-    public function getAbsolutePublicPath (): string {
-        $path = explode('\\', realpath(__DIR__));
-        $path = implode('/', array_slice($path,0 , count($path) - 3)) . '/public/';
+    public static function getAbsolutePublicPath (): string {
+        $path = explode(DIRECTORY_SEPARATOR, realpath(__DIR__));
+        // trim last 3 parts of path since it's path to service directory
+        $path = implode(DIRECTORY_SEPARATOR, array_slice($path,0 , count($path) - 3)) . DIRECTORY_SEPARATOR. 'public'. DIRECTORY_SEPARATOR;
 
         return $path;
     }
@@ -59,24 +59,24 @@ class FilesystemService extends Filesystem
     }
 
     public function getAbsoluteMinecraftPath (): string {
-        return $this->absolutePath. '/'. ServerDirectoryInterface::DIRECTORY_MINECRAFT;
+        return $this->absolutePath. DIRECTORY_SEPARATOR. ServerDirectoryInterface::DIRECTORY_MINECRAFT;
     }
 
     public function getAbsoluteBackupPath (): string {
-        return $this->absolutePath. '/'. ServerDirectoryInterface::DIRECTORY_BACKUPS;
+        return $this->absolutePath. DIRECTORY_SEPARATOR. ServerDirectoryInterface::DIRECTORY_BACKUPS;
     }
 
     public function createDirectories (): void {
         $this->filesystem->mkdir($this->getAbsolutePath(), self::ACCESS_VALUE);
-        $this->filesystem->mkdir($this->getAbsolutePath(). "/". ServerDirectoryInterface::DIRECTORY_MINECRAFT);
-        $this->filesystem->mkdir($this->getAbsolutePath(). "/". ServerDirectoryInterface::DIRECTORY_BACKUPS);
+        $this->filesystem->mkdir($this->getAbsoluteMinecraftPath(), self::ACCESS_VALUE);
+        $this->filesystem->mkdir($this->getAbsoluteBackupPath(),  self::ACCESS_VALUE);
     }
 
     public function storeFile (
         string $subDirectory,
         mixed  $file
     ): void {
-        $totalPath = $this->path . '/'. $subDirectory. '/'. ServerDirectoryInterface::MINECRAFT_SERVER_FILE;
+        $totalPath = $this->path . DIRECTORY_SEPARATOR. $subDirectory. DIRECTORY_SEPARATOR. ServerDirectoryInterface::MINECRAFT_SERVER_FILE;
         $this->filesystem->dumpFile($totalPath, $file);
     }
 
@@ -92,5 +92,14 @@ class FilesystemService extends Filesystem
         $finder->in($this->getAbsoluteBackupPath());
 
         return $finder;
+    }
+
+    public function createLogFile (
+        string  $name
+    ): void {
+        $this->filesystem->dumpFile(
+            $this->getAbsoluteMinecraftPath(). DIRECTORY_SEPARATOR. $name. "_console.log",
+            ''
+        );
     }
 }

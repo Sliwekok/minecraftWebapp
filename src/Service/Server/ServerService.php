@@ -8,7 +8,7 @@ use App\Entity\Config;
 use App\Entity\Login;
 use App\Entity\Server;
 use App\Service\Config\ConfigService;
-use App\UniqueNameInterface\ServerInterface;
+use App\Service\Server\Commander\ServerCommanderService;
 use Symfony\Component\Form\FormInterface;
 
 class ServerService
@@ -38,9 +38,10 @@ class ServerService
     public function initServer (
         Server  $server
     ): void {
-        $this->serverCommanderService->startServer($server);
-        $this->updateConfig($server->getConfig());
         $this->createServerService->updateEula($server);
+        $this->startServer($server);
+        $this->stopServer($server);
+        $this->updateConfig($server->getConfig());
     }
 
     /**
