@@ -1,0 +1,20 @@
+{% extends('layouts/app.html.twig') %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-12">
+            {% if allowed == true %}
+
+            {% else %}
+                <div class="col-12 title text-center">
+                    If you want to use Minecraft Server Console you should change your operating system to Unix based.
+                </div>
+                <div class="col-12 subTitle text-center">
+                    Sorry for problems
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
