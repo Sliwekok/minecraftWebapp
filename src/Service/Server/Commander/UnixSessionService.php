@@ -52,7 +52,7 @@ class UnixSessionService
         Server  $server,
         string  $path
     ): int {
-        $command = $this->getScreenCreateCommand($server, $path);
+        $command = $this->getScreenCreateCommand($server);
         $this->commandHelper->runCommand($command, $path);
         $pid = $this->commandHelper->getReturnedValue();
         if (false !== $pid && is_int((int) $pid) && $pid !== '') {
@@ -60,12 +60,14 @@ class UnixSessionService
             throw new CouldNotCreateNewScreenSessionException();
         }
 
+        $this->changeDirectoryToMinecraft($server, $path);
+        $this->addLoggingToScreen($server, $path);
+
         return (int)$pid;
     }
 
     private function getScreenCreateCommand (
         Server  $server,
-        string  $path
     ): string {
         $command = str_replace(
             ServerUnixCommandsInterface::REPLACEMENT_NAME,
@@ -73,19 +75,62 @@ class UnixSessionService
             ServerUnixCommandsInterface::SCREEN_CREATE
         );
 
-//        $command = str_replace(
-//            ServerUnixCommandsInterface::REPLACEMENT_LOG_PATH,
-//            $path,
-//            $command
-//        );
-//
-//        $command = str_replace(
-//            ServerUnixCommandsInterface::REPLACEMENT_LOG_FILENAME,
-//            $server->getName(). '_console.log',
-//            $command
-//        );
-
         return $command;
+    }
+
+    private function addLoggingToScreen (
+        Server  $server,
+        string  $path
+    ): void {
+        $logging = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_LOG_PATH,
+            $path,
+            ServerUnixCommandsInterface::SCREEN_ADDLOGGING
+        );
+
+        $logging = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_LOG_FILENAME,
+            $server->getName(). '_console.log',
+            $logging
+        );
+
+        $command = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_COMMAND,
+            $logging,
+            ServerUnixCommandsInterface::SCREEN_SWTCH_WITHOUTSTUFF
+        );
+        $command = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_NAME,
+            $server->getName(),
+            $command
+        );
+
+        $this->commandHelper->runCommand($command);
+
+    }
+
+    private function changeDirectoryToMinecraft (
+        Server  $server,
+        string  $path
+    ): void {
+        $screen = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_NAME,
+            (string)$server->getName(),
+            ServerUnixCommandsInterface::SCREEN_SWITCH
+        );
+        $cd = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_PATH,
+            $path,
+            ServerUnixCommandsInterface::SCREEN_CHANGEDIRECTORY
+        );
+
+        $command = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_COMMAND,
+            $cd,
+            $screen
+        );
+
+        $this->commandHelper->runCommand($command);
     }
 
 }
