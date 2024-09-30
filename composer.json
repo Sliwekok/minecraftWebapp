@@ -6,7 +6,9 @@
     "require": {
         "php": ">=8.1",
         "ext-ctype": "*",
+        "ext-curl": "*",
         "ext-iconv": "*",
+        "ext-zip": "*",
         "doctrine/doctrine-bundle": "^2.10",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.15",
@@ -19,6 +21,7 @@
         "symfony/doctrine-messenger": "6.3.*",
         "symfony/dotenv": "6.3.*",
         "symfony/expression-language": "6.3.*",
+        "symfony/filesystem": "6.3.*",
         "symfony/flex": "^2",
         "symfony/form": "6.3.*",
         "symfony/framework-bundle": "6.3.*",

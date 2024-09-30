@@ -1,0 +1,19 @@
+{% extends 'layouts/landing.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block content %}
+    <div id="registerForm" class="col-6 offset-3">
+        <h1>Register</h1>
+
+        {{ form_errors(registration_form) }}
+
+        {{ form_start(registration_form) }}
+            {{ form_widget(registration_form) }}
+        {{ form_end(registration_form) }}
+    </div>
+
+    <div class="col-6 offset-3">
+        Already a member? Click <a class="special" href="{{ url('app_login') }}">here</a> to login
+    </div>
+{% endblock %}

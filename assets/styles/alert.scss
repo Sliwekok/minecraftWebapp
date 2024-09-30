@@ -1,0 +1,25 @@
+.alert{
+  position: absolute;
+  top: 15vh;
+  display: none;
+  backdrop-filter: blur(15px);
+  background-color: rgba($body-bg-secondary, 0.4);
+  z-index: 100;
+  border-radius: 5px;
+  padding: 3vh;
+  color: $font-color;
+  .btn-close{
+    color: red;
+    background-color: transparent;
+    border: 0px;
+    cursor: pointer;
+  }
+
+  #alertContent{
+    padding: 5vh;
+  }
+
+  #alertConfirmation{
+    display: none;
+  }
+}

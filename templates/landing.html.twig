@@ -1,0 +1,69 @@
+{% extends('layouts/landing.html.twig') %}
+
+{% block content %}
+
+    <div class="col-12 text-center mainDescription">
+        <p class="title h-25">WeCraft - your free servers</p>
+        <p class="title h-25">always</p>
+        <p>Check below for more info!</p>
+        <p>Or start <a class="special" href="{{ url('app_register') }}">now</a></p>
+    </div>
+
+    <div class="col-8 offset-2 about mainDescription" id="about">
+        <p class="title text-center">About WeCraft</p>
+        <div class="row">
+            <div class="col-6 description">
+                <p class="subTitle">Your personal server</p>
+                <p class="subDescription">It is your server. And only you can create world of your dreams. All day. All night</p>
+            </div>
+            <div class="col-6 fontello borderLeft"></div>
+        </div>
+        <div class="row borderTop">
+            <div class="col-6 fontello"></div>
+            <div class="col-6 description borderLeft">
+                <p class="subTitle">Free-to-play</p>
+                <p class="subDescription">We don't charge your for playing on our servers</p>
+            </div>
+        </div>
+        <div class="row borderTop">
+            <div class="col-6 description">
+                <p class="subTitle">Easy to use</p>
+                <p class="subDescription">Everything is where it should be - all options are easily accessible in management module</p>
+            </div>
+            <div class="col-6 fontello borderLeft"></div>
+        </div>
+        <div class="row borderTop">
+            <div class="col-6 fontello"></div>
+            <div class="col-6 description borderLeft">
+                <p class="subTitle">Secure</p>
+                <p class="subDescription">Daily backups? Checked. Loading backups? Checked. Archiving? Checked.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-8 offset-2 about mainDescription text-center">
+        <p class="title h-25">Functions</p>
+        <div class="row h-50">
+            <div class="col-4 option">
+                <p class="col-12 fontello"></p>
+                <p class="col-12 subTitle">Fully configurable</p>
+                <p class="col-12 subDescription">You set how you want your server to be - everything is up to you</p>
+            </div>
+            <div class="col-4 option">
+                <p class="col-12 fontello"></p>
+                <p class="col-12 subTitle">Mods and plugins</p>
+                <p class="col-12 subDescription">Upload own mod package or install with Forge / Optifine to maximize fun</p>
+            </div>
+            <div class="col-4 option">
+                <p class="col-12 fontello"></p>
+                <p class="col-12 subTitle">Backups are there</p>
+                <p class="col-12 subDescription">You screwed something up? Don't worry, daily backups allow to you restore what you lost</p>
+            </div>
+        </div>
+        <p class="title">
+            Ready?
+        </p>
+        <p>Start new adventure <a class="special" href="{{ url('app_register') }}">here!</a></p>
+    </div>
+
+{% endblock %}

@@ -7,8 +7,9 @@ security:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
-                class: App\Entity\User
+                class: App\Entity\Login
                 property: username
+        # used to reload user from session & other features (e.g. switch_user)
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -42,6 +43,9 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/server, roles: ROLE_USER }
+        - { path: ^/user, roles: ROLE_USER }
+        - { path: ^/servers, roles: ROLE_ADMIN }
 
 when@test:
     security:

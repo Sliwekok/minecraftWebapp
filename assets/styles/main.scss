@@ -1,0 +1,68 @@
+// default styles for most of the views
+html, body{
+    background-color: $body-bg-main;
+    color: $font-color;
+    font-family: $font-family-sans-serif;
+    font-size: $font-size-base;
+    padding: 0px;
+    margin: 0px;
+    overflow-x: hidden;
+}
+.container-fluid{
+    display: inline-flex;
+}
+a{
+    color: $font-color;
+
+    &:hover{
+        color: $font-color;
+        text-decoration: none;
+    }
+}
+a.special{
+    text-decoration: underline;
+}
+
+.main{
+    position: absolute;
+    width: 100%;
+    z-index: 5;
+    justify-content: center;
+    padding-top: 20vh;
+    margin: 0px;
+}
+
+.btn-outline-primary{
+    color: $font-color !important;
+    border-color: $font-color !important;
+
+    &.active{
+        background-color: $font-color !important;
+        color: $font-color-secondary !important;
+    }
+
+    &:hover{
+        background-color: $font-color;
+        color: $font-color-secondary !important;
+        border-color: transparent;
+    }
+
+    &:active{
+        background-color: $font-color !important;
+        color: $font-color-secondary !important;
+    }
+}
+
+.icon{
+    cursor: pointer;
+}
+
+.app{
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+}
+
+button[type='submit']{
+    margin-top: 1.5vh;
+}

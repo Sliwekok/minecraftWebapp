@@ -1,0 +1,41 @@
+{% extends('layouts/app.html.twig') %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-8 offset-2 text-center">
+            <p class="title">Server preview</p>
+        </div>
+        <div class="col-12 serverManagement">
+            <div class="col-6 text-center serverStatus">
+                <p class="font-weight-bold">Server status</p>
+                <div class="col-12">
+                    <button data-message="Are you sure you want to set server online?"
+                            data-url="{{ url('server_start') }}"
+                            data-confirmation="true"
+                            class="confirmation col-5 btn btn-outline-primary {% if user.server.status is same as ('online') %} active {% endif %}"
+                            id="setServerOnline">
+                        Online
+                    </button>
+                    <button data-message="Are you sure you want to set server offline"
+                            data-url="{{ url('server_shutdown') }}"
+                            data-confirmation="true"
+                            class="confirmation col-5 btn btn-outline-danger {% if user.server.status is same as ('offline') %} active {% endif %}"
+                            id="setServerOffline">
+                        Offline
+                    </button>
+                </div>
+            </div>
+            <div class="col-16 serverInfo">
+                <div class="font-weight-bold text-center col-12">Server information</div>
+                <div class="col-6">Server version: {{ server.version }}</div>
+                <div class="col-6">World level name: {{ server.config.levelname }}</div>
+                <div class="col-6">Welcome message: {{ server.config.motd }}</div>
+                <div class="col-6">Connect to server:
+                    <code class="connectToServer" title="Click to copy">{{ ip }}:{{ server.config.port }}</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

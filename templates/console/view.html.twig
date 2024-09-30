@@ -1,0 +1,33 @@
+{% extends('layouts/app.html.twig') %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-12">
+            {% if allowed == true %}
+                <div class="col-10 offset-1 console">
+                    <p class="subTitle">Console</p>
+                    <p>We do not take responsibility of your actions. Always be prepared and <a class="special" href="{{ url('backup_list') }}" target="_blank">create backups</a> before entering commands</p>
+                    <p>Saving / starting / stopping commands are blocked by default - use designed features to work around</p>
+                    <div class="col-12 history" id="commandHistoryContainer">
+                        <textarea id="commandHistory" disabled>
+                            {{ history }}
+                        </textarea>
+                    </div>
+                    <form id="consoleCommandForm" data-url="{{ url('console_execute_command') }}">
+                        <input autocomplete="off" type="text" class="col-12 form-control" placeholder="Enter command, for help type /help" id="consoleCommandInput">
+                    </form>
+
+                </div>
+            {% else %}
+                <div class="col-12 title text-center">
+                    If you want to use Minecraft Server Console you should change your operating system to Unix based.
+                </div>
+                <div class="col-12 subTitle text-center">
+                    Sorry for problems
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

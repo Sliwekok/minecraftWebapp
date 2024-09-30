@@ -1,0 +1,25 @@
+{% extends('layouts/app.html.twig') %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-12 createNewServer text-center">
+            <p class="title">Create new server!</p>
+            <p>Let the wizard guide you</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-8 offset-2">
+            {{ form_start(form) }}
+                {{ form_widget(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    <datalist id="minecraftVersionsDatalist">
+        {% for version in minecraftVersions %}
+            <option value="{{ version }}">{{ version }}</option>
+        {% endfor %}
+    </datalist>
+
+{% endblock %}
