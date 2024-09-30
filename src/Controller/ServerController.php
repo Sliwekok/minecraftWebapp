@@ -116,7 +116,6 @@ class ServerController extends AbstractController
 
     #[Route('/advanced', name: 'server_advanced')]
     public function advanced (
-        Request             $request,
         LoginRepository     $loginRepository
     ): Response
     {
@@ -125,16 +124,6 @@ class ServerController extends AbstractController
         if (null === $server) {
 
             return $this->redirectToRoute('server_create_new');
-        }
-
-        $form = $this
-            ->createForm(CreateNewServerForm::class, [], [])
-            ->handleRequest($request)
-        ;
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            return $this->redirectToRoute('server_advanced');
         }
 
         return $this->render('server/advanced.html.twig', [
