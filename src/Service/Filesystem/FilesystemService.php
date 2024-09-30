@@ -102,4 +102,12 @@ class FilesystemService extends Filesystem
             ''
         );
     }
+
+    public function getLogFileContent (
+        string $fileName
+    ): string {
+        $path = $this->getAbsoluteMinecraftPath(). DIRECTORY_SEPARATOR. $fileName. '_console.log';
+
+        return file_get_contents($path);
+    }
 }

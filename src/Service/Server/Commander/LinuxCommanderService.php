@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Service\Server\Commander;
 
+use App\Entity\Alert;
 use App\Entity\Server;
 use App\Exception\Server\CouldNotExecuteServerStopException;
-use App\Exception\Server\ServerIsAlreadyRunningException;
 use App\Service\Filesystem\FilesystemService;
 use App\Service\Helper\RunCommandHelper;
 use App\UniqueNameInterface\ServerUnixCommandsInterface;
@@ -30,7 +30,9 @@ class LinuxCommanderService
         $screenExists = $this->unixSessionService->checkScreenExists($server);
         if ($screenExists) {
             // show error to user about server that is already running
-            throw new ServerIsAlreadyRunningException();
+            Alert::warning('Server is already running. Refresh page');
+
+            return;
         }
 
         // create new session
@@ -72,8 +74,11 @@ class LinuxCommanderService
         Server  $server,
         string  $path
     ): string {
-        $screen = ServerUnixCommandsInterface::SCREEN_SWITCH;
-        $screen = str_replace(ServerUnixCommandsInterface::REPLACEMENT_NAME, (string)$server->getName(), $screen);
+        $screen = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_NAME,
+            (string)$server->getName(),
+            ServerUnixCommandsInterface::SCREEN_SWITCH
+        );
 
         $java = str_replace(
             ServerUnixCommandsInterface::REPLACEMENT_RAM,

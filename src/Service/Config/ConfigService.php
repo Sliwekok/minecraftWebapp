@@ -54,7 +54,7 @@ class ConfigService
 
             return 25565;
         } else {
-            $maxPort = max($configs);
+            $maxPort = max($configs[0]);
             $maxPort++;
 
             return $maxPort;
