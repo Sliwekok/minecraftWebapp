@@ -34,16 +34,6 @@ export function showAlert(status, message, header, alertConfirmation, isTemporar
         alertConfirmationDiv.show(0);
     }
 
-    function hideAlertMethod() {
-        alert.fadeOut(100);
-        setTimeout(function() {
-            alert.removeClass("alert-success alert-danger alert-warning");
-            alertConfirmationDiv.hide(0);
-            alertHeader.text('');
-            alertContent.text('');
-        }, 100);
-    }
-
     return new Promise((resolve) => {
         if (alertConfirmation === false) {
             resolve(true);
@@ -60,4 +50,22 @@ export function showAlert(status, message, header, alertConfirmation, isTemporar
             resolve(true);
         });
     });
+}
+
+export function hideAlertMethod() {
+    let alert = $(".alert"),
+        alertHeader = $("#alertHeader"),
+        alertContent = $("#alertContent"),
+        alertConfirmationDiv = $('#alertConfirmation')
+    ;
+
+    alert.fadeOut(100);
+    setTimeout(function() {
+        alert.removeClass("alert-success alert-danger alert-warning");
+        alertConfirmationDiv.hide(0);
+        alertHeader.text('');
+        alertContent.text('');
+    }, 100);
+
+    return true;
 }
