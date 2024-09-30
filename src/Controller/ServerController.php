@@ -31,8 +31,12 @@ class ServerController extends AbstractController
             return $this->redirectToRoute('server_create_new');
         }
 
+        $ip = gethostbyname(gethostname());
+
         return $this->render('server/preview.html.twig', [
-            'user'  => $user
+            'user'      => $user,
+            'server'    => $server,
+            'ip'        => $ip
         ]);
     }
 

@@ -3,5 +3,18 @@
 }
 
 .serverManagement{
+  display: inline-flex;
 
+  .serverInfo{
+    display: inline-flex;
+    flex-wrap: wrap;
+
+    div {
+      margin-top: 1vh;
+    }
+
+    .connectToServer {
+      cursor: pointer;
+    }
+  }
 }
