@@ -40,8 +40,8 @@ class ServerService
     ): void {
         $this->createServerService->updateEula($server);
         $this->startServer($server);
-        $this->stopServer($server);
         $this->updateConfig($server->getConfig());
+        $this->stopServer($server);
     }
 
     /**
