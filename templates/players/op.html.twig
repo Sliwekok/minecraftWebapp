@@ -1,0 +1,34 @@
+{% extends('layouts/app.html.twig') %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-8 offset-2 text-center">
+            <p class="title">Players management - OP list</p>
+        </div>
+        <div class="col-12 d-inline-flex">
+            <div class="col-6">
+                <p class="subTitle text-center">OP players</p>
+                {% for player in players %}
+                    <div class="col-12 mt-3 d-inline-flex text-center">
+                        <div class="col-6"><b>{{ player.name }}</b></div>
+                        <div class="col-6">
+                            <form class="col-12 playersOPFormRemove" data-url="{{ url('players_op_remove') }}">
+                                <button class="btn btn-outline-danger OPRemoveFormSubmit">Remove</button>
+                                <input type="text" value="{{ player.name }}" class="d-none playerDataValue">
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col-4">
+                <p class="subTitle">Add to OP</p>
+                <form id="playersOPFormAdd" data-url="{{ url('players_op_add') }}">
+                    <label for="playersOPAddInput">Type nickname and hit enter. You can provide many, each separated by comma <code>,</code></label>
+                    <input autocomplete="off" type="text" class="col-12 form-control playerDataValue" placeholder="Type nickname to add" id="playersOPAddInput">
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

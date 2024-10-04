@@ -1,0 +1,116 @@
+{% extends('layouts/app.html.twig') %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-8 offset-2 text-center">
+            <p class="title">Players management</p>
+        </div>
+        <div class="col-12 d-inline-flex playersList">
+            <div class="col-8">
+                <p class="subTitle text-center">All players</p>
+                {% if players == false %}
+                    <div class="col-12">
+                        <p class="subTitle">No player has connected yet - usercache is empty</p>
+                    </div>
+                {% else %}
+                    <div class="col-12 text-center">
+                        <div class="col-12 playerRow d-inline-flex">
+                            <div class="col-3 name">
+                                <span class="subTitle">Name</span>
+                            </div>
+                            <div class="col-2 ingame">
+                                <span class="subTitle">In-game</span>
+                            </div>
+                            <div class="col-3 status">
+                                <span class="subTitle">Status</span>
+                            </div>
+                            <div class="col-4 actions">
+                                <span class="subTitle">Actions</span>
+                            </div>
+                        </div>
+
+                        {% for player in players %}
+                            <div class="col-12 playerRow d-inline-flex mt-4">
+                                <div class="col-3 name">
+                                    <span>{{ player.name }}</span>
+                                </div>
+                                <div class="col-2 ingame">
+                                    {% if player.status == 'online' %}
+                                        <span class="text-center playerStatusDot playerStatusOnline" title="Online"> </span>
+                                    {% else %}
+                                        <span class="text-center playerStatusDot playerStatusOffline" title="Offline"> </span>
+                                    {% endif %}
+                                </div>
+                                <div class="col-3 status justify-content-center">
+                                    {% if player.op %}
+                                        <span class="col-6" title="Operative">OP</span>
+                                    {% endif %}
+
+                                    {% if player.blacklisted %}
+                                        <span class="col-6" title="Banned">Banned</span>
+                                    {% endif %}
+                                </div>
+                                <div class="col-4 actions d-inline-flex justify-content-center">
+                                    {% if player.op %}
+                                        <div class="col-4">
+                                            <form class="col-12 playersOPFormRemove" data-url="{{ url('players_op_remove') }}">
+                                                <button class="btn btn-outline-danger OPRemoveFormSubmit">DeOp</button>
+                                                <input type="hidden" value="{{ player.name }}" class="d-none playerDataValue">
+                                            </form>
+                                        </div>
+                                    {% else %}
+                                        <div class="col-4">
+                                            <form class="col-12 playersOPFormAdd" data-url="{{ url('players_op_add') }}">
+                                                <button class="btn btn-outline-primary OPAddFormSubmit">OP</button>
+                                                <input type="hidden" value="{{ player.name }}" class="d-none playerDataValue">
+                                            </form>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if player.status == 'online' %}
+                                        <div class="col-4"><button class="col-12 btn btn-outline-danger">Kick</button></div>
+                                    {% endif %}
+
+                                    {% if player.blacklisted %}
+                                        <div class="col-4">
+                                            <form class="col-12 playersBlacklistFormRemove" data-url="{{ url('players_blacklist_remove') }}">
+                                                <button class="btn btn-outline-primary blacklistRemoveFormSubmit">Unban</button>
+                                                <input type="hidden" value="{{ player.name }}" class="d-none playerDataValue">
+                                            </form>
+                                        </div>
+                                    {% else %}
+                                        <div class="col-4">
+                                            <form class="playersBlacklistFormAdd" data-url="{{ url('players_blacklist_add') }}">
+                                                <button class="btn btn-outline-danger blacklistAddFormSubmit">Ban</button>
+                                                <input autocomplete="off" type="hidden" value="{{ player.name }}" class="col-12 form-control playerDataValue">
+                                            </form>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-4 playersManagement text-center">
+                <div class="col-12 whitelist">
+                    <p class="subTitle">Whitelist</p>
+                    <p>Allow specific users enter your server</p>
+                    <a href="{{ url('players_whitelist') }}" class="btn btn-lg btn-outline-primary">Edit whitelist</a>
+                </div>
+                <div class="col-12 blacklist mt-5">
+                    <p class="subTitle">OP players</p>
+                    <p>Give advanced permissions to players</p>
+                    <a href="{{ url('players_op') }}" class="btn btn-lg btn-outline-info">Edit OP</a>
+                </div>
+                <div class="col-12 blacklist mt-5">
+                    <p class="subTitle">Blacklist</p>
+                    <p>Ban certain users from your server</p>
+                    <a href="{{ url('players_blacklist') }}" class="btn btn-lg btn-outline-danger">Edit blacklist</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
