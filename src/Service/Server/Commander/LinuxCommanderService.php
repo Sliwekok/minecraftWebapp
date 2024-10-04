@@ -26,7 +26,8 @@ class LinuxCommanderService
     public function startServer (
         Server $server
     ): void {
-        $path = (new FilesystemService($server->getDirectoryPath()))->getAbsoluteMinecraftPath();
+        $fs = new FilesystemService($server->getDirectoryPath());
+        $path = $fs->getAbsoluteMinecraftPath();
         $screenExists = $this->unixSessionService->checkScreenExists($server);
         if ($screenExists) {
             // show error to user about server that is already running
@@ -34,6 +35,9 @@ class LinuxCommanderService
 
             return;
         }
+
+        // clear log file each time the server is booting up
+        $fs->dumpFile($server->getName(). ServerUnixCommandsInterface::LOG_SUFFIX, '');
 
         // create new session
         $this->unixSessionService->createNewSession($server, $path);

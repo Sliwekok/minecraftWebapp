@@ -6,11 +6,13 @@ namespace App\Controller;
 
 use App\Entity\Alert;
 use App\Exception\Server\NoServerFoundException;
+use App\Exception\Server\ServerIsAlreadyRunningException;
 use App\Form\BackupLoadUserWorld;
 use App\Repository\LoginRepository;
 use App\Service\Backup\BackupService;
 use App\Service\Config\ConfigService;
 use App\UniqueNameInterface\BackupInterface;
+use App\UniqueNameInterface\ServerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -128,21 +130,32 @@ class BackupController extends AbstractController
     {
         $user = $loginRepository->find($this->getUser()->getId());
         $server = $user->getServer();
-        if (null === $server) {
+        try {
+            if (null === $server) {
 
-            return $this->redirectToRoute('server_create_new');
-        }
+                throw new NoServerFoundException();
+            }
 
-        $form = $this->createForm(BackupLoadUserWorld::class)->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var UploadedFile $file */
-            $file = $form->get(BackupInterface::FORM_USERUPLOAD_FILE)->getData();
+            if ($server->getStatus() === ServerInterface::STATUS_ONLINE) {
 
-            $backupService->storeCustomBackup($file, $server);
-            $backupService->unpackUserBackup($file->getClientOriginalName(), $server);
-            $configService->createConfigFromPropertyFile($server);
-//        } else {
-//            $alert = Alert::error($form->getErrors()[0]);
+                throw new ServerIsAlreadyRunningException();
+            }
+
+            $form = $this->createForm(BackupLoadUserWorld::class)->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                /** @var UploadedFile $file */
+                $file = $form->get(BackupInterface::FORM_USERUPLOAD_FILE)->getData();
+
+                $backupService->storeCustomBackup($file, $server);
+                $backupService->unpackUserBackup($file->getClientOriginalName(), $server);
+                $configService->createConfigFromPropertyFile($server);
+            }
+            else {
+
+                throw new \Exception($form->getErrors()->current()->getMessage());
+            }
+        } catch (\Exception $e) {
+            $alert = Alert::error($e->getMessage());
         }
 
 
@@ -155,19 +168,29 @@ class BackupController extends AbstractController
         BackupService       $backupService,
         ConfigService       $configService,
         int                 $id
-    ): JsonResponse|Response
+    ): JsonResponse
     {
         $user = $loginRepository->find($this->getUser()->getId());
         $server = $user->getServer();
-        if (null === $server) {
+        try {
 
-            return $this->redirectToRoute('server_create_new');
+            if (null === $server) {
+
+                throw new NoServerFoundException();
+            }
+
+            if ($server->getStatus() === ServerInterface::STATUS_ONLINE) {
+
+                throw new ServerIsAlreadyRunningException();
+            }
+
+            $backupService->loadBackup($id, $server);
+            $configService->createConfigFromPropertyFile($server);
+            $alert = Alert::success("Replaced world save");
+        } catch (\Exception $e) {
+
+            $alert = Alert::error($e->getMessage());
         }
-
-        $backupService->loadBackup($id, $server);
-        $configService->createConfigFromPropertyFile($server);
-
-        $alert = Alert::success("Updated config");
 
         return new JsonResponse($alert->getMessage(), $alert->getCode());
     }

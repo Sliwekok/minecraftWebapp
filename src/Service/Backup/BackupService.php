@@ -10,7 +10,6 @@ use App\Entity\Server;
 use App\Repository\BackupRepository;
 use App\Service\Filesystem\ArchiveService;
 use App\Service\Filesystem\FilesystemService;
-use App\UniqueNameInterface\BackupInterface;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;

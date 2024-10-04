@@ -27,7 +27,7 @@ class LoginController extends AbstractController
     {
         if ($this->getUser()) {
 
-            return $this->redirectToRoute('index');
+            return $this->redirectToRoute('server_preview');
         }
 
         $form = $this
@@ -48,7 +48,7 @@ class LoginController extends AbstractController
                 );
             }
 
-            return $this->redirectToRoute('index');
+            return $this->redirectToRoute('server_preview');
         }
 
         // get the login error if there is one

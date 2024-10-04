@@ -20,7 +20,7 @@ class ConsoleService
         Server  $server
     ): string {
         $fs = new FilesystemService($server->getDirectoryPath());
-        $history = $fs->getLogFileContent($server->getName());
+        $history = $fs->getLogFileContent();
         $history = $this->refactorConsoleHistory($history);
 
         return $history;
@@ -99,11 +99,17 @@ class ConsoleService
         return $history;
     }
 
-    private function checkWhitelistedCommands(
+    private function checkWhitelistedCommands (
         string $command
     ): bool {
         $whitelistedCommands = ['/advancement', '/attribute', '/execute', '/bossbar', '/clear', '/clone', '/damage', '/data', '/datapack', '/debug', '/defaultgamemode', '/difficulty', '/effect', '/me', '/enchant', '/experience', '/xp', '/fill', '/fillbiome', '/forceload', '/function', '/gamemode', '/gamerule', '/give', '/help', '/item', '/kick', '/kill', '/list', '/locate', '/loot', '/msg', '/tell', '/w', '/particle', '/place', '/playsound', '/random', '/reload', '/recipe', '/return', '/ride', '/say', '/schedule', '/scoreboard', '/seed', '/setblock', '/spawnpoint', '/setworldspawn', '/spectate', '/spreadplayers', '/stopsound', '/summon', '/tag', '/team', '/teammsg', '/tm', '/teleport', '/tp', '/tellraw', '/tick', '/time', '/title', '/trigger', '/weather', '/worldborder', '/jfr', '/ban-ip', '/banlist', '/ban', '/deop', '/op', '/pardon', '/pardon-ip', '/perf', '/setidletimeout', '/transfer', '/whitelist'];
+        $valid = false;
+        foreach ($whitelistedCommands as $whitelistedCommand) {
+            if (str_starts_with($command, $whitelistedCommand)) {
+                $valid = true;
+            }
+        }
 
-        return in_array($command, $whitelistedCommands);
+        return $valid;
     }
 }

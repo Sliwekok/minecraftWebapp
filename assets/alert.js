@@ -69,3 +69,13 @@ export function hideAlertMethod() {
 
     return true;
 }
+
+if ($('#alertInputHolder').length) {
+    showAlert(
+        $('#alertInputHolder').data('status'),
+        $('#alertInputHolder').data('message'),
+        $('#alertInputHolder').data('header'),
+        false,
+        true
+    );
+}

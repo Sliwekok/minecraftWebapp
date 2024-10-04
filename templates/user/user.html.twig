@@ -19,7 +19,10 @@
             <p class="title">Account data</p>
             <p>Username: {{ user.username }}</p>
             <p>Email: {{ user.email }}</p>
-            <p><a href="{{ url('user_delete_account') }}"><button class="btn btn-outline-danger">Delete Account</button></a></p>
+            <div class="col-12 d-inline-flex justify-content-center">
+                <div class="col-4"><a href="{{ url('user_delete_account') }}"><button class="btn btn-outline-danger">Delete Account</button></a></div>
+                <div class="col-4"><a href="{{ url('app_logout') }}"><button class="btn btn-outline-danger">Logout</button></a></div>
+            </div>
         </div>
     </div>
 
