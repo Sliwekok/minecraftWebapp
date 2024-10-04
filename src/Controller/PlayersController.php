@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Alert;
+use App\Exception\Server\ServerIsOfflineException;
 use App\Service\Players\PlayersService;
 use App\UniqueNameInterface\PlayerInterface;
+use App\UniqueNameInterface\ServerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,6 +55,7 @@ class PlayersController extends AbstractController
         try {
             $data = explode(',', $request->get(PlayerInterface::REQUEST_PLAYERS));
             $server = $this->getUser()->getServer();
+            if ($server->getStatus() === ServerInterface::STATUS_OFFLINE) throw new ServerIsOfflineException();
             $playersService->addToWhitelist($server, $data);
             $alert = Alert::success('Added to whitelist', isToDelete: false);
         } catch (\Exception $e) {
@@ -71,6 +74,7 @@ class PlayersController extends AbstractController
         try {
             $data = trim($request->get(PlayerInterface::REQUEST_PLAYERS));
             $server = $this->getUser()->getServer();
+            if ($server->getStatus() === ServerInterface::STATUS_OFFLINE) throw new ServerIsOfflineException();
             $playersService->removeFromWhitelist($server, $data);
             $alert = Alert::success('Removed from whitelist', isToDelete: false);
         } catch (\Exception $e) {
@@ -102,6 +106,7 @@ class PlayersController extends AbstractController
         try {
             $data = explode(',', $request->get(PlayerInterface::REQUEST_PLAYERS));
             $server = $this->getUser()->getServer();
+            if ($server->getStatus() === ServerInterface::STATUS_OFFLINE) throw new ServerIsOfflineException();
             $playersService->addToOpList($server, $data);
             $alert = Alert::success('Added to OP list', isToDelete: false);
         } catch (\Exception $e) {
@@ -120,6 +125,7 @@ class PlayersController extends AbstractController
         try {
             $data = $request->get(PlayerInterface::REQUEST_PLAYERS);
             $server = $this->getUser()->getServer();
+            if ($server->getStatus() === ServerInterface::STATUS_OFFLINE) throw new ServerIsOfflineException();
             $playersService->removeFromOpList($server, $data);
             $alert = Alert::success('Removed from OP list', isToDelete: false);
         } catch (\Exception $e) {
@@ -151,6 +157,7 @@ class PlayersController extends AbstractController
         try {
             $data = explode(',', $request->get(PlayerInterface::REQUEST_PLAYERS));
             $server = $this->getUser()->getServer();
+            if ($server->getStatus() === ServerInterface::STATUS_OFFLINE) throw new ServerIsOfflineException();
             $playersService->addToBlacklist($server, $data);
             $alert = Alert::success('Added to Blacklist', isToDelete: false);
         } catch (\Exception $e) {
@@ -169,6 +176,7 @@ class PlayersController extends AbstractController
         try {
             $data = $request->get(PlayerInterface::REQUEST_PLAYERS);
             $server = $this->getUser()->getServer();
+            if ($server->getStatus() === ServerInterface::STATUS_OFFLINE) throw new ServerIsOfflineException();
             $playersService->removeFromBlacklist($server, $data);
             $alert = Alert::success('Removed from Blacklist', isToDelete: false);
         } catch (\Exception $e) {
