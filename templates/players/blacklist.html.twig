@@ -1,0 +1,34 @@
+{% extends('layouts/app.html.twig') %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-8 offset-2 text-center">
+            <p class="title">Players management - Blacklist</p>
+        </div>
+        <div class="col-12 d-inline-flex">
+            <div class="col-6">
+                <p class="subTitle text-center">Blacklisted players</p>
+                {% for player in players %}
+                    <div class="col-12 mt-3 d-inline-flex text-center">
+                        <div class="col-6"><b>{{ player.name }}</b></div>
+                        <div class="col-6">
+                            <form class="col-12 playersBlacklistFormRemove" data-url="{{ url('players_blacklist_remove') }}">
+                                <button class="btn btn-outline-danger blacklistRemoveFormSubmit">Unban</button>
+                                <input type="text" value="{{ player.name }}" class="d-none playerDataValue">
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col-4">
+                <p class="subTitle">Add to Blacklist</p>
+                <form class="playersBlacklistFormAdd" data-url="{{ url('players_blacklist_add') }}">
+                    <label for="playersBlacklistAddInput">Type nickname and hit enter. You can provide many, each separated by comma <code>,</code></label>
+                    <input autocomplete="off" type="text" class="col-12 form-control playerDataValue" placeholder="Type nickname to add" id="playersBlacklistAddInput">
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

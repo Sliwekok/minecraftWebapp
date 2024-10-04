@@ -19,7 +19,7 @@ $(document).on('click', ".download", async function() {
             var a = document.createElement('a'),
                 url = window.URL.createObjectURL(data);
             a.href = url;
-            a.download = filename + '.zip';
+            a.download = filename;
             document.body.append(a);
             a.click();
             a.remove();

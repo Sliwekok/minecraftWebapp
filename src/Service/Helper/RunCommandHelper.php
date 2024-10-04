@@ -28,7 +28,7 @@ class RunCommandHelper
      */
     public function runCommand (
         string|array    $commands,
-        string          $path = ''
+        string          $path = '',
     ): bool {
         try {
             if ($path === '') {
@@ -48,7 +48,7 @@ class RunCommandHelper
             $procData = proc_get_status($process);
 
             while ($count < 3) {
-                if (!$procData[ServerWindowsCommandsInterface::PROCESS_RUNNING] && $procData[ServerWindowsCommandsInterface::PROCESS_EXITCODE]) {
+                if (!$procData[ServerWindowsCommandsInterface::PROCESS_RUNNING] && $procData[ServerWindowsCommandsInterface::PROCESS_EXITCODE] === 0) {
                     if (is_resource($pipes[1])) {
                         $this->returned = @stream_get_contents($pipes[1]);
                     }
@@ -58,7 +58,10 @@ class RunCommandHelper
                 $count++;
             }
 
-            $errorMsg = stream_get_contents($pipes[2]);
+            /**
+            stream_set_blocking($pipes[2], false);
+            $errorMsg = @stream_get_contents($pipes[2]);
+             */
             if (!empty($errorMsg)) {
                 $this->commandLogger->info('Error occurred', [
                     'command'   => $commands,
@@ -71,6 +74,7 @@ class RunCommandHelper
                 throw new \Exception($errorMsg);
             }
 
+            fclose($pipes[0]);
             fclose($pipes[1]);
             fclose($pipes[2]);
             proc_close($process);

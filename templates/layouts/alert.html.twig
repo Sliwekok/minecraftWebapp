@@ -16,13 +16,13 @@
     </div>
 </div>
 
-{% for message, status, header in app.flashes('alert') %}
+{% for alert in app.flashes('alert') %}
     <input
             id="alertInputHolder"
             type="hidden"
             class="d-none"
-            data-message="{{ message }}"
-            data-status="{{ status }}"
-            data-header="{{ header }}"
+            data-message="{{ alert.message }}"
+            data-status="{{ alert.status }}"
+            data-header="{{ alert.header }}"
     >
 {% endfor %}

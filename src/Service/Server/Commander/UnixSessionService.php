@@ -90,7 +90,7 @@ class UnixSessionService
 
         $logging = str_replace(
             ServerUnixCommandsInterface::REPLACEMENT_LOG_FILENAME,
-            $server->getName(). '_console.log',
+            $server->getName(). ServerUnixCommandsInterface::LOG_SUFFIX,
             $logging
         );
 

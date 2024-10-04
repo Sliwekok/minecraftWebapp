@@ -14,3 +14,4 @@ require('./fetchFile');
 require('./backup');
 require('./createNewServer');
 require('./console');
+require('./players');
