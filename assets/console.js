@@ -3,7 +3,9 @@ import * as Alert from "./alert";
 // scroll to the bottom of textarea
 $(document).ready(function() {
     let textarea = document.getElementById('commandHistory')
-    textarea.scrollTop = textarea.scrollHeight;
+    if (textarea !== null) {
+        textarea.scrollTop = textarea.scrollHeight;
+    }
 })
 
 $(document).on('submit', '#consoleCommandForm', function (e) {
@@ -12,6 +14,8 @@ $(document).on('submit', '#consoleCommandForm', function (e) {
         input = $('#consoleCommandInput'),
         command = input.val()
     ;
+
+    input.prop('disabled', true);
 
     $.ajax({
         url: url,
@@ -26,6 +30,7 @@ $(document).on('submit', '#consoleCommandForm', function (e) {
         success: function (message) {
             input.val('');
             // give time to register change in log file
+                input.prop('disabled', false);
             setTimeout(function() {
                 Alert.showAlert(
                     'success',
@@ -33,11 +38,12 @@ $(document).on('submit', '#consoleCommandForm', function (e) {
                     'Success'
                 );
                 refreshContainerContent(location.href, 'commandHistoryContainer');
-            }, 1000)
+            }, 2500)
         },
         error: function(message) {
             input.val('');
             // give time to register change in log file
+                input.prop('disabled', false);
             setTimeout(function() {
                 Alert.showAlert(
                     'danger',
@@ -46,7 +52,7 @@ $(document).on('submit', '#consoleCommandForm', function (e) {
                 );
                 refreshContainerContent(location.href, 'commandHistoryContainer');
 
-            }, 1000)
+            }, 2500)
         }
 
     });
