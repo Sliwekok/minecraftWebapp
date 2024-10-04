@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Filesystem;
 
 use App\UniqueNameInterface\ServerDirectoryInterface;
+use App\UniqueNameInterface\ServerUnixCommandsInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
@@ -23,6 +24,8 @@ class FilesystemService extends Filesystem
     private Filesystem $filesystem;
     private string $absolutePath;
 
+    private string $userPath;
+
     public function __construct (
         string $path,
     ) {
@@ -30,6 +33,7 @@ class FilesystemService extends Filesystem
         $this->filesystem = new Filesystem();
         $this->path = ServerDirectoryInterface::DIRECTORY. DIRECTORY_SEPARATOR . $path;
         $this->absolutePath = $this->createAbsolutePath();
+        $this->userPath = $path;
     }
 
     public function getPath (): string {
@@ -82,7 +86,9 @@ class FilesystemService extends Filesystem
 
     public function getAllMinecraftFiles (): Finder {
         $finder = new Finder();
-        $finder->in($this->getAbsoluteMinecraftPath());
+        $finder->in($this->getAbsoluteMinecraftPath())
+                ->notName(['*.0', ServerUnixCommandsInterface::LOG_SUFFIX])
+        ;
 
         return $finder;
     }
@@ -103,11 +109,43 @@ class FilesystemService extends Filesystem
         );
     }
 
-    public function getLogFileContent (
-        string $fileName
-    ): string {
-        $path = $this->getAbsoluteMinecraftPath(). DIRECTORY_SEPARATOR. $fileName. '_console.log';
+    public function getLogFilePath (
 
-        return file_get_contents($path);
+    ): string {
+        $filename = substr($this->userPath, strpos($this->userPath, DIRECTORY_SEPARATOR));
+        $path = $this->getAbsoluteMinecraftPath(). DIRECTORY_SEPARATOR. $filename. '_console.log';
+
+        return $path;
+    }
+
+    public function getLogFileContent (
+        int $amountLastRows = 0
+    ): string {
+        $path = $this->getLogFilePath();
+        $content = file_get_contents($path);
+        if ($amountLastRows = 0) {
+
+            return $content;
+        } else {
+            $lines = explode(PHP_EOL, trim($content));
+            $lines = array_slice($lines, -$amountLastRows);
+            $content = implode(PHP_EOL, $lines);
+
+            return $content;
+        }
+    }
+
+    /** default is 2, since there's command exec and command output */
+    public function deleteRowsFromLogFile (
+        int $amountLastRows = 2
+    ): void {
+        $path = $this->getLogFilePath();
+        $content = file_get_contents($path);
+        $lines = explode(PHP_EOL, trim($content));
+        if (count($lines) > $amountLastRows) {
+            $lines = array_slice($lines, 0, -$amountLastRows);
+        }
+
+        file_put_contents($path, implode(PHP_EOL, $lines));
     }
 }
