@@ -46,10 +46,17 @@ class Server
     #[ORM\Column(nullable: true)]
     private ?int $pid = null;
 
+    #[ORM\OneToMany(mappedBy: 'server', targetEntity: Mods::class)]
+    private Collection $mods;
+
+    #[ORM\Column(length: 255)]
+    private ?string $type = null;
+
     public function __construct()
     {
         $this->configs = new ArrayCollection();
         $this->backups = new ArrayCollection();
+        $this->mods = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -201,6 +208,48 @@ class Server
     public function setVersion(?string $version): static
     {
         $this->version = $version;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Mods>
+     */
+    public function getMods(): Collection
+    {
+        return $this->mods;
+    }
+
+    public function addMod(Mods $mod): static
+    {
+        if (!$this->mods->contains($mod)) {
+            $this->mods->add($mod);
+            $mod->setServer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMod(Mods $mod): static
+    {
+        if ($this->mods->removeElement($mod)) {
+            // set the owning side to null (unless already changed)
+            if ($mod->getServer() === $this) {
+                $mod->setServer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): static
+    {
+        $this->type = $type;
 
         return $this;
     }
