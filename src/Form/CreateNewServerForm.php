@@ -72,7 +72,7 @@ class CreateNewServerForm extends AbstractType
                         'choices'   => [
                             'Vanilla'       => 'vanilla',
                             'Forge client'  => 'forge',
-                            'Custom'        => 'custom'
+                            'Fabric client' => 'fabric',
                         ]
                     ])
             )
