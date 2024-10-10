@@ -70,17 +70,23 @@ class FilesystemService extends Filesystem
         return $this->absolutePath. DIRECTORY_SEPARATOR. ServerDirectoryInterface::DIRECTORY_BACKUPS;
     }
 
+    public function getAbsoluteModsPath (): string {
+        return $this->absolutePath. DIRECTORY_SEPARATOR. ServerDirectoryInterface::DIRECTORY_MODS;
+    }
+
     public function createDirectories (): void {
         $this->filesystem->mkdir($this->getAbsolutePath(), self::ACCESS_VALUE);
         $this->filesystem->mkdir($this->getAbsoluteMinecraftPath(), self::ACCESS_VALUE);
         $this->filesystem->mkdir($this->getAbsoluteBackupPath(),  self::ACCESS_VALUE);
+        $this->filesystem->mkdir($this->getAbsoluteModsPath(),  self::ACCESS_VALUE);
     }
 
     public function storeFile (
         string $subDirectory,
-        mixed  $file
+        mixed  $file,
+        string $filename
     ): void {
-        $totalPath = $this->path . DIRECTORY_SEPARATOR. $subDirectory. DIRECTORY_SEPARATOR. ServerDirectoryInterface::MINECRAFT_SERVER_FILE;
+        $totalPath = $this->path . DIRECTORY_SEPARATOR. $subDirectory. DIRECTORY_SEPARATOR. $filename;
         $this->filesystem->dumpFile($totalPath, $file);
     }
 
@@ -148,4 +154,14 @@ class FilesystemService extends Filesystem
 
         file_put_contents($path, implode(PHP_EOL, $lines));
     }
+
+    /**
+     * deletes file in given path
+     */
+    public function deleteFile (
+        string $path
+    ): void {
+        @unlink($path);
+    }
+
 }
