@@ -24,8 +24,11 @@ class PlayersController extends AbstractController
     ): Response
     {
         $server = $this->getUser()->getServer();
-
-        $players = $playersService->getAllPlayersArranged($server);
+        if (!ServerInterface::STATUS_OFFLINE === $server->getStatus()) {
+            $players = $playersService->getAllPlayersArranged($server);
+        } else {
+            $players = false;
+        }
 
         return $this->render('players/index.html.twig', [
             'players'   => $players
