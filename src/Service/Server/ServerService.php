@@ -81,10 +81,6 @@ class ServerService
         Server  $server,
         string  $newType
     ): void {
-        $server = $server->setType($newType);
-        $this->entityManager->persist($server);
-        $this->entityManager->flush();
-
         $fs = new FilesystemService($server->getDirectoryPath());
         $fs->deleteFile($fs->getAbsoluteMinecraftPath(). DIRECTORY_SEPARATOR. ServerDirectoryInterface::MINECRAFT_SERVER_FILE);
 
@@ -97,6 +93,10 @@ class ServerService
             $fs->getAbsoluteMinecraftPath(). DIRECTORY_SEPARATOR. ServerDirectoryInterface::MINECRAFT_SERVER_FILE,
             $file
         );
+
+        $server = $server->setType($newType);
+        $this->entityManager->persist($server);
+        $this->entityManager->flush();
     }
 
 }
