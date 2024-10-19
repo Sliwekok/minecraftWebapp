@@ -10,6 +10,7 @@ use App\Service\Helper\RunCommandHelper;
 use App\UniqueNameInterface\MojangInterface;
 use App\UniqueNameInterface\ServerDirectoryInterface;
 use App\UniqueNameInterface\ServerInterface;
+use App\UniqueNameInterface\ServerUnixCommandsInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class MinecraftVersions
@@ -115,10 +116,19 @@ class MinecraftVersions
                 ServerInterface::FORGE_URL
             );
 
-            $pythonPath = 'python3 '. $this->rootDirectory. DIRECTORY_SEPARATOR. ServerDirectoryInterface::BIN. DIRECTORY_SEPARATOR .ServerDirectoryInterface::PYTHON_FORGE_DOWNLOADER;
-            $this->commandHelper->runCommand($pythonPath, args: [$url, $saveTo]);
-            return file_get_contents($saveTo. '/server.jar');
-//            if ($this->commandHelper->getReturnedValue())
+            // run this for environment preparation
+            $pythonPath = $this->rootDirectory. DIRECTORY_SEPARATOR. ServerDirectoryInterface::BIN. DIRECTORY_SEPARATOR .ServerDirectoryInterface::PYTHON_FORGE_DOWNLOADER;
+            $command = ServerUnixCommandsInterface::DISPLAY_SET_PORT. ';python3 '. $pythonPath;
+            $this->commandHelper->runCommand($command, args: [$url, $saveTo]);
+
+            if (str_starts_with($this->commandHelper->getReturnedValue(), 'Error:')) {
+                // Remove quotes and newline characters using regex
+                $errorMsg = preg_replace("/['\"\n\r]/", '', $this->commandHelper->getReturnedValue());
+
+                throw new CouldNotDownloadAndSaveServerFileException($errorMsg);
+            }
+
+            return file_get_contents($saveTo. DIRECTORY_SEPARATOR. ServerDirectoryInterface::MINECRAFT_SERVER_FILE);
         } catch (\Exception $e) {
 
             throw new CouldNotDownloadAndSaveServerFileException($e->getMessage());
