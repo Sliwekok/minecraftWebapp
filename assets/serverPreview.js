@@ -19,7 +19,7 @@ $(document).on('click', ".confirmation", async function () {
             error: function(message) {
                 showAlert(
                     'danger',
-                    message.statusText,
+                    message.responseText,
                     'Oops! Something went wrong'
                 );
 
