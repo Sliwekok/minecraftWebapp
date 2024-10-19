@@ -22,7 +22,7 @@ export function showAlert(status, message, header, alertConfirmation, isTemporar
 
     alert.addClass('alert-'+className).fadeIn(100);
     alertHeader.text(header);
-    alertContent.text(message);
+    alertContent.html(message);
 
     if (isTemporary) {
         setTimeout(function() {
