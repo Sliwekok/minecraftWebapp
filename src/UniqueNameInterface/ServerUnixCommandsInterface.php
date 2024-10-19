@@ -27,6 +27,7 @@ class ServerUnixCommandsInterface
 
     public const GET_RELATED_SCREEN_PID = "pgrep -f '". self::REPLACEMENT_NAME. "'";
 
+    public const DISPLAY_SET_PORT = 'export DISPLAY=:99';
     public const ARCHIVE_NAME = '{archiveName}';
     public const ARCHIVE_COMMAND = 'sudo zip '. self::ARCHIVE_NAME. ' '. self::REPLACEMENT_PATH . ' -r -x ' . self::REPLACEMENT_PATH. DIRECTORY_SEPARATOR. self::REPLACEMENT_NAME. self::LOG_SUFFIX. ' '. self::REPLACEMENT_PATH. DIRECTORY_SEPARATOR. 'screenlog.0; sudo mv '. self::ARCHIVE_NAME. ' '. self::REPLACEMENT_BACKUPPATH. DIRECTORY_SEPARATOR. self::ARCHIVE_NAME;
 }
