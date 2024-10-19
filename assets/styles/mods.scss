@@ -1,0 +1,35 @@
+input[type="file"] {
+  display: none;
+}
+
+label[for=mods_load_custom_mods_form_files] {
+  border: 1px dotted $font-color;
+  display: inline-block;
+  padding: 10px 15px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+#mods_load_custom_mods_form{
+  ul {
+    width: 40%;
+    margin-left:30%;
+    margin-top:1vh;
+    text-align: center;
+    font-weight: bolder;
+  }
+}
+.modPanel{
+  background-color: darken($body-bg-main, 0.15);
+  padding: 0px;
+
+  .modThumbnail{
+    width: 50%;
+    height: auto;
+  }
+}
+.paginator{
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: baseline;
+}

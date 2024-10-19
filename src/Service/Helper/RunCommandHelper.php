@@ -29,6 +29,7 @@ class RunCommandHelper
     public function runCommand (
         string|array    $commands,
         string          $path = '',
+        array           $args = [],
     ): bool {
         try {
             if ($path === '') {
@@ -42,6 +43,13 @@ class RunCommandHelper
             if (is_array($commands)) {
                 $commands = implode("/n", $commands);
             }
+
+            if (!empty($args)) {
+                foreach ($args as $arg) {
+                    $commands .= ' '. $arg;
+                }
+            }
+
             $process = proc_open($commands, $descriptorspec, $pipes, $path);
 
             $count = 0;
@@ -58,10 +66,10 @@ class RunCommandHelper
                 $count++;
             }
 
-            /**
+
             stream_set_blocking($pipes[2], false);
             $errorMsg = @stream_get_contents($pipes[2]);
-             */
+
             if (!empty($errorMsg)) {
                 $this->commandLogger->info('Error occurred', [
                     'command'   => $commands,

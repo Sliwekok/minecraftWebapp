@@ -5,13 +5,15 @@ import './styles/app.scss';
 const $ = require('jquery');
 global.$ = global.jQuery = $;
 
-require('./user');
-require('./nav');
-require('./serverPreview');
 require('./alert');
+require('./nav');
+require('./user');
+require('./serverPreview');
 require('./advanced');
 require('./fetchFile');
 require('./backup');
 require('./createNewServer');
 require('./console');
 require('./players');
+require('./mods');
+require('./modsPaginator');

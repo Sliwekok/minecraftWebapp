@@ -151,11 +151,13 @@ class BackupController extends AbstractController
                 $configService->createConfigFromPropertyFile($server);
             }
             else {
+                foreach ($form->getErrors(true) as $error) {
 
-                throw new \Exception($form->getErrors()->current()->getMessage());
+                    throw new \Exception($error->getMessage());
+                }
             }
         } catch (\Exception $e) {
-            $alert = Alert::error($e->getMessage());
+            Alert::error($e->getMessage(), isToDelete: false);
         }
 
 

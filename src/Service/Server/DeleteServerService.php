@@ -54,21 +54,21 @@ class DeleteServerService
                     $fs->remove($backupFiles);
                 }
             }
-            $fs->remove($fs->getAllMinecraftFiles());
-            $absolutePath = $fs->createAbsolutePath();
-            foreach (glob($absolutePath. '/*') as $file) {
-                if (is_dir($file)) {
-                    rmdir($file);
-                }
-                else {
-                    unlink($file);
-                }
-            }
-            rmdir($absolutePath);
+            $globalPath = $fs->getAbsoluteMinecraftPath();
+            $this->delTree($globalPath);
 
         } catch (Exception $exception) {
 
             throw new CouldNotDeleteServerException($exception->getMessage());
         }
+    }
+
+    public function delTree($dir) {
+        $files = array_diff(scandir($dir), array('.','..'));
+        foreach ($files as $file) {
+            (is_dir("$dir/$file")) ? $this->delTree("$dir/$file") : unlink("$dir/$file");
+        }
+
+        return rmdir($dir);
     }
 }
