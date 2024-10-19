@@ -71,7 +71,7 @@ class FilesystemService extends Filesystem
     }
 
     public function getAbsoluteModsPath (): string {
-        return $this->absolutePath. DIRECTORY_SEPARATOR. ServerDirectoryInterface::DIRECTORY_MODS;
+        return $this->absolutePath. DIRECTORY_SEPARATOR. ServerDirectoryInterface::DIRECTORY_MINECRAFT. DIRECTORY_SEPARATOR. ServerDirectoryInterface::DIRECTORY_MODS;
     }
 
     public function createDirectories (): void {
@@ -90,11 +90,17 @@ class FilesystemService extends Filesystem
         $this->filesystem->dumpFile($totalPath, $file);
     }
 
-    public function getAllMinecraftFiles (): Finder {
+    public function getAllMinecraftFiles (
+        $findLogs = false
+    ): Finder {
         $finder = new Finder();
-        $finder->in($this->getAbsoluteMinecraftPath())
+        if ($findLogs) {
+            $finder->in($this->getAbsoluteMinecraftPath());
+        } else {
+            $finder->in($this->getAbsoluteMinecraftPath())
                 ->notName(['*.0', ServerUnixCommandsInterface::LOG_SUFFIX])
-        ;
+            ;
+        }
 
         return $finder;
     }
@@ -155,6 +161,14 @@ class FilesystemService extends Filesystem
         file_put_contents($path, implode(PHP_EOL, $lines));
     }
 
+    public static function getFileSize (
+        string $path
+    ): int {
+        $file = new \SplFileInfo($path);
+
+        return $file->getSize();
+    }
+
     /**
      * deletes file in given path
      */
@@ -163,5 +177,4 @@ class FilesystemService extends Filesystem
     ): void {
         @unlink($path);
     }
-
 }

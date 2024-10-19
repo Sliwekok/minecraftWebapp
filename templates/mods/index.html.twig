@@ -27,7 +27,7 @@
                         <div class="col-12 d-inline-flex flex-wrap">
                             <div class="col-6">
                                 <p class="subTitle">Modded minecraft</p>
-                                <p>Current mod launcher: {{ server.type }}</p>
+                                <p>Current mod launcher: <span class="fw-bolder">{{ server.type }}</span></p>
                             </div>
 
                             <div class="col-6">
@@ -43,9 +43,7 @@
                                                 {% endif %}
                                             </div>
                                         {% endfor %}
-                                        {% if server.mods|length > 10 %}
-                                            <a href="{{ url('mods_show_all') }}"
-                                        {% endif %}
+                                        <a class="subTitle mt-5 special" href="{{ url('mods_show_all') }}">Show all Installed</a>
                                     </div>
                                 {% endif %}
                             </div>

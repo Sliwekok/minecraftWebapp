@@ -27,8 +27,6 @@ class ModsLoadCustomModsFormType extends AbstractType
                 'attr'          => [
                         'required'  => 'true',
                         'class'     => 'form-control',
-                        'type'          => 'jar',
-
                 ],
                 'multiple'      => true,
                 'constraints'   => [
@@ -41,6 +39,7 @@ class ModsLoadCustomModsFormType extends AbstractType
                                      'application/java-archive',
                                      'application/x-java-archive',
                                      'application/x-jar',
+                                     'application/zip',  // Adding application/zip as a fallback
                                  ],
                                  'mimeTypesMessage'  => 'Upload valid JAR file',
                             ])

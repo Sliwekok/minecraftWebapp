@@ -1,0 +1,93 @@
+{% extends('layouts/app.html.twig') %}
+
+{% block content %}
+
+    <div class="row pb-5">
+        <div class="col-10 offset-1 pb-5">
+            <p class="title text-center">Browsing mods</p>
+            <div class="col-12 d-inline-flex">
+                <p class="col-2">
+                    <span class="fw-bolder">Modloader:</span> {{ server.type }},<br>
+                    <span class="fw-bolder">Version:</span> {{ server.version }}
+                </p>
+                <div class="col-10">
+                    <form class="col-12 d-inline-flex" id="searchSpecifiedMods">
+                        <div class="col-3 form-group">
+                            <input type="text" placeholder="Search for mods..." class="form-control modsBrowseName" value="{{ params.searchFilter }}" name="searchFilter">
+                        </div>
+                        <div class="col-3 offset-1 form-group">
+                            <select class="form-select modsBrowseCategory" name="categories">
+                                <option value="">Categories</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if category.id|trim is same as params.category|trim %} selected {% endif %}>{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-2 offset-1 form-group">
+                            <select class="form-select modsSortBy" name="sortBy">
+                                <option value="">Filter by</option>
+                                {% for sortable in sortables %}
+                                    <option value="{{ sortable.enum }}" {% if sortable.enum|trim is same as params.sortBy|trim %} selected {% endif %}>{{ sortable.sortBy }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-2 offset-1 form-group">
+                            <button class="btn-outline-primary btn btn-lg">
+                                Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-12 d-inline-flex flex-wrap mt-5">
+                {% if mods|length > 0 %}
+                    {% for mod in mods %}
+                        {% set installed = false %}
+                        {% for modInstalled in modsInstalled %}
+                            {% if (mod.id + 0) is same as (modInstalled.external_id + 0) %}
+                                {% set installed = true %}
+                            {% endif %}
+                        {% endfor %}
+                            <div class="col-3 modPanel text-center">
+                                <img class="modThumbnail img-fluid img-thumbnail" src="{{ mod.logo.thumbnailUrl }}" alt="{{ mod.slug }}">
+                                <p class="subTitle"><a class="special" target="_blank" href="{{ mod.links.websiteUrl }}">{{ mod.name }}</a></p>
+                                <p class="modSummary col-10 offset-1">{{ mod.summary }}</p>
+                                <p>
+                                    <button class="btn btn-outline-primary modAction"
+                                            {% if installed is same as true %} disabled="disabled" {% endif %}
+                                            data-mod-id="{{ mod.id }}"
+                                            data-url="{{ url('mods_install_from_curseforge') }}"
+                                            data-action="add"
+                                    >
+                                        {{ installed is same as true ? "Installed" : "Install" }}
+                                    </button>
+                                </p>
+                            </div>
+                        {% set installed = false %}
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12 text-center">
+                        <p class="subTitle">Too much light to spawn anything</p>
+                        <p>Try changing your query to see more results</p>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-6 paginator offset-3 mt-5 text-center" data-index="{{ pagination.index }}" data-all-mods-loaded="{{ pagination.totalCount }}">
+                <div class="col-5">
+                    <button class="btn btn-outline-info modPreviousPage">
+                         <<< Previous
+                    </button>
+                </div>
+                <div class="col-2">
+                    Loaded {{ (mods|length > 0) ? pagination.index + 1 : 0}}  - <span class="loadedModsOnBrowse"></span> from total {{ pagination.totalCount }}
+                </div>
+                <div class="col-5">
+                    <button class="btn btn-outline-info modNextPage">
+                        Next >>>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

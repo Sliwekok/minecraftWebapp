@@ -3,8 +3,41 @@
 {% block content %}
 
     <div class="row">
-        <div class="col-12">
-            show all
+        <div class="col-10 offset-1 pb-5">
+            <p class="title text-center">Installed mod</p>
+            <div class="col-12 d-inline-flex text-center">
+                <p class="col-3 offset-3">
+                    <span class="fw-bolder">Version:</span> {{ server.version }}
+                </p>
+                <p class="col-3">
+                    <span class="fw-bolder">Modloader:</span> {{ server.type }}
+                </p>
+            </div>
+        </div>
+        <div class="col-12 d-inline-flex flex-wrap mt-5">
+            {% if mods|length > 0 %}
+                {% for mod in mods %}
+                    <div class="col-3 modPanel text-center">
+                        <img class="modThumbnail" src="{{ mod.thumbnail ?: asset('img/mods_default_image.png')}}" alt="{{ mod.name }}">
+                        <p class="subTitle"><a class="special" target="_blank" href="{{ mod.websiteUrl ?: ''}}">{{ mod.name }}</a></p>
+                        <p class="modSummary col-10 offset-1">{{ mod.summary ?: "User uploaded mod" }}</p>
+                        <p>
+                            <button class="btn btn-outline-danger modAction"
+                                    data-mod-id="{{ mod.id }}"
+                                    data-url="{{ url('mods_delete') }}"
+                                    data-action="delete"
+                            >
+                                Delete
+                            </button>
+                        </p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center">
+                    <p class="subTitle">You don't have any mods installed</p>
+                    <p>You can start browsing <a href="{{ url('mods_browse') }}" class="special">here</a> </p>
+                </div>
+            {% endif %}
         </div>
     </div>
 

@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Mods;
+use App\Entity\Server;
+use App\UniqueNameInterface\ModsInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,6 +21,20 @@ class ModsRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Mods::class);
+    }
+
+    public function getMods (Server $server): array {
+        $id = ModsInterface::ENTITY_ID;
+        $name = ModsInterface::ENTITY_NAME;
+        $externalId = ModsInterface::ENTITY_EXTERNALID;
+
+        return $this->createQueryBuilder('m')
+            ->select("m.$id, m.$name, m.$externalId")
+            ->where('m.server = :server_id')
+            ->setParameter('server_id', $server->getId())
+            ->getQuery()
+            ->getArrayResult()
+        ;
     }
 
 //    /**
