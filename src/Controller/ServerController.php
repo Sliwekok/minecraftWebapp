@@ -136,7 +136,8 @@ class ServerController extends AbstractController
     #[Route('/delete', name: 'server_delete')]
     public function delete (
         LoginRepository     $loginRepository,
-        DeleteServerService $deleteServerService
+        DeleteServerService $deleteServerService,
+        ServerService       $serverService
     ): Response
     {
         $user = $loginRepository->find($this->getUser()->getId());
@@ -145,6 +146,8 @@ class ServerController extends AbstractController
 
             return $this->redirectToRoute('server_create_new');
         }
+
+        $serverService->stopServer($server);
 
         $deleteServerService->deleteServer($server);
 
