@@ -154,7 +154,7 @@ class BackupController extends AbstractController
                 foreach ($form->getErrors(true) as $error) {
 
                     throw new \Exception($error->getMessage());
-                };
+                }
             }
         } catch (\Exception $e) {
             Alert::error($e->getMessage(), isToDelete: false);

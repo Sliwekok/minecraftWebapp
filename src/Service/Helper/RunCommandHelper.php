@@ -66,10 +66,10 @@ class RunCommandHelper
                 $count++;
             }
 
-            /**
+
             stream_set_blocking($pipes[2], false);
             $errorMsg = @stream_get_contents($pipes[2]);
-             */
+
             if (!empty($errorMsg)) {
                 $this->commandLogger->info('Error occurred', [
                     'command'   => $commands,
