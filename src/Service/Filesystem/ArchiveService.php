@@ -87,7 +87,7 @@ class ArchiveService
             /** we need to check if archived file is in root or has subdirectory */
             $filePath = $zip->getNameIndex(0);
             if ($filePath === ServerDirectoryInterface::DIRECTORY_MINECRAFT. DIRECTORY_SEPARATOR) {
-                if (strpos($filePath, ServerDirectoryInterface::DIRECTORY_MINECRAFT. DIRECTORY_SEPARATOR) === 0) {
+                if (str_starts_with($filePath, ServerDirectoryInterface::DIRECTORY_MINECRAFT . DIRECTORY_SEPARATOR)) {
                     $zip->extractSubdirTo($minecraftPath, $filePath);
                 }
             } elseif ($filePath === "$fileName". DIRECTORY_SEPARATOR) {

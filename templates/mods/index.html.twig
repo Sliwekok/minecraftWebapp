@@ -1,0 +1,66 @@
+{% extends('layouts/app.html.twig') %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-12">
+            <div class="col-12 text-center">
+                <p class="title">Server management - mods</p>
+                    {% if server.type is same as 'vanilla' %}
+                        <p class="subTitle">Your server is <b>vanilla</b>.</p>
+                        <p>
+                            You can always change it to other mod loaders.<br>
+                            Remember that if you want to change your server type - <a class="special" href="{{ url('backup_list') }}" target="_blank">create backup</a> so you'll be safe
+                        </p>
+                        <div>
+                            <span>I want to change server to</span>
+                            <select class="form-select form-select-lg ml-3 p-2 serverChangeType"
+                                    data-url="{{ url('server_change_type') }}"
+                            >
+                                <option value="vanilla" {% if server.type is same as 'vanilla' %} selected disabled {% endif %}>Vanilla</option>
+                                <option value="forge" {% if server.type is same as 'forge' %} selected disabled {% endif %}>Forge</option>
+                                <option value="fabric" {% if server.type is same as 'fabric' %} selected disabled {% endif %}>Fabric</option>
+                            </select>
+                        </div>
+                    </div>
+                    {% else %}
+                        <div class="col-12 d-inline-flex flex-wrap">
+                            <div class="col-6">
+                                <p class="subTitle">Modded minecraft</p>
+                                <p>Current mod launcher: <span class="fw-bolder">{{ server.type }}</span></p>
+                            </div>
+
+                            <div class="col-6">
+                                <p class="subTitle">Loaded: {{ server.mods|length }} {% if server.mods|length == 1 %} mod {% else %} mods {% endif %}</p>
+                                {% if server.mods|length > 0 %}
+                                    <div class="col-12">
+                                        {% for mod in server.mods|slice(0, 10) %}
+                                            <div class="col-12">
+                                                {% if mod.url is defined %}
+                                                    <p><a href="{{ mod.url }}">{{ mod.name }}</a></p>
+                                                {% else %}
+                                                    <p>{{ mod.name }}</p>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                        <a class="subTitle mt-5 special" href="{{ url('mods_show_all') }}">Show all Installed</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-6 mt-5">
+                                <p class="subTitle">Add custom mods</p>
+                                {{ form_start(form) }}
+                                    {{ form_widget(form) }}
+                                {{ form_end(form) }}
+                            </div>
+
+                            <div class="col-6 mt-5">
+                                <p class="subTitle"><a class="special" href="{{ url('mods_browse') }}">Browse new mods</a></p>
+                            </div>
+                        </div>
+                    {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

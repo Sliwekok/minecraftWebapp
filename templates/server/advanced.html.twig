@@ -2,28 +2,44 @@
 
 {% block content %}
 
-    <div class="row">
-        <div class="col-12">
-            <p class="title text-center">Advanced settings</p>
-            <div class="col-12 d-inline-flex flex-wrap">
-                <div class="col-6">
-                    <p class="subTitle text-center">Server properties</p>
-                    <a href="{{ url('config_update') }}"><button class="col-4 offset-4 btn btn-outline-primary"><span>Update Config</span></button></a>
-                </div>
-                <div class="col-6">
-                    <p class="subTitle text-center">Backups</p>
-                    <a href="{{ url('backup_list') }}"><button class="col-4 offset-4 btn btn-outline-primary"><span>Manage backups</span></button></a>
-                </div>
-                <div class="col-6 mt-3">
-                    <p class="subTitle text-center">Delete server</p>
-                    <p><b>Note</b> Deleting server means permanently deleting <i>all</i> files from existence - be sure you have downloaded latest backup</p>
-                    <button
-                        class="col-4 offset-4 btn btn-outline-danger confirmation"
-                        data-message="Are you sure you want to delete server?"
-                        data-url="{{ url('server_delete') }}"
-                        data-confirmation="true">
-                            <span>Delete server</span>
-                    </button>
+    <div class="col-10 offset-1">
+        <p class="title text-center">Advanced settings</p>
+        <div class="col-12 d-inline-flex flex-wrap">
+            <div class="col-6">
+                <p class="subTitle text-center">Server properties</p>
+                <a href="{{ url('config_update') }}"><button class="col-4 offset-4 btn btn-outline-primary"><span>Update Config</span></button></a>
+            </div>
+            <div class="col-6">
+                <p class="subTitle text-center">Backups</p>
+                <a href="{{ url('backup_list') }}"><button class="col-4 offset-4 btn btn-outline-primary"><span>Manage backups</span></button></a>
+            </div>
+            <div class="col-6 mt-5">
+                <p class="subTitle text-center">Delete server</p>
+                <p><b>Note</b> Deleting server means permanently deleting <i>all</i> files from existence - be sure you have downloaded latest backup</p>
+                <button
+                    class="col-4 offset-4 btn btn-outline-danger confirmation"
+                    data-message="Are you sure you want to delete server?"
+                    data-url="{{ url('server_delete') }}"
+                    data-confirmation="true">
+                        <span>Delete server</span>
+                </button>
+            </div>
+            <div class="col-6 mt-5 text-center">
+                <p class="subTitle">Change server mod loader</p>
+                <p>Your server is <b>{{ user.server.type }}</b>.</p>
+                <p>
+                    You can always change it to other mod loaders.<br>
+                    Remember that if you want to change your server type - <a class="special" href="{{ url('backup_list') }}" target="_blank">create backup</a> so you'll be safe
+                </p>
+                <span>I want to change server to</span>
+                <div class="col-4 offset-4 mt-3">
+                    <select class="form-select serverChangeType"
+                            data-url="{{ url('server_change_type') }}"
+                    >
+                        <option value="vanilla" {% if user.server.type is same as 'vanilla' %} selected disabled {% endif %}>Vanilla</option>
+                        <option value="forge" {% if user.server.type is same as 'forge' %} selected disabled {% endif %}>Forge</option>
+                        <option value="fabric" {% if user.server.type is same as 'fabric' %} selected disabled {% endif %}>Fabric</option>
+                    </select>
                 </div>
             </div>
         </div>

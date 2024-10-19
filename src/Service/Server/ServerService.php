@@ -8,7 +8,11 @@ use App\Entity\Config;
 use App\Entity\Login;
 use App\Entity\Server;
 use App\Service\Config\ConfigService;
+use App\Service\Filesystem\FilesystemService;
+use App\Service\Helper\ServerFileHelper;
 use App\Service\Server\Commander\ServerCommanderService;
+use App\UniqueNameInterface\ServerDirectoryInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormInterface;
 
 class ServerService
@@ -17,7 +21,9 @@ class ServerService
     public function __construct (
         private CreateServerService     $createServerService,
         private ServerCommanderService  $serverCommanderService,
-        private ConfigService           $configService
+        private ConfigService           $configService,
+        private EntityManagerInterface  $entityManager,
+        private ServerFileHelper        $serverFileHelper
     )
     {}
 
@@ -69,6 +75,28 @@ class ServerService
         Config|array $config
     ): bool {
         return $this->configService->updateConfig($config);
+    }
+
+    public function updateServerType (
+        Server  $server,
+        string  $newType
+    ): void {
+        $fs = new FilesystemService($server->getDirectoryPath());
+        $fs->deleteFile($fs->getAbsoluteMinecraftPath(). DIRECTORY_SEPARATOR. ServerDirectoryInterface::MINECRAFT_SERVER_FILE);
+
+        $file = $this->serverFileHelper->getServerFile(
+            $server->getVersion(),
+            $newType,
+            $fs->getAbsoluteMinecraftPath()
+        );
+        $fs->dumpFile(
+            $fs->getAbsoluteMinecraftPath(). DIRECTORY_SEPARATOR. ServerDirectoryInterface::MINECRAFT_SERVER_FILE,
+            $file
+        );
+
+        $server = $server->setType($newType);
+        $this->entityManager->persist($server);
+        $this->entityManager->flush();
     }
 
 }

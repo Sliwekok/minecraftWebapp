@@ -1,33 +1,27 @@
-<nav class="nav col-12 text-center" id="sideNav">
-    <div class="row">
-        <div class="logo col-8 offset-2">
-            <a href="{{ url('server_preview') }}"><h2>WeCraft</h2></a>
+<nav class="col-12 text-center" id="sideNav">
+    <div class="logo col-10">
+        <a class="subTitle special" href="{{ url('server_preview') }}"><h2>WeCraft</h2></a>
+    </div>
+    <div class="col-10 offset-1 navOptions">
+        <div class="col-10 navItem">
+            <a href="{{ url('server_preview') }}"><p>Server preview</p></a>
+        </div>
+        <div class="col-10 navItem">
+            <a href="{{ url('players_index') }}"><p>Players</p></a>
+        </div>
+        <div class="col-10 navItem">
+            <a href ="{{ url('mods_index') }}"><p>Mods</p></a>
+        </div>
+        <div class="col-10 navItem">
+            <a href="{{ url('console_view') }}"><p>Console</p></a>
+        </div>
+        <div class="col-10 navItem">
+            <a href="{{ url('server_advanced') }}"><p>Advanced</p></a>
         </div>
     </div>
-    <div class="row">
-        <div class="col-10 offset-1 navOptions">
-            <div class="col-12 navItem">
-                <a href="{{ url('server_preview') }}"><p>Server preview</p></a>
-            </div>
-            <div class="col-12 navItem">
-                <a href="{{ url('players_index') }}"><p>Players</p></a>
-            </div>
-            <div class="col-12 navItem">
-                <p>Mods</p>
-            </div>
-            <div class="col-12 navItem">
-                <a href="{{ url('console_view') }}"><p>Console</p></a>
-            </div>
-            <div class="col-12 navItem">
-                <a href="{{ url('server_advanced') }}"><p>Advanced</p></a>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-10 offset-1">
-            <div class="col-12 navItem">
-                <a href="{{ url('user_management') }}"><p>My account</p></a>
-            </div>
+    <div class="col-10 offset-1 mt-5">
+        <div class="col-10 navItem">
+            <a href="{{ url('user_management') }}"><p>My account</p></a>
         </div>
     </div>
 </nav>

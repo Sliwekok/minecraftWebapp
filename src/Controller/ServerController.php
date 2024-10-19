@@ -6,11 +6,13 @@ namespace App\Controller;
 
 use App\Entity\Alert;
 use App\Exception\Server\NoServerFoundException;
+use App\Exception\Server\ServerIsAlreadyRunningException;
 use App\Repository\LoginRepository;
 use App\Service\Mojang\MinecraftVersions;
 use App\Service\Server\DeleteServerService;
 use App\Service\Server\ServerService;
 use App\Form\CreateNewServerForm;
+use App\UniqueNameInterface\ServerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +33,7 @@ class ServerController extends AbstractController
             return $this->redirectToRoute('server_create_new');
         }
 
-        $ip = gethostbyname(gethostname());
+        $ip = file_get_contents("http://ipecho.net/plain");
 
         return $this->render('server/preview.html.twig', [
             'user'      => $user,
@@ -134,7 +136,8 @@ class ServerController extends AbstractController
     #[Route('/delete', name: 'server_delete')]
     public function delete (
         LoginRepository     $loginRepository,
-        DeleteServerService $deleteServerService
+        DeleteServerService $deleteServerService,
+        ServerService       $serverService
     ): Response
     {
         $user = $loginRepository->find($this->getUser()->getId());
@@ -144,9 +147,33 @@ class ServerController extends AbstractController
             return $this->redirectToRoute('server_create_new');
         }
 
+        $serverService->stopServer($server);
+
         $deleteServerService->deleteServer($server);
 
         return $this->redirectToRoute('server_create_new');
+    }
+
+    #[Route('/change_type', name: 'server_change_type')]
+    public function changeType (
+        ServerService       $serverService,
+        Request             $request
+    ): JsonResponse
+    {
+        try {
+            $server = $this->getUser()->getServer();
+            if (ServerInterface::STATUS_ONLINE === $server->getStatus()) {
+
+                throw new ServerIsAlreadyRunningException();
+            }
+            $type = $request->get(ServerInterface::FORM_STEP2_GAMETYPE);
+            $serverService->updateServerType($server, $type);
+            $alert = Alert::success("Changed server mod loader");
+        } catch (\Exception $e) {
+            $alert = Alert::error($e->getMessage());
+        }
+
+        return new JsonResponse($alert->getMessage(), $alert->getCode());
     }
 
 }

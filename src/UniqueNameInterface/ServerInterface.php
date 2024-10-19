@@ -20,6 +20,9 @@ class ServerInterface
     public const FORM_STEP1_SEED = 'seed';
     public const FORM_STEP2 = 'step_2';
     public const FORM_STEP2_GAMETYPE = 'gameType';
+    public const FORM_STEP2_GAMETYPE_VANILLA = 'vanilla';
+    public const FORM_STEP2_GAMETYPE_FABRIC = 'fabric';
+    public const FORM_STEP2_GAMETYPE_FORGE = 'forge';
     public const FORM_STEP3 = 'step_3';
     public const FORM_STEP3_WHITELIST = 'whitelist';
     public const FORM_STEP4 = 'step_4';
@@ -30,4 +33,9 @@ class ServerInterface
     public const STATUS_SUSPENDED = 'suspended';
 
     public const OS_WINDOWS = 'WIN';
+
+    public const REPLACE_MINECRAFT_VERSION = '{minecraft}';
+    public const FABRIC_URL = 'https://meta.fabricmc.net/v2/versions/loader/'. self::REPLACE_MINECRAFT_VERSION . '/0.16.5/1.0.1/server/jar';
+    public const FORGE_URL = 'https://files.minecraftforge.net/net/minecraftforge/forge/index_' . self::REPLACE_MINECRAFT_VERSION . '.html';
+
 }
