@@ -9,7 +9,7 @@ from selenium.webdriver.firefox.options import Options
 
 def main():
     try:
-        parser = argparse.ArgumentParser(description="Python scrip to download forge server client")
+        parser = argparse.ArgumentParser(description="Python script to download forge server client")
         parser.add_argument("url", help="URL of forge to download from")
         parser.add_argument("path", help="Path to save file")
         args = parser.parse_args()
@@ -47,7 +47,7 @@ def main():
 
         # Step 6: Download the file
         file_response = requests.get(download_link)
-        file_name = 'server.jar_forge'
+        file_name = 'server.jar'
 
         # Save the file
         full_path = os.path.join(args.path, file_name)
@@ -59,6 +59,5 @@ def main():
         print("Success")
     except Exception as e:
         print(f"Error: {e}")
-        traceback.print_exc()
 
 main()
