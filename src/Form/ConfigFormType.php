@@ -111,7 +111,8 @@ class ConfigFormType extends AbstractType
                 'attr'      => [
                     'required'      => true,
                     'class'         => 'form-control col-12',
-                    'inherit_data'  => true
+                    'inherit_data'  => true,
+                    'readonly'      => true
                 ]
             ])
             ->add(ConfigInterface::ENTITY_MOTD, TextType::class, [

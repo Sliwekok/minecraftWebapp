@@ -20,6 +20,8 @@ class ConfigInterface
     public const ENTITY_LEVELNAME = 'level_name';
     public const ENTITY_MAXRAM = 'max_ram';
     public const ENTITY_MOTD = 'motd';
+    public const ENTITY_ONLINEMODE = 'online_mode';
+    public const ENTITY_REQUIRERESOURCEPACK = 'require_resource_pack';
 
     public const DIFFICULTY_PEACEFUL = 'peaceful';
     public const DIFFICULTY_EASY = 'easy';
@@ -40,6 +42,8 @@ class ConfigInterface
     public const PROPERTY_MOTD = 'motd';
     public const PROPERTY_PORT = 'server-port';
     public const PROPERTY_MAXRAM = 'max-ram';
+    public const PROPERTY_ONLINEMODE = 'online-mode';
+    public const PROPERTY_REQUIRERESOURCEPACK = 'require-resource-pack';
     public const PROPERTY_STATIC_IP = 'server-ip';
     public const PROPERTY_STATIC_SERVERPORT = 'server-port';
     public const PROPERTY_STATIC_QUERYPORT = 'query.port';
