@@ -123,4 +123,80 @@ class LinuxCommanderService
 
         return $command;
     }
+
+    public function installForgeServer (
+        Server $server
+    ): void {
+        $command = $this->getInstallForgeInstallCommand($server);
+
+        $this->commandHelper->runCommand($command);
+    }
+
+    private function getInstallForgeInstallCommand (
+        Server  $server
+    ): string {
+        $path = (new FilesystemService($server->getDirectoryPath()))->getAbsoluteMinecraftPath();
+        $screen = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_NAME,
+            (string)$server->getName(),
+            ServerUnixCommandsInterface::SCREEN_SWITCH
+        );
+
+        $java = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_RAM,
+            (string)$server->getConfig()->getMaxRam(),
+            ServerUnixCommandsInterface::SERVER_INSTALL_FORGE
+        );
+        $java = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_PATH,
+            $path,
+            $java
+        );
+        $command = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_COMMAND,
+            $java,
+            $screen
+        );
+
+        return $command;
+    }
+
+    public function getServerUsage (
+        Server  $server
+    ): array {
+        $pids = $this->getPids($server);
+        $this->commandHelper->runCommand($pids);
+        $pids = explode("\n", $this->commandHelper->getReturnedValue());
+        $usage = [];
+        foreach ($pids as $pid) {
+            if (strlen($pid) == 0) continue;
+            $command = str_replace(
+                ServerUnixCommandsInterface::REPLACEMENT_PID,
+                $pid,
+                ServerUnixCommandsInterface::SERVER_USAGE
+            );
+            $this->commandHelper->runCommand($command);
+            $columns = preg_split('/\s+/', $this->commandHelper->getReturnedValue());
+            // check if process is java to fetch usage
+            if (!array_key_exists(42, $columns)) continue;
+            if (str_contains($columns[42], 'java')) {
+                $usage = [
+                    'system'    => $columns[30], //system
+                    'cpu'       => $columns[33], // cpu
+                    'memory'    => $columns[39], // mem
+                ];
+                break;
+            }
+        }
+
+        return $usage;
+    }
+
+    public function getServerUsageContent (
+        Server  $server
+    ): mixed {
+        $fs = new FilesystemService($server->getDirectoryPath());
+
+        return $fs->getServerUsageFile();
+    }
 }

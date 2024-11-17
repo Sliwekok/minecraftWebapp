@@ -176,4 +176,15 @@ class ServerController extends AbstractController
         return new JsonResponse($alert->getMessage(), $alert->getCode());
     }
 
+    #[Route('/usage', name: 'server_usage')]
+    public function usage (
+        ServerService       $serverService,
+    ): JsonResponse
+    {
+        $user = $this->getUser();
+        $server = $user->getServer();
+        $usage = $serverService->getServerUsage($server);
+
+        return new JsonResponse($usage, 200);
+    }
 }
