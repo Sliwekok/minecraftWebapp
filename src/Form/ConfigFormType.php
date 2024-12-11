@@ -123,6 +123,22 @@ class ConfigFormType extends AbstractType
                     'inherit_data'  => true
                 ]
             ])
+            ->add(ConfigInterface::ENTITY_REQUIRERESOURCEPACK, TextType::class, [
+                'label'     => 'Welcome message',
+                'attr'      => [
+                    'required'      => true,
+                    'class'         => 'form-control col-12',
+                    'inherit_data'  => true
+                ]
+            ])
+            ->add(ConfigInterface::ENTITY_ONLINEMODE, TextType::class, [
+                'label'     => 'Welcome message',
+                'attr'      => [
+                    'required'      => true,
+                    'class'         => 'form-control col-12',
+                    'inherit_data'  => true
+                ]
+            ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Update Config',
                 'attr'  => [

@@ -49,6 +49,12 @@ class Config
     #[ORM\Column(length: 255)]
     private ?string $level_name = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $resource_pack = null;
+
+    #[ORM\Column]
+    private ?bool $online_mode = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -200,6 +206,31 @@ class Config
     public function setLevelName(string $level_name): static
     {
         $this->level_name = $level_name;
+
+        return $this;
+    }
+
+    public function isOnlineMode(): ?bool
+    {
+        return $this->online_mode;
+    }
+
+    public function setOnlineMode(bool $online_mode): static
+    {
+        $this->online_mode = $online_mode;
+
+        return $this;
+    }
+
+
+    public function getResourcePack(): ?string
+    {
+        return $this->resource_pack;
+    }
+
+    public function setResourcePack(string $resource_pack): static
+    {
+        $this->resource_pack = $resource_pack;
 
         return $this;
     }

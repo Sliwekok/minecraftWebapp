@@ -48,6 +48,8 @@ class UpdateConfigService
                 ->setAllowFlight($config->get(ConfigInterface::ENTITY_ALLOWFLIGHT)->getData())
                 ->setMotd($config->get(ConfigInterface::ENTITY_MOTD)->getData())
                 ->setLevelName($config->get(ConfigInterface::ENTITY_LEVELNAME)->getData())
+                ->setResourcePack($config->get(ConfigInterface::ENTITY_REQUIRERESOURCEPACK)->getData())
+                ->setOnlineMode($config->get(ConfigInterface::ENTITY_ONLINEMODE)->getData())
                 ->setMaxRam(4)
             ;
 
@@ -66,11 +68,12 @@ class UpdateConfigService
                 ->setAllowFlight($config->isAllowFlight())
                 ->setMotd($config->getMotd())
                 ->setLevelName($config->getLevelName())
+                ->setResourcePack($config->getResourcePack())
+                ->setOnlineMode($config->isOnlineMode())
                 ->setMaxRam($config->getMaxRam())
             ;
             $config = $configOld;
         }
-
 
         $this->entityManager->persist($config);
         $this->entityManager->flush();
