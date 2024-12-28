@@ -24,10 +24,14 @@ class DeleteServerService
         try {
             $config = $server->getConfig();
             $backups = $server->getBackups();
+            $mods = $server->getMods();
             // delete from database
             $this->entityManager->remove($config);
             foreach ($backups as $backup) {
                 $this->entityManager->remove($backup);
+            }
+            foreach ($mods as $mod) {
+                $this->entityManager->remove($mod);
             }
 
             $this->entityManager->remove($server);
@@ -54,8 +58,11 @@ class DeleteServerService
                     $fs->remove($backupFiles);
                 }
             }
-            $globalPath = $fs->getAbsoluteMinecraftPath();
-            $this->delTree($globalPath);
+            $path = $fs->getAbsoluteMinecraftPath();
+            if (is_dir($path)) {
+                $this->delTree($path);
+            }
+
 
         } catch (Exception $exception) {
 

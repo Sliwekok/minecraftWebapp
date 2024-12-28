@@ -24,12 +24,11 @@ class ConfigController extends AbstractController
     ): Response
     {
         $user = $loginRepository->find($this->getUser()->getId());
-        $config = $user->getServer()->getConfig();
+        if (null === $user->getServer()) {
 
-        if (null === $config) {
-
-            return $this->redirectToRoute("server_create_new");
+                return $this->redirectToRoute('server_create_new');
         }
+        $config = $user->getServer()->getConfig();
 
         $form = $this
             ->createForm(ConfigFormType::class, $config, [])

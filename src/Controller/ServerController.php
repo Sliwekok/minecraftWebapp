@@ -24,6 +24,7 @@ class ServerController extends AbstractController
 {
     #[Route('/', name: 'server_preview')]
     public function management(
+        ServerService       $serverService,
     ): Response
     {
         $user = $this->getUser();
@@ -32,6 +33,9 @@ class ServerController extends AbstractController
 
             return $this->redirectToRoute('server_create_new');
         }
+
+//        $usage = $serverService->getServerUsage($server);
+//        dd($usage);
 
         $ip = file_get_contents("http://ipecho.net/plain");
 

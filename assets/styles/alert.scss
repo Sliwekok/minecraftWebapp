@@ -8,12 +8,6 @@
   border-radius: 5px;
   padding: 3vh;
   color: $font-color;
-  .btn-close{
-    color: red;
-    background-color: transparent;
-    border: 0px;
-    cursor: pointer;
-  }
 
   #alertContent{
     padding: 5vh;
@@ -22,4 +16,32 @@
   #alertConfirmation{
     display: none;
   }
+}
+
+.btn-close{
+  color: red;
+  background-color: transparent;
+  border: 0px;
+  cursor: pointer;
+}
+
+
+.modal-content {
+  background-color: rgba($body-bg-main, 0.8);
+  border-radius: 10px;
+  color: $font-color;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.modal-footer {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
 }
