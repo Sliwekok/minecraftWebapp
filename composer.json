@@ -15,6 +15,7 @@
         "leaseweb/doctrine-pdo-dblib": "^1.1",
         "phpdocumentor/reflection-docblock": "^5.3",
         "phpstan/phpdoc-parser": "^1.23",
+        "symfony/config": "v7.2.*",
         "symfony/apache-pack": "^1.0",
         "symfony/cache": "7.2.*",
         "symfony/console": "7.2.*",
