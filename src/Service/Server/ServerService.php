@@ -99,4 +99,12 @@ class ServerService
         $this->entityManager->flush();
     }
 
+    public function getServerUsage (
+        Server  $server
+    ): mixed {
+        $data = $this->serverCommanderService->getServerUsage($server);
+
+        return str_replace('|', '', $data);
+    }
+
 }

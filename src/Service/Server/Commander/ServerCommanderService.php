@@ -247,4 +247,26 @@ class ServerCommanderService
         $this->commandHelper->runCommand($command);
     }
 
+    public function installForgeClient (
+        Server  $server,
+    ): void {
+        if (OperatingSystemHelper::isWindows()) {
+//            $this->windowsCommander->stopServer($server);
+            throw new \Exception("No Windows support - yet");
+        } else {
+            $this->linuxCommander->installForgeServer($server);
+        }
+    }
+
+    public function getServerUsage (
+        Server  $server
+    ): mixed {
+        if (OperatingSystemHelper::isWindows()) {
+//            $this->windowsCommander->stopServer($server);
+            throw new \Exception("No Windows support - yet");
+        } else {
+            return $this->linuxCommander->getServerUsageContent($server);
+        }
+    }
+
 }
