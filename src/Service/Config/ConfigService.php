@@ -23,7 +23,7 @@ class ConfigService
 
     public function createConfig (
         Server $server,
-        string $seed = null
+        ?string $seed = null
     ): ?Config {
         $config = new Config();
         $port = $this->generatePort();
@@ -54,16 +54,13 @@ class ConfigService
 
             return 25565;
         } else {
-            $maxPort = max($configs[0]);
-            $maxPort++;
-
-            return $maxPort;
+            return $configs[0][1] + 1;
         }
     }
 
     public function updateConfig (
         Config|FormInterface    $config,
-        int                     $configId = null
+        ?int                    $configId = null
     ): bool {
         $this->configLogger->info('Updated config', [
             'config_new_values' => (array)$config,

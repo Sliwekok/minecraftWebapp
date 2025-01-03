@@ -32,4 +32,5 @@ class ServerDirectoryInterface
     public const FILE_BANNED_PLAYERS = 'banned-players.json';
     public const FILE_BANNED_IPS = 'banned-ips.json';
     public const PYTHON_FORGE_DOWNLOADER = 'forgeDownloader.py';
+    public const USAGE_FILE = 'usage.json';
 }

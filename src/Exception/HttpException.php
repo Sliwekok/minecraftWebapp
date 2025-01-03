@@ -13,7 +13,7 @@ class HttpException extends \RuntimeException implements HttpExceptionInterface
     public function __construct(
         string $message         = '',
         int $statusCode         = 500,
-        \Throwable $previous    = null,
+        ?\Throwable $previous    = null,
         array $headers          = [],
         int $code               = 0,
     ) {

@@ -39,6 +39,16 @@ class ServerCommanderService
         return $this->saveStartServer($server);
     }
 
+    public function checkServerStatus (
+        Server $server
+    ): bool {
+        if (OperatingSystemHelper::isWindows()) {
+            return $this->windowsCommander->checkServerStatus($server);
+        } else {
+            return $this->linuxCommander->checkServerStatus($server);
+        }
+    }
+
     /**
      * end process server via CommandLine
      */
@@ -247,4 +257,37 @@ class ServerCommanderService
         $this->commandHelper->runCommand($command);
     }
 
+    public function installForgeClient (
+        Server  $server,
+    ): void {
+        if (OperatingSystemHelper::isWindows()) {
+//            $this->windowsCommander->stopServer($server);
+            throw new \Exception("No Windows support - yet");
+        } else {
+            $this->linuxCommander->installForgeServer($server);
+        }
+    }
+
+    public function getServerUsageFile (
+        Server  $server
+    ): mixed {
+        if (OperatingSystemHelper::isWindows()) {
+//            $this->windowsCommander->stopServer($server);
+            throw new \Exception("No Windows support - yet");
+        } else {
+            return $this->linuxCommander->getServerUsageFile($server);
+        }
+    }
+
+    public function getServerUsage (
+        Server  $server
+    ): array {
+        if (OperatingSystemHelper::isWindows()) {
+//            $this->windowsCommander->stopServer($server);
+            throw new \Exception("No Windows support - yet");
+        }
+        else {
+            return $this->linuxCommander->getServerUsage($server);
+        }
+    }
 }

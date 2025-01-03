@@ -177,4 +177,14 @@ class FilesystemService extends Filesystem
     ): void {
         @unlink($path);
     }
+
+    public function getServerUsageFile (): mixed {
+        $file = $this->getAbsoluteMinecraftPath(). DIRECTORY_SEPARATOR. ServerDirectoryInterface::USAGE_FILE;
+        if (!file_exists($file)) {
+            $this->dumpFile($file, '');
+        }
+
+        return file_get_contents($file);
+
+    }
 }

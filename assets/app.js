@@ -17,3 +17,4 @@ require('./console');
 require('./players');
 require('./mods');
 require('./modsPaginator');
+require('./tos');

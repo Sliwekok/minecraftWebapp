@@ -59,7 +59,13 @@ class CreateServerService
                 $fs->createLogFile($serverName);
             }
 
+            while (!file_exists($fs->getAbsoluteMinecraftPath() . DIRECTORY_SEPARATOR . ServerDirectoryInterface::MINECRAFT_SERVER_FILE)) {
+                sleep(1); // wait until server file is created
+            }
+
             return $server;
+
+
         } catch (\Exception $e){
             throw new CouldNotCreateServerException($e->getMessage());
         }

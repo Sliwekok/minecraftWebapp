@@ -20,6 +20,10 @@ class LinuxCommanderService
         private UnixSessionService  $unixSessionService,
     ) {}
 
+    public function checkServerStatus(Server $server): bool {
+        return $this->unixSessionService->checkScreenExists($server);
+    }
+
     /**
      * creates separate screen that holds session
      */
@@ -122,5 +126,94 @@ class LinuxCommanderService
         $command = str_replace(ServerUnixCommandsInterface::REPLACEMENT_NAME, (string)$server->getName(), ServerUnixCommandsInterface::GET_RELATED_SCREEN_PID);
 
         return $command;
+    }
+
+    public function installForgeServer (
+        Server $server
+    ): void {
+        $command = $this->getInstallForgeInstallCommand($server);
+
+        $this->commandHelper->runCommand($command);
+    }
+
+    private function getInstallForgeInstallCommand (
+        Server  $server
+    ): string {
+        $path = (new FilesystemService($server->getDirectoryPath()))->getAbsoluteMinecraftPath();
+        $screen = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_NAME,
+            (string)$server->getName(),
+            ServerUnixCommandsInterface::SCREEN_SWITCH
+        );
+
+        $java = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_RAM,
+            (string)$server->getConfig()->getMaxRam(),
+            ServerUnixCommandsInterface::SERVER_INSTALL_FORGE
+        );
+        $java = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_PATH,
+            $path,
+            $java
+        );
+        $command = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_COMMAND,
+            $java,
+            $screen
+        );
+
+        return $command;
+    }
+
+    public function getServerUsage (
+        Server  $server
+    ): array {
+        $pids = $this->getPids($server);
+        $this->commandHelper->runCommand($pids);
+        $pids = explode("\n", $this->commandHelper->getReturnedValue());
+        $usage = [
+            'cpu' => (string)0.0,
+            'memory' => (string)0.0,
+        ];
+        foreach ($pids as $pid) {
+            if (strlen($pid) == 0) continue;
+            $command = str_replace(
+                ServerUnixCommandsInterface::REPLACEMENT_PID,
+                $pid,
+                ServerUnixCommandsInterface::SERVER_USAGE
+            );
+            $this->commandHelper->runCommand($command);
+            $output = $this->commandHelper->getReturnedValue();
+            if ($output !== '') {
+                $output = preg_split('/\s+/', trim($output));
+                // check if process is java-type since we only care about server
+                // table of content for top:
+                // 75 - command type - we're looking for java
+                // 84 - cpu usage
+                // 85 - memory usage
+
+                // check if keys exist
+                if (array_key_exists(85, $output) && array_key_exists(84, $output)) {
+                    if ((float)$usage['cpu'] <= (float)$output[84]) {
+                        $usage['cpu'] = (string) $output[84];
+                    }
+                    if ((float)$usage['memory'] <= (float)$output[85]) {
+                        $usage['memory'] = (string) $output[85];
+                    }
+                }
+            }
+        }
+
+        $usage['time'] =  date('Y-m-d H:i:s');
+
+        return $usage;
+    }
+
+    public function getServerUsageFile (
+        Server  $server
+    ): mixed {
+        $fs = new FilesystemService($server->getDirectoryPath());
+
+        return $fs->getServerUsageFile();
     }
 }

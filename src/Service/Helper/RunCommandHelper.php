@@ -51,14 +51,14 @@ class RunCommandHelper
             }
 
             $process = proc_open($commands, $descriptorspec, $pipes, $path);
-
             $count = 0;
             $procData = proc_get_status($process);
-
             while ($count < 3) {
-                if (!$procData[ServerWindowsCommandsInterface::PROCESS_RUNNING] && $procData[ServerWindowsCommandsInterface::PROCESS_EXITCODE] === 0) {
+                if (!$procData[ServerWindowsCommandsInterface::PROCESS_RUNNING] && (int)$procData[ServerWindowsCommandsInterface::PROCESS_EXITCODE] === 0) {
                     if (is_resource($pipes[1])) {
                         $this->returned = @stream_get_contents($pipes[1]);
+
+                        break;
                     }
                 }
                 sleep(1);
@@ -66,17 +66,19 @@ class RunCommandHelper
                 $count++;
             }
 
-
-            stream_set_blocking($pipes[2], false);
             $errorMsg = @stream_get_contents($pipes[2]);
-
+            if ($this->security->getUser()) {
+                $userId = $this->security->getUser()->getId();
+            } else {
+                $userId = 0;
+            }
             if (!empty($errorMsg)) {
                 $this->commandLogger->info('Error occurred', [
                     'command'   => $commands,
                     'returned'  => $this->getReturnedValue(),
                     'error'     => $errorMsg,
                     'path'      => $path,
-                    'userId'    => $this->security->getUser()->getId(),
+                    'userId'    => $userId,
                 ]);
                 
                 throw new \Exception($errorMsg);
@@ -91,7 +93,7 @@ class RunCommandHelper
                 'command'   => $commands,
                 'returned'  => $this->getReturnedValue(),
                 'path'      => $path,
-                'userId'    => $this->security->getUser()->getId(),
+                'userId'    => $userId,
             ]);
 
         } catch (\Exception $exception) {

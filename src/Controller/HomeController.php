@@ -7,6 +7,8 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class HomeController extends AbstractController
 {
@@ -26,5 +28,15 @@ class HomeController extends AbstractController
     public function termsOfUse(): Response
     {
         return $this->render('termsOfUse.html.twig', []);
+    }
+
+    #[Route('/agree_terms', name: 'agree_terms')]
+    public function agreeTerms(): JsonResponse
+    {
+        $response = new JsonResponse(['status' => 'success']);
+        $cookie = new Cookie('terms_agreed', 'true', strtotime('now + 1 year'), '/', null, false, false);
+        $response->headers->setCookie($cookie);
+
+        return $response;
     }
 }
