@@ -34,8 +34,7 @@ class ServerController extends AbstractController
             return $this->redirectToRoute('server_create_new');
         }
 
-//        $usage = $serverService->getServerUsage($server);
-//        dd($usage);
+        $usage = $serverService->getServerUsageFile($server);
 
         $ip = file_get_contents("http://ipecho.net/plain");
 
@@ -147,15 +146,17 @@ class ServerController extends AbstractController
         $user = $loginRepository->find($this->getUser()->getId());
         $server = $user->getServer();
         if (null === $server) {
+            $alert = Alert::error('No server found');
 
-            return $this->redirectToRoute('server_create_new');
+            return new JsonResponse($alert->getMessage(), $alert->getCode());
         }
 
         $serverService->stopServer($server);
-
         $deleteServerService->deleteServer($server);
 
-        return $this->redirectToRoute('server_create_new');
+        $alert = Alert::success('Server has been deleted');
+
+        return new JsonResponse($alert->getMessage(), $alert->getCode());
     }
 
     #[Route('/change_type', name: 'server_change_type')]
@@ -187,7 +188,7 @@ class ServerController extends AbstractController
     {
         $user = $this->getUser();
         $server = $user->getServer();
-        $usage = $serverService->getServerUsage($server);
+        $usage = $serverService->getServerUsageFile($server);
 
         return new JsonResponse($usage, 200);
     }

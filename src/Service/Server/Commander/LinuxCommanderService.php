@@ -20,6 +20,10 @@ class LinuxCommanderService
         private UnixSessionService  $unixSessionService,
     ) {}
 
+    public function checkServerStatus(Server $server): bool {
+        return $this->unixSessionService->checkScreenExists($server);
+    }
+
     /**
      * creates separate screen that holds session
      */
@@ -167,7 +171,10 @@ class LinuxCommanderService
         $pids = $this->getPids($server);
         $this->commandHelper->runCommand($pids);
         $pids = explode("\n", $this->commandHelper->getReturnedValue());
-        $usage = [];
+        $usage = [
+            'cpu' => (string)0.0,
+            'memory' => (string)0.0,
+        ];
         foreach ($pids as $pid) {
             if (strlen($pid) == 0) continue;
             $command = str_replace(
@@ -176,23 +183,33 @@ class LinuxCommanderService
                 ServerUnixCommandsInterface::SERVER_USAGE
             );
             $this->commandHelper->runCommand($command);
-            $columns = preg_split('/\s+/', $this->commandHelper->getReturnedValue());
-            // check if process is java to fetch usage
-            if (!array_key_exists(42, $columns)) continue;
-            if (str_contains($columns[42], 'java')) {
-                $usage = [
-                    'system'    => $columns[30], //system
-                    'cpu'       => $columns[33], // cpu
-                    'memory'    => $columns[39], // mem
-                ];
-                break;
+            $output = $this->commandHelper->getReturnedValue();
+            if ($output !== '') {
+                $output = preg_split('/\s+/', trim($output));
+                // check if process is java-type since we only care about server
+                // table of content for top:
+                // 75 - command type - we're looking for java
+                // 84 - cpu usage
+                // 85 - memory usage
+
+                // check if keys exist
+                if (array_key_exists(85, $output) && array_key_exists(84, $output)) {
+                    if ((float)$usage['cpu'] <= (float)$output[84]) {
+                        $usage['cpu'] = (string) $output[84];
+                    }
+                    if ((float)$usage['memory'] <= (float)$output[85]) {
+                        $usage['memory'] = (string) $output[85];
+                    }
+                }
             }
         }
+
+        $usage['time'] =  date('Y-m-d H:i:s');
 
         return $usage;
     }
 
-    public function getServerUsageContent (
+    public function getServerUsageFile (
         Server  $server
     ): mixed {
         $fs = new FilesystemService($server->getDirectoryPath());

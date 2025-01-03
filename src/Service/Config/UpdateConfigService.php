@@ -33,7 +33,7 @@ class UpdateConfigService
 
     public function updateConfigEntity (
         Config|FormInterface  $config,
-        int                   $configId = null
+        ?int                  $configId = null
     ): bool {
         if ($config instanceof FormInterface) {
             $configNew = $this->configRepository->find($configId) ?? new Config;
@@ -88,7 +88,7 @@ class UpdateConfigService
             $file = @file_get_contents($filename);
             $fileChecked = 0;
             // check if file is generated - if server is created then might be some delay
-            while (false === $file && $fileChecked < 3) {
+            while (false === $file && $fileChecked < 5) {
                 sleep(3);
                 $file = @file_get_contents($filename);
                 $fileChecked++;

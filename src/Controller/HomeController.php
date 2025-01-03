@@ -34,7 +34,7 @@ class HomeController extends AbstractController
     public function agreeTerms(): JsonResponse
     {
         $response = new JsonResponse(['status' => 'success']);
-        $cookie = new Cookie('terms_agreed', 'true', strtotime('now + 1 year'));
+        $cookie = new Cookie('terms_agreed', 'true', strtotime('now + 1 year'), '/', null, false, false);
         $response->headers->setCookie($cookie);
 
         return $response;

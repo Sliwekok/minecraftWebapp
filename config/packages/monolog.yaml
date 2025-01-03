@@ -22,31 +22,32 @@ when@dev:
             console:
                 type: console
                 process_psr_3_messages: false
+                level: info
                 channels: ["!event", "!doctrine", "!console", '!server', '!config', '!command', '!critical']
             server:
                 type: stream
                 path: "%kernel.logs_dir%/server.log"
-                level: debug
+                level: info
                 channels: ['server']
             config:
                 type: stream
                 path: "%kernel.logs_dir%/config.log"
-                level: debug
+                level: info
                 channels: ['config']
             command:
                 type: stream
                 path: "%kernel.logs_dir%/command.log"
-                level: debug
+                level: info
                 channels: ['command']
             critical:
                 type: stream
                 path: "%kernel.logs_dir%/critical.log"
-                level: debug
+                level: info
                 channels: ['critical']
             backup:
                 type: stream
                 path: "%kernel.logs_dir%/backup.log"
-                level: debug
+                level: info
                 channels: ['backup']
 
 when@test:

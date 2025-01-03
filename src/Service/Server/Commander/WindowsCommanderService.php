@@ -16,6 +16,16 @@ class WindowsCommanderService
         private RunCommandHelper    $commandHelper
     ) {}
 
+    public function checkServerStatus(Server $server): bool {
+        $command = 'tasklist /fi "windowtitle eq server_'.$server->getName().'*"';
+        $this->commandHelper->runCommand($command);
+        if (!str_contains($this->commandHelper->getReturned(), $server->getName())) {
+
+            return false;
+        }
+        return true;
+    }
+
     /**
      * start command via CommandLine for Minecraft Server.
      * We create another CMD commandline with title based on Server name.

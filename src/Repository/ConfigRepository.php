@@ -26,7 +26,7 @@ class ConfigRepository extends ServiceEntityRepository
         $port = ConfigInterface::ENTITY_PORT;
 
         return $this->createQueryBuilder('n')
-            ->select("n.$port")
+            ->select("max(n.$port)")
             ->getQuery()
             ->getArrayResult()
         ;

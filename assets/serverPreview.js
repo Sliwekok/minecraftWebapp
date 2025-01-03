@@ -56,20 +56,22 @@ $(document).on('click', '.connectToServer', function (e) {
         $(this).attr('title','Click to copy');
     }, 5000);
 })
+
 const ctx = document.getElementById('serverUsage');
 if (ctx !== null) {
-    new Chart(ctx, {
+    // Create the chart instance and assign it to a variable
+    const myChart = new Chart(ctx, {
         type: 'line',
-        labels: [
-            "5:00", "4:30", "4:00", "3:30", "3:00",
-            "2:30", "2:00", "1:30", "1:00", "0:30",
-            "0:00"
-        ],
         data: {
+            labels: [
+                "5:00", "4:30", "4:00", "3:30", "3:00",
+                "2:30", "2:00", "1:30", "1:00", "0:30",
+                "0:00"
+            ],
             datasets: [
                 {
                     label: 'CPU usage',
-                    data: [],
+                    data: [], // Data will be dynamically updated
                     borderWidth: 1,
                     fill: true,
                     borderColor: 'rgb(28,86,255)',
@@ -77,31 +79,66 @@ if (ctx !== null) {
                     order: 1,
                 },
                 {
-                    label: 'System usage',
-                    data: [],
-                    borderWidth: 1,
-                    fill: true,
-                    borderColor: 'rgb(90,255,65)',
-                    tension: 0.5,
-                    order: 2,
-                },
-                {
                     label: 'RAM usage',
-                    data: [],
+                    data: [], // Data will be dynamically updated
                     borderWidth: 1,
                     fill: true,
                     borderColor: 'rgb(255,31,31)',
                     tension: 0.5,
-                    order: 3,
+                    order: 2,
                 }
             ]
         },
         options: {
+            responsive: true,
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    min: 0,
+                    max: 100,
+                    title: {
+                        display: true,
+                        text: 'Usage (%)'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%';
+                        }
+                    }
                 }
             }
         }
     });
+
+    // Set interval to fetch data every 5 seconds
+    setInterval(updateChartFromApi, 15000);
+
+    function updateChartFromApi () {
+        $.ajax({
+            url: '/server/usage',
+            method: 'get',
+            dataType: 'json',
+            error: function (message) {
+                showAlert(
+                    'danger',
+                    message.responseText,
+                    'Oops! Something went wrong'
+                );
+            },
+            success: function (data) {
+                var data = JSON.parse(data);
+
+                const labels = Object.values(data).map(item => item.time);
+                const cpuData = Object.values(data).map(item => parseFloat(item.cpu));
+                const ramData = Object.values(data).map(item => parseFloat(item.memory));
+
+                myChart.data.labels = labels;
+                myChart.data.datasets[0].data = cpuData;
+                myChart.data.datasets[1].data = ramData;
+                myChart.update();
+            }
+        });
+    }
+
+    updateChartFromApi();
 }

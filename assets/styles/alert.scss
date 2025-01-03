@@ -19,18 +19,18 @@
 }
 
 .btn-close{
-  color: red;
-  background-color: transparent;
+  color: red !important;
+  background-color: transparent !important;
   border: 0px;
   cursor: pointer;
 }
 
 
 .modal-content {
-  background-color: rgba($body-bg-main, 0.8);
+  background-color: rgba($body-bg-main, 0.9);
   border-radius: 10px;
   color: $font-color;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
 }
 
 .modal-header {

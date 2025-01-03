@@ -32,57 +32,34 @@
 
             </div>
         </div>
+
+
+        {% if app.request.attributes.get('_route') != 'terms_of_use' %}
+            <div class="modal" style="margin-top:10vh;" id="termsModal" aria-labelledby="termsModalLabel">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="termsModalLabel">Agree to Terms of Service</h5>
+                            <button type="button" class="btn-close btn-close-modal-tos" aria-label="Close"><i class="demo-icon icon-cancel"></i></button>
+                        </div>
+                        <div class="modal-body">
+                            Accepting this modal means you agree to the terms of service and allows us to store cookies on your device.<br>
+                            You can find details about our terms of service <a class="special" href="/terms_of_use">here</a>.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-danger btn-close-modal-tos">Close</button>
+                            <button type="button" id="confirmAgreeButton" class="btn btn-primary btn-outline-primary">Agree</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
     </main>
 </div>
 </body>
 
-{% block javascripts %}
-    {{ encore_entry_script_tags('app') }}
-{% endblock %}
-{% if app.request.attributes.get('_route') != 'terms_of_use' %}
-<div class="modal fade" style="margin-top:10vh;" id="termsModal" aria-labelledby="termsModalLabel">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="termsModalLabel">Agree to Terms of Service</h5>
-                <button type="button" class="btn-close" aria-label="Close"><i class="demo-icon icon-cancel"></i></button>
-            </div>
-            <div class="modal-body">
-                Accepting this modal means you agree to the terms of service and allows us to store cookies on your device.<br>
-                You can find details about our terms of service <a class="special" href="/terms_of_use">here</a>.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
-                <button type="button" id="confirmAgreeButton" class="btn btn-primary btn-outline-primary">Agree</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        if (!document.cookie.split('; ').find(row => row.startsWith('terms_agreed='))) {
-            var termsModal = $('#termsModal');
-            termsModal.show();
-        }
-    });
-
-    document.getElementById('confirmAgreeButton').addEventListener('click', function() {
-        fetch('/agree_terms', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token('agree_terms') }}'
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    var termsModal = $('#termsModal');
-                    termsModal.hide();
-                }
-            });
-    });
-</script>
-{% endif %}
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
 </html>

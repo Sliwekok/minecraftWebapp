@@ -44,10 +44,21 @@ class ServerService
     public function initServer (
         Server  $server
     ): void {
-        $this->createServerService->updateEula($server);
+        $fs = new FilesystemService($server->getDirectoryPath());
         $this->startServer($server);
-        $this->updateConfig($server->getConfig());
+        while (!file_exists($fs->getAbsoluteMinecraftPath() . '/' . ServerDirectoryInterface::MINECRAFT_EULA)) {
+            sleep(1); // wait until eula is created to update it
+        }
         $this->stopServer($server);
+
+        $this->createServerService->updateEula($server);
+        // we need to re-run server due to eula update
+        $this->startServer($server);
+        sleep(10);
+        $this->stopServer($server);
+        $this->updateConfig($server->getConfig());
+
+        return;
     }
 
     /**
@@ -99,12 +110,17 @@ class ServerService
         $this->entityManager->flush();
     }
 
-    public function getServerUsage (
+    public function getServerUsageFile (
         Server  $server
     ): mixed {
-        $data = $this->serverCommanderService->getServerUsage($server);
+        $data = $this->serverCommanderService->getServerUsageFile($server);
 
         return str_replace('|', '', $data);
     }
 
+    public function getServerUsage (
+        Server  $server
+    ): array {
+        return $this->serverCommanderService->getServerUsage($server);
+    }
 }
