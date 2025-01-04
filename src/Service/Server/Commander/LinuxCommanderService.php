@@ -175,31 +175,30 @@ class LinuxCommanderService
             'cpu' => (string)0.0,
             'memory' => (string)0.0,
         ];
-        foreach ($pids as $pid) {
-            if (strlen($pid) == 0) continue;
-            $command = str_replace(
-                ServerUnixCommandsInterface::REPLACEMENT_PID,
-                $pid,
-                ServerUnixCommandsInterface::SERVER_USAGE
-            );
-            $this->commandHelper->runCommand($command);
-            $output = $this->commandHelper->getReturnedValue();
-            if ($output !== '') {
-                $output = preg_split('/\s+/', trim($output));
-                // check if process is java-type since we only care about server
-                // table of content for top:
-                // 75 - command type - we're looking for java
-                // 84 - cpu usage
-                // 85 - memory usage
-
-                // check if keys exist
-                if (array_key_exists(85, $output) && array_key_exists(84, $output)) {
-                    if ((float)$usage['cpu'] <= (float)$output[84]) {
-                        $usage['cpu'] = (string) $output[84];
-                    }
-                    if ((float)$usage['memory'] <= (float)$output[85]) {
-                        $usage['memory'] = (string) $output[85];
-                    }
+        // get second last pid since last one is always empty
+        $reversed = array_reverse($pids);
+        $pid = $reversed[1];
+        $command = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_PID,
+            $pid,
+            ServerUnixCommandsInterface::SERVER_USAGE
+        );
+        $this->commandHelper->runCommand($command);
+        $output = $this->commandHelper->getReturnedValue();
+        if ($output !== '') {
+            $output = preg_split('/\s+/', trim($output));
+            // check if process is java-type since we only care about server
+            // table of content for top:
+            // 88 - command type - we're looking for java, but it's not always there
+            // 85 - cpu usage
+            // 86 - memory usage
+            // check if keys exist
+            if (array_key_exists(86, $output) && array_key_exists(85, $output)) {
+                if ((float)$usage['cpu'] <= (float)$output[85]) {
+                    $usage['cpu'] = (string) $output[85];
+                }
+                if ((float)$usage['memory'] <= (float)$output[86]) {
+                    $usage['memory'] = (string) $output[86];
                 }
             }
         }

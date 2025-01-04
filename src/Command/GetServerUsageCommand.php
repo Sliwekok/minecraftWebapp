@@ -49,6 +49,7 @@ class GetServerUsageCommand extends Command
             $fs->dumpFile($path . DIRECTORY_SEPARATOR . ServerDirectoryInterface::USAGE_FILE, json_encode($usageFile, JSON_PRESERVE_ZERO_FRACTION));
         }
 
+        $output->writeln("Finished generating server usage");
         return OutputInterface::OUTPUT_NORMAL;
     }
 
