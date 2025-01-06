@@ -12,9 +12,9 @@
                             You can always change it to other mod loaders.<br>
                             Remember that if you want to change your server type - <a class="special" href="{{ url('backup_list') }}" target="_blank">create backup</a> so you'll be safe
                         </p>
-                        <div>
+                        <div class="col-4 offset-4 mt-3">
                             <span>I want to change server to</span>
-                            <select class="form-select form-select-lg ml-3 p-2 serverChangeType"
+                            <select class="form-select form-select-lg ml-3 p-2 serverChangeType mt-2"
                                     data-url="{{ url('server_change_type') }}"
                             >
                                 <option value="vanilla" {% if server.type is same as 'vanilla' %} selected disabled {% endif %}>Vanilla</option>
