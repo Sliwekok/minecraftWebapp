@@ -10,6 +10,7 @@ class ServerInterface
     public const ENTITY_CREATEDAT = 'created_at';
     public const ENTITY_MODIFIEDAT = 'modified_at';
     public const ENTITY_PID = 'pid';
+    public const ENTITY_STATUS = 'status';
 
     public const ENTITY_PASCAL_CREATEDTA = 'createAt';
     public const ENTITY_PASCAL_MODIFIEDAT = 'modifiedAt';
