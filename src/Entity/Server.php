@@ -52,6 +52,9 @@ class Server
     #[ORM\Column(length: 255)]
     private ?string $type = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $java = null;
+
     public function __construct()
     {
         $this->configs = new ArrayCollection();
@@ -250,6 +253,18 @@ class Server
     public function setType(string $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getJava(): ?string
+    {
+        return $this->java;
+    }
+
+    public function setJava(string $java): static
+    {
+        $this->java = $java;
 
         return $this;
     }
