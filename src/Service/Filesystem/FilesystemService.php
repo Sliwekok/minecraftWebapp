@@ -66,6 +66,10 @@ class FilesystemService extends Filesystem
         return $this->absolutePath. DIRECTORY_SEPARATOR. ServerDirectoryInterface::DIRECTORY_MINECRAFT;
     }
 
+    public function getAbsoluteJavaPath(string $javaSdk) : string {
+        return $this->getAbsolutePublicPath(). DIRECTORY_SEPARATOR. 'java'. DIRECTORY_SEPARATOR. $javaSdk. DIRECTORY_SEPARATOR. 'bin'. DIRECTORY_SEPARATOR. 'java';
+    }
+
     public function getAbsoluteBackupPath (): string {
         return $this->absolutePath. DIRECTORY_SEPARATOR. ServerDirectoryInterface::DIRECTORY_BACKUPS;
     }
