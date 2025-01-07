@@ -97,6 +97,18 @@ class ConfigFormType extends AbstractType
                     'Yes'       => true,
                 ]
             ])
+            ->add(ConfigInterface::ENTITY_ONLINEMODE, ChoiceType::class, [
+                'label'     => 'Enable online mode',
+                'attr'      => [
+                    'required'      => true,
+                    'class'         => 'form-control col-12',
+                    'inherit_data'  => true,
+                ],
+                'choices'   => [
+                    'No'        => false,
+                    'Yes'       => true,
+                ]
+            ])
             ->add(ConfigInterface::ENTITY_SEED, TextType::class, [
                 'label'     => 'World seed',
                 'attr'      => [
@@ -111,7 +123,8 @@ class ConfigFormType extends AbstractType
                 'attr'      => [
                     'required'      => true,
                     'class'         => 'form-control col-12',
-                    'inherit_data'  => true
+                    'inherit_data'  => true,
+                    'readonly'      => true
                 ]
             ])
             ->add(ConfigInterface::ENTITY_MOTD, TextType::class, [
