@@ -109,6 +109,18 @@ class ConfigFormType extends AbstractType
                     'Yes'       => true,
                 ]
             ])
+            ->add(ConfigInterface::ENTITY_GENERATESTRUCTURES, ChoiceType::class, [
+                'label'     => 'Generate structures',
+                'attr'      => [
+                    'required'      => true,
+                    'class'         => 'form-control col-12',
+                    'inherit_data'  => true,
+                ],
+                'choices'   => [
+                    'No'        => false,
+                    'Yes'       => true,
+                ]
+            ])
             ->add(ConfigInterface::ENTITY_SEED, TextType::class, [
                 'label'     => 'World seed',
                 'attr'      => [

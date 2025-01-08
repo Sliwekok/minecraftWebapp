@@ -52,6 +52,9 @@ class Config
     #[ORM\Column]
     private ?bool $online_mode = null;
 
+    #[ORM\Column]
+    private ?bool $generate_structures = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -215,6 +218,18 @@ class Config
     public function setOnlineMode(bool $online_mode): static
     {
         $this->online_mode = $online_mode;
+
+        return $this;
+    }
+
+    public function isGenerateStructures(): ?bool
+    {
+        return $this->generate_structures;
+    }
+
+    public function setGenerateStructures(bool $generate_structures): static
+    {
+        $this->generate_structures = $generate_structures;
 
         return $this;
     }
