@@ -47,6 +47,7 @@ nav#sideNav{
         transition-timing-function: ease-in;
         border: 1px transparent solid;
         margin-top: 0.25vh;
+        display: block;
 
         &:hover{
             border-color: $font-color;

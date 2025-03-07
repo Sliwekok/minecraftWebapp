@@ -3,25 +3,13 @@
         <a class="subTitle special" href="{{ url('server_preview') }}"><h2>WeCraft</h2></a>
     </div>
     <div class="col-10 offset-1 navOptions">
-        <div class="col-10 navItem">
-            <a href="{{ url('server_preview') }}"><p>Server preview</p></a>
-        </div>
-        <div class="col-10 navItem">
-            <a href="{{ url('players_index') }}"><p>Players</p></a>
-        </div>
-        <div class="col-10 navItem">
-            <a href ="{{ url('mods_index') }}"><p>Mods</p></a>
-        </div>
-        <div class="col-10 navItem">
-            <a href="{{ url('console_view') }}"><p>Console</p></a>
-        </div>
-        <div class="col-10 navItem">
-            <a href="{{ url('server_advanced') }}"><p>Advanced</p></a>
-        </div>
+        <a class="col-10 navItem" href="{{ url('server_preview') }}"><p>Server preview</p></a>
+        <a class="col-10 navItem" href="{{ url('players_index') }}"><p>Players</p></a>
+        <a class="col-10 navItem" href ="{{ url('mods_index') }}"><p>Mods</p></a>
+        <a class="col-10 navItem" href="{{ url('console_view') }}"><p>Console</p></a>
+        <a class="col-10 navItem" href="{{ url('server_advanced') }}"><p>Advanced</p></a>
     </div>
-    <div class="col-10 offset-1 mt-5">
-        <div class="col-10 navItem">
-            <a href="{{ url('user_management') }}"><p>My account</p></a>
-        </div>
+    <div class="col-10 offset-1 navOptions mt-5">
+        <a class="col-10 navItem" href="{{ url('user_management') }}"><p>My account</p></a>
     </div>
 </nav>
