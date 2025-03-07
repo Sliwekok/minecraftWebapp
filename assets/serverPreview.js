@@ -110,7 +110,7 @@ if (ctx !== null) {
         }
     });
 
-    // Set interval to fetch data every 5 seconds
+    // Set interval to fetch data every 15 seconds
     setInterval(updateChartFromApi, 15000);
 
     function updateChartFromApi () {

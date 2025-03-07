@@ -33,6 +33,16 @@ tar -xvzf geckodriver-v0.35.0-linux64.tar.gz
 sudo mv geckodriver /usr/local/bin/
 sudo chmod +x /usr/local/bin/geckodriver
 ```
+Next - we need to install java versions for multiple versions for all minecraft versions. You may change install path in file, default: %project.dir%/public/java
+<br>Unix:
+```
+chmod +x bin/javaInstaller.sh
+./bin/javaInstaller.sh
+```
+Windows:
+```
+powershell -ExecutionPolicy Bypass -File bin\javaInstaller.ps1
+```
 Last - run server
 ```
 symfony server:start --port=80

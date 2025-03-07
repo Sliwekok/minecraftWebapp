@@ -46,7 +46,8 @@ class LinuxCommanderService
         // create new session
         $this->unixSessionService->createNewSession($server, $path);
         // run server
-        $command = $this->getStartupCommand($server, $path);
+        $javaPath = $fs->getAbsoluteJavaPath($server->getJava());
+        $command = $this->getStartupCommand($server, $path, $javaPath);
         $this->commandHelper->runCommand($command, $path);
     }
 
@@ -80,7 +81,8 @@ class LinuxCommanderService
      */
     private function getStartupCommand (
         Server  $server,
-        string  $path
+        string  $path,
+        string  $javaPath
     ): string {
         $screen = str_replace(
             ServerUnixCommandsInterface::REPLACEMENT_NAME,
@@ -96,6 +98,11 @@ class LinuxCommanderService
         $java = str_replace(
             ServerUnixCommandsInterface::REPLACEMENT_PATH,
             $path,
+            $java
+        );
+        $java = str_replace(
+            ServerUnixCommandsInterface::REPLACEMENT_JAVA,
+            $javaPath,
             $java
         );
         $command = str_replace(

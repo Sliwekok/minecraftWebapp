@@ -78,6 +78,7 @@ class CreateServerService
         string  $version,
         string  $type
     ): ?Server {
+        $java = $this->getJavaVersion($version);
         $server = new Server();
         $server ->setCreateAt(new DateTime('now'))
                 ->setModifiedAt(new DateTime('now'))
@@ -87,6 +88,7 @@ class CreateServerService
                 ->setVersion($version)
                 ->setStatus(ServerInterface::STATUS_OFFLINE)
                 ->setType($type)
+                ->setJava($java);
             ;
 
         return $server;
@@ -99,5 +101,25 @@ class CreateServerService
         $fs = new FilesystemService($directory);
         $path = $fs->getAbsoluteMinecraftPath();
         $fs->dumpFile($path. '/' .ServerDirectoryInterface::MINECRAFT_EULA, ConfigInterface::EULA_AGREED);
+    }
+
+    private function getJavaVersion($minecraftVersion) {
+        // Define Minecraft version ranges and corresponding Java versions
+        $javaVersions = [
+            ['start' => '1.0', 'end' => '1.16.5', 'java' => 'jdk8'],
+            ['start' => '1.17', 'end' => '1.17.1', 'java' => 'jdk16'],
+            ['start' => '1.18', 'end' => '1.20.5', 'java' => 'jdk17'],
+            ['start' => '1.20.6', 'end' => '1.22', 'java' => 'jdk21'],
+        ];
+
+        foreach ($javaVersions as $range) {
+            if (version_compare($minecraftVersion, $range['start'], '>=') &&
+                version_compare($minecraftVersion, $range['end'], '<=')) {
+                return $range['java'];
+            }
+        }
+
+        // return default latest java version
+        return $javaVersions[max($javaVersions)]['java'];
     }
 }
