@@ -43,9 +43,36 @@ Windows:
 ```
 powershell -ExecutionPolicy Bypass -File bin\javaInstaller.ps1
 ```
-Last - run server
+Last - run server with custom command to enable cron to work
 ```
-symfony server:start --port=80
+php bin/console app:serve-with-cron 
+```
+You can also add parameters to command
+<br>
+Set custom port that page should work on:
+```
+-port=xyz
+```
+Work as background task
+```
+-d
+```
+You can also add any other command
+```
+-extra [command]
+```
+### Important
+If you experience problem where your server started but after message it doesn't anymore - allow to modify content of <b>var</b> directory to write sessions: 
+```
+sudo visudo
+```
+Add this line to the end of the file
+```
+youruser ALL=(ALL) NOPASSWD: /usr/local/bin/symfony serve
+```
+If you don't know path where Symfony CLI is installed get it from here:
+```
+which symfony
 ```
 ## Optional
 If forge downloader doesn't save files nor works directly when running command - try installing this package and run these commands:
