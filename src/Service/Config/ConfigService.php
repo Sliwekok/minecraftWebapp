@@ -43,6 +43,8 @@ class ConfigService
             ->setSeed($seed)
             ->setMotd($server->getName())
             ->setLevelName($server->getName())
+            ->setOnlineMode(true)
+            ->setGenerateStructures(true)
         ;
 
         return $config;

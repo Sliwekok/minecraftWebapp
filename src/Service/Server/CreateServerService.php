@@ -88,7 +88,7 @@ class CreateServerService
                 ->setVersion($version)
                 ->setStatus(ServerInterface::STATUS_OFFLINE)
                 ->setType($type)
-                ->setJava($java);
+                ->setJava($java)
             ;
 
         return $server;

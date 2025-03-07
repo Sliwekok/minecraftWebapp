@@ -55,7 +55,7 @@ class ServerService
         // we need to re-run server due to eula update
         $this->startServer($server);
         while (!dir($fs->getAbsoluteMinecraftPath() . '/' . ServerDirectoryInterface::MINECRAFT_SERVERPROPERTIES)) {
-            sleep(1); // wait until config file is created
+            sleep(2); // wait until config file is created
         }
         $this->stopServer($server);
         $this->updateConfig($server->getConfig());
