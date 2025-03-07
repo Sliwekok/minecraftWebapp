@@ -3,12 +3,11 @@
 # Define the Java versions to install and their desired installation paths
 declare -A java_versions
 java_versions=(
-  ["8"]="https://download.oracle.com/java/8/latest/jdk-8u371-linux-x64.tar.gz"
-  ["16"]="https://download.oracle.com/java/16/latest/jdk-16.0.2_linux-x64_bin.tar.gz"
-  ["17"]="https://download.oracle.com/java/17/latest/jdk-17.0.8_linux-x64_bin.tar.gz"
-  ["21"]="https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.tar.gz"
+   ["8"]="https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u432-b06/OpenJDK8U-jdk_x64_linux_hotspot_8u432b06.tar.gz"
+   ["16"]="https://github.com/adoptium/temurin16-binaries/releases/download/jdk-16.0.2+7/OpenJDK16U-jdk_x64_linux_hotspot_16.0.2_7.tar.gz"
+   ["17"]="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.8+7/OpenJDK17U-jdk_x64_linux_hotspot_17.0.8_7.tar.gz"
+   ["21"]="https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.1+12/OpenJDK21U-jdk_x64_linux_hotspot_21.0.1_12.tar.gz"
 )
-
 # Root directory to install Java (relative to the script's location)
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 JAVA_INSTALL_ROOT="$SCRIPT_DIR/../public/java"
