@@ -19,6 +19,8 @@ class ConfigInterface
     public const ENTITY_SEED = 'seed';
     public const ENTITY_LEVELNAME = 'level_name';
     public const ENTITY_MAXRAM = 'max_ram';
+    public const ENTITY_ONLINEMODE = 'online_mode';
+    public const ENTITY_GENERATESTRUCTURES = 'generate_structures';
     public const ENTITY_MOTD = 'motd';
 
     public const DIFFICULTY_PEACEFUL = 'peaceful';
@@ -28,8 +30,10 @@ class ConfigInterface
 
     // this is to match entity (db) with property (config file)
     public const PROPERTY = 'PROPERTY_';
+    public const PROPERTY_ONLINEMODE = 'online-mode';
     public const PROPERTY_DIFFICULTY = 'difficulty';
     public const PROPERTY_ALLOWFLIGHT = 'allow-flight';
+    public const PROPERTY_GENERATESTRUCTURES = 'generate-structures';
     public const PROPERTY_PVP = 'pvp';
     public const PROPERTY_HARDCORE = 'hardcore';
     public const PROPERTY_MAXPLAYERS = 'max-players';

@@ -43,6 +43,12 @@ security:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/server, roles: ROLE_USER }
+        - { path: ^/advanced, roles: ROLE_USER }
+        - { path: ^/config, roles: ROLE_USER }
+        - { path: ^/backup, roles: ROLE_USER }
+        - { path: ^/console, roles: ROLE_USER }
+        - { path: ^/mods, roles: ROLE_USER }
+        - { path: ^/players, roles: ROLE_USER }
         - { path: ^/user, roles: ROLE_USER }
         - { path: ^/servers, roles: ROLE_ADMIN }
 
