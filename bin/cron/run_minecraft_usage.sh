@@ -1,6 +1,7 @@
 #!/bin/bash
 while true; do
-    php ../console minecraft:get-server-usage
+    echo "Started cron"
+    php bin/console minecraft:get-server-usage
     sleep 30
 
         # Check if the current time matches your desired weekly schedule
