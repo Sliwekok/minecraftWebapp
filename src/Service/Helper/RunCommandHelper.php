@@ -98,6 +98,13 @@ class RunCommandHelper
 
         } catch (\Exception $exception) {
             $commands = is_array($commands) ? implode(',', $commands) : $commands;
+            $this->commandLogger->critical('Error occurred', [
+                'command'   => $commands,
+                'returned'  => $this->getReturnedValue(),
+                'error'     => $exception->getMessage(),
+                'path'      => $path,
+                'userId'    => $this->security->getUser()->getId() ?? 0,
+            ]);
 
             throw new CouldNotExecuteCommandException($exception->getMessage(). ' when executing command: '. $commands);
         }
