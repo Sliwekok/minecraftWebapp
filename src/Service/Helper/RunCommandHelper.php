@@ -24,6 +24,7 @@ class RunCommandHelper
      * run command line command
      * @var string|array $commands executable command
      * @var string $path path where tu run command. If not provided - default public directory
+     * @var array $args additional arguments for command
      * @return bool
      */
     public function runCommand (
@@ -50,6 +51,8 @@ class RunCommandHelper
                 }
             }
 
+            // add \n to submit command in console
+            $commands = $commands . "\n";
             $process = proc_open($commands, $descriptorspec, $pipes, $path);
             $count = 0;
             $procData = proc_get_status($process);
@@ -103,7 +106,7 @@ class RunCommandHelper
                 'returned'  => $this->getReturnedValue(),
                 'error'     => $exception->getMessage(),
                 'path'      => $path,
-                'userId'    => $this->security->getUser()->getId() ?? 0,
+                'userId'    => $userId,
             ]);
 
             throw new CouldNotExecuteCommandException($exception->getMessage(). ' when executing command: '. $commands);

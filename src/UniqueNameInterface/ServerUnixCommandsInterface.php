@@ -19,7 +19,7 @@ class ServerUnixCommandsInterface
 
     public const SCREEN_CREATE = 'sudo screen -dmS '. self::REPLACEMENT_NAME . ' -L';
     public const SCREEN_ADDLOGGING = 'logfile '. self::REPLACEMENT_LOG_PATH. DIRECTORY_SEPARATOR. self::REPLACEMENT_LOG_FILENAME;
-    public const SCREEN_SWITCH = 'sudo screen -S '. self::REPLACEMENT_NAME. " -X stuff '". self::REPLACEMENT_COMMAND. "\n'";
+    public const SCREEN_SWITCH = 'sudo screen -S '. self::REPLACEMENT_NAME. " -X stuff '". self::REPLACEMENT_COMMAND. "'";
     public const SCREEN_SWTCH_WITHOUTSTUFF = 'sudo screen -S '. self::REPLACEMENT_NAME. " -X ". self::REPLACEMENT_COMMAND;
     public const SCREEN_GETSPECIFICPID = "sudo screen -ls | grep -w '". self::REPLACEMENT_NAME ."' | awk '{print $1}' | cut -d. -f1";
     public const SCREEN_CHANGEDIRECTORY = 'cd '. self::REPLACEMENT_PATH;
