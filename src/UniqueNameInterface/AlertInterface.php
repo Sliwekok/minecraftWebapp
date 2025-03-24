@@ -13,4 +13,5 @@ class AlertInterface
     public const SESSION_STATUS_SUCCESS = 'success';
     public const SESSION_STATUS_WARNING = 'warning';
     public const SESSION_STATUS_ERROR = 'error';
+    public const SESSION_CODE = 'code';
 }

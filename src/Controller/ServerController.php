@@ -91,7 +91,12 @@ class ServerController extends AbstractController
             $alert = Alert::error($exception->getMessage());
         } else {
             $serverService->startServer($user->getServer());
-            $alert = Alert::success('Server is online now');
+            if (Alert::getLastAlert() !== null) {
+                $alert = Alert::getLastAlert();
+
+            } else {
+                $alert = Alert::success('Server is online now');
+            }
         }
 
         return new JsonResponse($alert->getMessage(), $alert->getCode());

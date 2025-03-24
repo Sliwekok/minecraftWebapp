@@ -74,11 +74,37 @@ class Alert
         return $this->status;
     }
 
+    public static function getLastAlert (): ?Alert {
+        $session = new Session();
+        $content = $session->getFlashBag()->get(AlertInterface::SESSION_NAME);
+        if (empty($content)) {
+
+            return null;
+        }
+        $content = $content[0];
+        switch ($content[AlertInterface::SESSION_STATUS]) {
+            case AlertInterface::SESSION_STATUS_SUCCESS:
+                $newAlert = self::success($content[AlertInterface::SESSION_MESSAGE], $content[AlertInterface::SESSION_HEADER], $content[AlertInterface::SESSION_CODE], false);
+                break;
+            case AlertInterface::SESSION_STATUS_ERROR:
+                $newAlert = self::error($content[AlertInterface::SESSION_MESSAGE], $content[AlertInterface::SESSION_HEADER], $content[AlertInterface::SESSION_CODE], false);
+                break;
+            case AlertInterface::SESSION_STATUS_WARNING:
+                $newAlert = self::warning($content[AlertInterface::SESSION_MESSAGE], $content[AlertInterface::SESSION_HEADER], $content[AlertInterface::SESSION_CODE], false);
+                break;
+            default:
+                $newAlert = self::error('Unknown alert status', 'Error', 500, false);
+        }
+
+        return $newAlert;
+    }
+
     private function createSession (): Session {
         $session = new Session();
         $content = [
             AlertInterface::SESSION_MESSAGE => $this->getMessage(),
             AlertInterface::SESSION_STATUS  => $this->getStatus(),
+            AlertInterface::SESSION_CODE    => $this->getCode(),
             AlertInterface::SESSION_HEADER  => $this->getHeader(),
         ];
         $session->getFlashBag()->add(

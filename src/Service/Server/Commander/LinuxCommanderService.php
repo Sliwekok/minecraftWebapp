@@ -35,8 +35,7 @@ class LinuxCommanderService
         $screenExists = $this->unixSessionService->checkScreenExists($server);
         if ($screenExists) {
             // show error to user about server that is already running
-            Alert::warning('Server is already running. Refresh page');
-
+            Alert::warning('Server is already running. Refresh page', isToDelete: false);
             return;
         }
 
@@ -64,6 +63,7 @@ class LinuxCommanderService
         $this->commandHelper->runCommand($getPids);
         $pids = explode("\n", $this->commandHelper->getReturnedValue());
         foreach ($pids as $pid) {
+            $pid = trim($pid);
             if (posix_getpgid((int)$pid)) {
                 if (!posix_kill((int) $pid, 0)) {
                     throw new CouldNotExecuteServerStopException();
@@ -95,11 +95,11 @@ class LinuxCommanderService
             (string)$server->getConfig()->getMaxRam(),
             ServerUnixCommandsInterface::RUN_SERVER
         );
-        $java = str_replace(
-            ServerUnixCommandsInterface::REPLACEMENT_PATH,
-            $path,
-            $java
-        );
+//        $java = str_replace(
+//            ServerUnixCommandsInterface::REPLACEMENT_PATH,
+//            $path,
+//            $java
+//        );
         $java = str_replace(
             ServerUnixCommandsInterface::REPLACEMENT_JAVA,
             $javaPath,
