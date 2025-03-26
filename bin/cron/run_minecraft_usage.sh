@@ -11,6 +11,6 @@ while true; do
 
         # Run the weekly command every Tuesday at 00:00
         if [ "$CURRENT_DAY" -eq 2 ] && [ "$CURRENT_HOUR" -eq 0 ] && [ "$CURRENT_MIN" -eq 0 ]; then
-            php ../console minecraft:turn-off-minecraft-servers
+            php bin/console minecraft:turn-off-minecraft-servers
         fi
 done
