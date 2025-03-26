@@ -90,7 +90,7 @@ TEXT
             ->setDescription('Serve the app with all cron commands')
             ->setHelp('This command starts the Symfony server and runs additional commands.')
             ->addOption('port', 'p', InputOption::VALUE_REQUIRED, 'Port number', 80)
-            ->addOption('daemon', 'd', InputOption::VALUE_NONE, 'Run in the background')
+            ->addOption('daemon', 'd', InputOption::VALUE_OPTIONAL, 'Run in the background')
             ->addOption('extra', null, InputOption::VALUE_OPTIONAL, 'Extra command to run alongside'); // Removed shortcut
     }
 }

@@ -61,6 +61,11 @@ You can also add any other command
 ```
 -extra [command]
 ```
+### To shut server down
+Use this command - it will kill symfony server and cron job.
+```
+php bin/console app:stop-server
+```
 ### Important
 If you experience problem where your server started but after message it doesn't anymore - allow to modify content of <b>var</b> directory to write sessions: 
 ```
