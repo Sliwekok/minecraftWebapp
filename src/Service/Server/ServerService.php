@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Server;
 
+use App\Entity\Alert;
 use App\Entity\Config;
 use App\Entity\Login;
 use App\Entity\Server;
@@ -46,6 +47,7 @@ class ServerService
     ): void {
         $fs = new FilesystemService($server->getDirectoryPath());
         $this->startServer($server);
+
         while (!file_exists($fs->getAbsoluteMinecraftPath() . '/' . ServerDirectoryInterface::MINECRAFT_EULA)) {
             sleep(1); // wait until eula is created to update it
         }
@@ -54,7 +56,7 @@ class ServerService
         $this->createServerService->updateEula($server);
         // we need to re-run server due to eula update
         $this->startServer($server);
-        while (!dir($fs->getAbsoluteMinecraftPath() . '/' . ServerDirectoryInterface::MINECRAFT_SERVERPROPERTIES)) {
+        while (!file_exists($fs->getAbsoluteMinecraftPath() . '/' . ServerDirectoryInterface::MINECRAFT_SERVERPROPERTIES)) {
             sleep(2); // wait until config file is created
         }
         $this->stopServer($server);
@@ -68,8 +70,8 @@ class ServerService
      */
     public function startServer (
         Server  $server
-    ): void {
-        $this->serverCommanderService->startServer($server);
+    ): bool|Alert {
+        return $this->serverCommanderService->startServer($server);
     }
 
     /**
@@ -124,5 +126,10 @@ class ServerService
         Server  $server
     ): array {
         return $this->serverCommanderService->getServerUsage($server);
+    }
+
+    public function getServerStatus (Server $server)
+    {
+        return $this->serverCommanderService->checkServerStatus($server);
     }
 }

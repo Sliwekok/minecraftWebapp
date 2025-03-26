@@ -23,6 +23,7 @@ class ConfigService
 
     public function createConfig (
         Server $server,
+        bool $generateStructures,
         ?string $seed = null
     ): ?Config {
         $config = new Config();
@@ -44,7 +45,7 @@ class ConfigService
             ->setMotd($server->getName())
             ->setLevelName($server->getName())
             ->setOnlineMode(true)
-            ->setGenerateStructures(true)
+            ->setGenerateStructures($generateStructures)
         ;
 
         return $config;

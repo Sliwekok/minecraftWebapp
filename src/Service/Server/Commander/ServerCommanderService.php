@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Server\Commander;
 
+use App\Entity\Alert;
 use App\Entity\Server;
 use App\Service\Helper\OperatingSystemHelper;
 use App\Service\Helper\RunCommandHelper;
@@ -29,14 +30,16 @@ class ServerCommanderService
 
     public function startServer (
         Server $server
-    ): Server {
+    ): bool|Alert {
         if (OperatingSystemHelper::isWindows()) {
-            $this->windowsCommander->startServer($server);
+            $status = $this->windowsCommander->startServer($server);
         } else {
-            $this->linuxCommander->startServer($server);
+            $status = $this->linuxCommander->startServer($server);
         }
 
-        return $this->saveStartServer($server);
+        $this->saveStartServer($server);
+
+        return $status;
     }
 
     public function checkServerStatus (

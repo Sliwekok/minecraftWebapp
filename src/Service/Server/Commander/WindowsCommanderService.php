@@ -33,10 +33,12 @@ class WindowsCommanderService
      */
     public function startServer (
         Server $server
-    ): void {
+    ): bool {
         $path = (new FilesystemService($server->getDirectoryPath()))->getAbsoluteMinecraftPath();
         $command = $this->getStartupCommand($server);
         $this->commandHelper->runCommand($command, $path);
+
+        return true;
     }
 
     /**

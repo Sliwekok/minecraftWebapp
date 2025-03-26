@@ -38,6 +38,7 @@ class CreateServerService
             $seed = $data->get(ServerInterface::FORM_STEP1)->get(ServerInterface::FORM_STEP1_SEED)->getData();
             $directory = $user->getUsername() . '/' . $serverName;
             $type = $data->get(ServerInterface::FORM_STEP2)->get(ServerInterface::FORM_STEP2_GAMETYPE)->getData();
+            $generateStructures = $data->get(ServerInterface::FORM_STEP1)->get(ConfigInterface::ENTITY_GENERATESTRUCTURES)->getData();
             $fs = new FilesystemService($directory);
 
             if (!$fs->exists($directory)) {
@@ -45,7 +46,7 @@ class CreateServerService
             }
 
             $server = $this->createServerEntity($user, $directory, $serverName, $version, $type);
-            $config = $this->configService->createConfig($server, $seed);
+            $config = $this->configService->createConfig($server, $generateStructures, $seed);
             $server->setConfig($config);
 
             $file = $this->serverFileHelper->getServerFile($version, $type, $fs->getAbsoluteMinecraftPath());

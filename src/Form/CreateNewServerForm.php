@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\UniqueNameInterface\ConfigInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -57,6 +58,17 @@ class CreateNewServerForm extends AbstractType
                         'required'  => false,
                         'attr'      => [
                             'class'     => 'form-control',
+                        ]
+                    ])
+                    ->add(ConfigInterface::ENTITY_GENERATESTRUCTURES, ChoiceType::class, [
+                        'label'     => 'Generate structures',
+                        'attr'      => [
+                            'required'  => true,
+                            'class'     => 'form-control',
+                        ],
+                        'choices'   => [
+                            'Yes'       => true,
+                            'No'        => false,
                         ]
                     ])
             )
