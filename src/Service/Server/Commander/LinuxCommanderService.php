@@ -29,14 +29,13 @@ class LinuxCommanderService
      */
     public function startServer (
         Server $server
-    ): void {
+    ): bool|Alert {
         $fs = new FilesystemService($server->getDirectoryPath());
         $path = $fs->getAbsoluteMinecraftPath();
         $screenExists = $this->unixSessionService->checkScreenExists($server);
         if ($screenExists) {
             // show error to user about server that is already running
-            Alert::warning('Server is already running. Refresh page', isToDelete: false);
-            return;
+            return Alert::warning('Server is already running. Refresh page', isToDelete: false);
         }
 
         // clear log file each time the server is booting up
@@ -48,6 +47,8 @@ class LinuxCommanderService
         $javaPath = $fs->getAbsoluteJavaPath($server->getJava());
         $command = $this->getStartupCommand($server, $path, $javaPath);
         $this->commandHelper->runCommand($command, $path);
+
+        return true;
     }
 
     /**
