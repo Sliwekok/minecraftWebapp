@@ -25,48 +25,53 @@ class StopServerCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        // Validate if the process is running
-        $checkProcess = new Process(['pgrep', '-f', 'run_minecraft_usage.sh']);
-        $checkProcess->run();
+        try {
+            // Validate if the process is running
+            $checkProcess = new Process(['pgrep', '-f', 'run_minecraft_usage.sh']);
+            $checkProcess->run();
 
-        if (!$checkProcess->isSuccessful()) {
-            $output->writeln('<error>No running process found for run_minecraft_usage.sh</error>');
+            if (!$checkProcess->isSuccessful()) {
+                $output->writeln('<error>No running process found for run_minecraft_usage.sh</error>');
+            }
+
+            // Stop the cron command
+            $command = "sudo pkill -SIGKILL -f run_minecraft_usage.sh";
+            $process = Process::fromShellCommandline($command);
+            $process->enableOutput();
+            $process->setTty(true);
+            $process->setTimeout(0);
+            $process->start();
+
+            if (!$process->isSuccessful()) {
+                $output->writeln('<error>Failed to stop the cron command!</error>');
+                $output->writeln('<comment>' . $process->getErrorOutput() . '</comment>');
+                $output->writeln('<comment>' . $process->getOutput() . '</comment>');
+            }
+
+            // Stop the Symfony server
+            $symfonyStopCommand = "sudo symfony server:stop";
+            $symfonyProcess = Process::fromShellCommandline($symfonyStopCommand);
+            $symfonyProcess->enableOutput();
+            $symfonyProcess->setTimeout(0);
+            $symfonyProcess->run();
+
+            if (!$symfonyProcess->isSuccessful()) {
+                $output->writeln('<error>Failed to stop the Symfony server!</error>');
+                $output->writeln('<comment>' . $symfonyProcess->getErrorOutput() . '</comment>');
+                return Command::FAILURE;
+            }
+
+            $output->writeln('<info>Successfully stopped the server and cron command.</info>');
+
+            return Command::SUCCESS;
+        } catch (\Exception $e) {
+            $output->writeln('<comment>' . $process->getOutput() ?? '-' . '</comment>');
+
+            $output->writeln('<error>' . $e->getMessage() . '</error>');
+            $output->writeln('<error>' . $e->getTraceAsString() . '</error>');
 
             return Command::FAILURE;
         }
-
-        // Stop the cron command
-        $command = "pkill -f run_minecraft_usage.sh";
-        $process = Process::fromShellCommandline($command);
-        $process->setTty(true);
-        $process->enableOutput();
-        $process->setTimeout(0);
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            $output->writeln('<error>Failed to stop the cron command!</error>');
-            $output->writeln('<comment>' . $process->getErrorOutput() . '</comment>');
-
-            return Command::FAILURE;
-        }
-
-        // Stop the Symfony server
-        $symfonyStopCommand = "symfony server:stop";
-        $symfonyProcess = Process::fromShellCommandline($symfonyStopCommand);
-        $symfonyProcess->setTty(true);
-        $symfonyProcess->enableOutput();
-        $symfonyProcess->setTimeout(0);
-        $symfonyProcess->run();
-
-        if (!$symfonyProcess->isSuccessful()) {
-            $output->writeln('<error>Failed to stop the Symfony server!</error>');
-            $output->writeln('<comment>' . $symfonyProcess->getErrorOutput() . '</comment>');
-            return Command::FAILURE;
-        }
-
-        $output->writeln('<info>Successfully stopped the server and cron command.</info>');
-
-        return Command::SUCCESS;
     }
 
     protected function configure(): void

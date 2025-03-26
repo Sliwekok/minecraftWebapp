@@ -101,7 +101,6 @@ when@test:
 
 when@prod:
     monolog:
-        handlers:
         channels: ["event", "doctrine", "console", 'server', 'config', 'command', 'critical', 'backup']
         handlers:
             main:
