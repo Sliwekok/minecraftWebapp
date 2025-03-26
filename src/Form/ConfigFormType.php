@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\UniqueNameInterface\ConfigInterface;
@@ -137,6 +138,27 @@ class ConfigFormType extends AbstractType
                     'class'         => 'form-control col-12',
                     'inherit_data'  => true,
                     'readonly'      => true
+                ]
+            ])
+            ->add(ConfigInterface::ENTITY_PAUSEWHENEMPTY, IntegerType::class, [
+                'label'     => 'Pause when empty (seconds)',
+                'help'      => 'If you want to delete server pause - enter "-1".',
+                'attr'      => [
+                    'required'      => true,
+                    'class'         => 'form-control col-12',
+                    'inherit_data'  => true,
+                ]
+            ])
+            ->add(ConfigInterface::ENTITY_SPAWNMONSTERS, ChoiceType::class, [
+                'label'     => 'Spawn monsters',
+                'attr'      => [
+                    'required'      => true,
+                    'class'         => 'form-control col-12',
+                    'inherit_data'  => true,
+                ],
+                'choices'   => [
+                    'No'        => false,
+                    'Yes'       => true,
                 ]
             ])
             ->add(ConfigInterface::ENTITY_MOTD, TextType::class, [

@@ -22,6 +22,8 @@ class ConfigInterface
     public const ENTITY_ONLINEMODE = 'online_mode';
     public const ENTITY_GENERATESTRUCTURES = 'generate_structures';
     public const ENTITY_MOTD = 'motd';
+    public const ENTITY_PAUSEWHENEMPTY = 'pause_when_empty';
+    public const ENTITY_SPAWNMONSTERS = 'spawn_monsters';
 
     public const DIFFICULTY_PEACEFUL = 'peaceful';
     public const DIFFICULTY_EASY = 'easy';
@@ -44,9 +46,10 @@ class ConfigInterface
     public const PROPERTY_MOTD = 'motd';
     public const PROPERTY_PORT = 'server-port';
     public const PROPERTY_MAXRAM = 'max-ram';
+    public const PROPERTY_PAUSEWHENEMPTY = 'pause-when-empty-seconds';
+    public const PROEPRTY_SPAWNMONSTERS = 'spawn-monsters';
     public const PROPERTY_STATIC_IP = 'server-ip';
     public const PROPERTY_STATIC_SERVERPORT = 'server-port';
     public const PROPERTY_STATIC_QUERYPORT = 'query.port';
-
     public const EULA_AGREED = 'eula=true';
 }

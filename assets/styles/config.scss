@@ -5,6 +5,12 @@
   div{
     width: 40%;
     margin: 2.5%;
+
+    .help-text {
+      width: 100%;
+      color: rgba($font-color, 0.8);
+      font-size: calc($font-size-base - 10%);
+    }
   }
 
 }

@@ -48,6 +48,8 @@ class UpdateConfigService
                 ->setMotd($config->get(ConfigInterface::ENTITY_MOTD)->getData())
                 ->setLevelName($config->get(ConfigInterface::ENTITY_LEVELNAME)->getData())
                 ->setMaxRam(4)
+                ->setPauseWhenEmpty($config->get(ConfigInterface::ENTITY_PAUSEWHENEMPTY)->getData())
+                ->setSpawnMonsters($config->get(ConfigInterface::ENTITY_SPAWNMONSTERS)->getData())
             ;
 
             $config = $configNew;
@@ -66,6 +68,8 @@ class UpdateConfigService
                 ->setMotd($config->getMotd())
                 ->setLevelName($config->getLevelName())
                 ->setMaxRam($config->getMaxRam())
+                ->setPauseWhenEmpty($config->getPauseWhenEmpty())
+                ->setSpawnMonsteres($config->isSpawnMonsters())
             ;
             $config = $configOld;
         }

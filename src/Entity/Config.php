@@ -55,6 +55,12 @@
         #[ORM\Column]
         private ?bool $generate_structures = null;
 
+        #[ORM\Column]
+        private ?int $pause_when_empty = null;
+
+        #[ORM\Column]
+        private ?bool $spawn_monsters = null;
+
         public function getId(): ?int
         {
             return $this->id;
@@ -230,6 +236,30 @@
         public function setGenerateStructures(bool $generate_structures): static
         {
             $this->generate_structures = $generate_structures;
+
+            return $this;
+        }
+
+        public function getPauseWhenEmpty (): ?int
+        {
+            return $this->pause_when_empty;
+        }
+
+        public function setPauseWhenEmpty (int $pause_when_empty): static
+        {
+            $this->pause_when_empty = $pause_when_empty;
+
+            return $this;
+        }
+
+        public function isSpawnMonsters(): ?bool
+        {
+            return $this->spawn_monsters;
+        }
+
+        public function setSpawnMonsters(bool $spawn_monsters): static
+        {
+            $this->spawn_monsters = $spawn_monsters;
 
             return $this;
         }

@@ -42,7 +42,7 @@ class RunCommandHelper
                 2 => ['pipe', 'w']   // stderr is a pipe that the child will write to
             ];
             if (is_array($commands)) {
-                $commands = implode("/n", $commands);
+                $commands = implode("\n", $commands);
             }
 
             if (!empty($args)) {
@@ -75,6 +75,7 @@ class RunCommandHelper
             } else {
                 $userId = 0;
             }
+
             if (!empty($errorMsg)) {
                 $this->commandLogger->info('Error occurred', [
                     'command'   => $commands,

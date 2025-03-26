@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Alert;
 use App\Form\ConfigFormType;
 use App\Repository\LoginRepository;
 use App\Service\Config\ConfigService;
@@ -37,6 +38,7 @@ class ConfigController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $configService->updateConfig($form, $config->getId());
+            Alert::success('Updated config successfully. Reset your server to apply changes.', isToDelete: false);
 
             return $this->redirectToRoute('server_preview');
         }

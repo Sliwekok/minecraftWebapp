@@ -22,8 +22,8 @@ class ServerUnixCommandsInterface
     public const SCREEN_SWITCH = 'sudo screen -S '. self::REPLACEMENT_NAME. " -X stuff '". self::REPLACEMENT_COMMAND. "'";
     public const SCREEN_SWTCH_WITHOUTSTUFF = 'sudo screen -S '. self::REPLACEMENT_NAME. " -X ". self::REPLACEMENT_COMMAND;
     public const SCREEN_GETSPECIFICPID = "sudo screen -ls | grep -w '". self::REPLACEMENT_NAME ."' | awk '{print $1}' | cut -d. -f1";
-    public const SCREEN_CHANGEDIRECTORY = 'cd '. self::REPLACEMENT_PATH;
-    public const RUN_SERVER = 'sudo '. self::REPLACEMENT_JAVA .' -Xmx'. self::REPLACEMENT_RAM. 'G -jar server.jar --nogui';
+    public const SCREEN_CHANGEDIRECTORY = 'cd '. self::REPLACEMENT_PATH . "\n";
+    public const RUN_SERVER = 'sudo '. self::REPLACEMENT_JAVA .' -Xmx'. self::REPLACEMENT_RAM. "G -jar server.jar --nogui\n\"";
 
     public const KILL_SERVER = 'sudo pkill -f "SCREEN.*'. self::REPLACEMENT_NAME. '"';
 
