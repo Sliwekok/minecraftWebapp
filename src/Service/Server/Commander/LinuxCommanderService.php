@@ -138,6 +138,14 @@ class LinuxCommanderService
         return $command;
     }
 
+    private function getServerInfoCommand (
+        Server $server
+    ): string {
+        $command = str_replace(ServerUnixCommandsInterface::REPLACEMENT_NAME, (string)$server->getName(), ServerUnixCommandsInterface::SERVER_INFO);
+
+        return $command;
+    }
+
     public function installForgeServer (
         Server $server
     ): void {

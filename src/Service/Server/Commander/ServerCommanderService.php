@@ -37,7 +37,13 @@ class ServerCommanderService
             $status = $this->linuxCommander->startServer($server);
         }
 
-        $this->saveStartServer($server);
+        if ($this->commandHelper->getStatusInfo()['pid']) {
+            $pid = $this->commandHelper->getStatusInfo()['pid'];
+            $this->saveStartServer($server, $pid);
+        } else {
+            return Alert::warning('Server is already running. Refresh page', isToDelete: false);
+        }
+
 
         return $status;
     }
@@ -72,9 +78,11 @@ class ServerCommanderService
      */
     private function saveStartServer (
         Server  $server,
+        int     $pid
     ): Server {
         $server = $server
             ->setStatus(ServerInterface::STATUS_ONLINE)
+            ->setPid($pid)
         ;
 
         $this->entityManager->persist($server);
@@ -91,6 +99,7 @@ class ServerCommanderService
     ): Server {
         $server = $server
             ->setStatus(ServerInterface::STATUS_OFFLINE)
+            ->setPid(null)
         ;
 
         $this->entityManager->persist($server);

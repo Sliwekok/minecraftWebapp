@@ -46,6 +46,8 @@ class ConfigService
             ->setLevelName($server->getName())
             ->setOnlineMode(true)
             ->setGenerateStructures($generateStructures)
+            ->setPauseWhenEmpty(-1)
+            ->setSpawnMonsters(true)
         ;
 
         return $config;

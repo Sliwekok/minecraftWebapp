@@ -14,6 +14,7 @@ class RunCommandHelper
 {
 
     private string $returned = '';
+    private array $statusInfo = [];
 
     public function __construct (
         private LoggerInterface $commandLogger,
@@ -66,6 +67,7 @@ class RunCommandHelper
                 }
                 sleep(1);
                 $procData = proc_get_status($process);
+                $this->statusInfo = $procData;
                 $count++;
             }
 
@@ -117,5 +119,9 @@ class RunCommandHelper
 
     public function getReturnedValue(): mixed {
         return $this->returned;
+    }
+
+    public function getStatusInfo(): array {
+        return $this->statusInfo;
     }
 }

@@ -69,7 +69,7 @@ class UpdateConfigService
                 ->setLevelName($config->getLevelName())
                 ->setMaxRam($config->getMaxRam())
                 ->setPauseWhenEmpty($config->getPauseWhenEmpty())
-                ->setSpawnMonsteres($config->isSpawnMonsters())
+                ->setSpawnMonsters($config->isSpawnMonsters())
             ;
             $config = $configOld;
         }

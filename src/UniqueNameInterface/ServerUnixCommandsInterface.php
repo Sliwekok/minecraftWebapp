@@ -32,5 +32,5 @@ class ServerUnixCommandsInterface
     public const DISPLAY_SET_PORT = 'export DISPLAY=:99';
     public const ARCHIVE_NAME = '{archiveName}';
     public const ARCHIVE_COMMAND = 'sudo zip '. self::ARCHIVE_NAME. ' '. self::REPLACEMENT_PATH . ' -r -x ' . self::REPLACEMENT_PATH. DIRECTORY_SEPARATOR. self::REPLACEMENT_NAME. self::LOG_SUFFIX. ' '. self::REPLACEMENT_PATH. DIRECTORY_SEPARATOR. 'screenlog.0; sudo mv '. self::ARCHIVE_NAME. ' '. self::REPLACEMENT_BACKUPPATH. DIRECTORY_SEPARATOR. self::ARCHIVE_NAME;
-    public const SERVER_USAGE = 'top -b -n 1 -p '. self::REPLACEMENT_PID;
+    public const SERVER_USAGE = 'ps aux | grep '. self::REPLACEMENT_NAME;
 }
