@@ -1,95 +1,144 @@
-# Description
-Webapp that creates your free minecraft server! Offers web-menagment, adding forge, optifine, custom mods and many more!
+# Minecraft Server Webapp
 
-# Prerequisites
-Installed these packages:
-* MSSQL drivers
-* PHP 8.1 or higher
-* NPM 8.5.1 or higher
-* Python 3.10 or higher
+## Description
 
-# Installation 
-Just run following commands:
-```
+A web application that allows you to create a free Minecraft server! Features include:
+
+- Web-based server management
+- Support for Forge, OptiFine, and custom mods
+- Many additional features for customization
+
+## Prerequisites
+
+Ensure you have the following installed:
+
+- **MSSQL drivers**
+- **PHP 8.1** or higher
+- **NPM 8.5.1** or higher
+- **Python 3.10** or higher
+
+## Installation
+
+### 1. Install Dependencies
+
+Run the following commands:
+
+```sh
 composer install
 npm install
 ```
-If you need - run migrations:
-```
+
+### 2. Run Database Migrations (if needed)
+
+```sh
 php bin/console doctrine:migrations:migrate
-``` 
-Allow script execution (forge downloader) as sudo
 ```
+
+### 3. Allow Script Execution (Forge Downloader on) (Unix)
+
+```sh
 sudo chmod 755 bin/forgeDownloader.py
 ```
-Install required python packages
+
+### 4. Install Required Python Packages
+
+```sh
+pip install traceback os argparse requests selenium
 ```
-sudo pip install traceback os argparse requests selenium
-```
-Install firefox GeckoDriver
-```
+
+### 5. Install Firefox GeckoDriver (Unix)
+
+```sh
 wget https://github.com/mozilla/geckodriver/releases/download/v0.35.0/geckodriver-v0.35.0-linux64.tar.gz
 tar -xvzf geckodriver-v0.35.0-linux64.tar.gz
 sudo mv geckodriver /usr/local/bin/
 sudo chmod +x /usr/local/bin/geckodriver
 ```
-Next - we need to install java versions for multiple versions for all minecraft versions. You may change install path in file, default: %project.dir%/public/java
-<br>Unix:
-```
+
+### 6. Install Java for Multiple Minecraft Versions
+
+By default, Java will be installed in `%project.dir%/public/java`. You can change the install path in the script file.
+
+#### **For Unix**
+
+```sh
 chmod +x bin/javaInstaller.sh
 ./bin/javaInstaller.sh
 ```
-Windows:
-```
+
+#### **For Windows**
+
+```sh
 powershell -ExecutionPolicy Bypass -File bin\javaInstaller.ps1
 ```
-Last - run server with custom command to enable cron to work
+
+### 7. Start the Server with Cron Enabled
+
+```sh
+php bin/console app:serve-with-cron
 ```
-php bin/console app:serve-with-cron 
-```
-You can also add parameters to command
-<br>
-Set custom port that page should work on:
-```
--port=xyz
-```
-Work as background task
-```
--d
-```
-You can also add any other command
-```
--extra [command]
-```
-### To shut server down
-Use this command - it will kill symfony server and cron job.
-```
+
+#### **Optional Command Parameters:**
+
+- Set a custom port:
+  ```sh
+  php bin/console app:serve-with-cron --port=xyz
+  ```
+- Run as a background task:
+  ```sh
+  php bin/console app:serve-with-cron -d
+  ```
+- Add extra commands:
+  ```sh
+  php bin/console app:serve-with-cron --extra [command]
+  ```
+
+### 8. Stopping the Server
+
+To stop the Symfony server and the cron job, run:
+
+```sh
 php bin/console app:stop-server
 ```
-### Important
-If you experience problem where your server started but after message it doesn't anymore - allow to modify content of <b>var</b> directory to write sessions: 
-```
-sudo visudo
-```
-Add this line to the end of the file
-```
-youruser ALL=(ALL) NOPASSWD: /usr/local/bin/symfony serve
-```
-If you don't know path where Symfony CLI is installed get it from here:
-```
-which symfony
-```
-## Optional
-If forge downloader doesn't save files nor works directly when running command - try installing this package and run these commands:
-```
+
+## Troubleshooting
+
+### **Issue: Server Starts but Then Stops (Unix)**
+
+If the server starts but stops unexpectedly after displaying a message, ensure the `var` directory has write permissions:
+
+1. Open the sudoers file:
+   ```sh
+   sudo visudo
+   ```
+2. Add the following line at the end:
+   ```sh
+   youruser ALL=(ALL) NOPASSWD: /usr/local/bin/symfony serve
+   ```
+3. If you don’t know where Symfony CLI is installed, check with:
+   ```sh
+   which symfony
+   ```
+
+### **Issue: Forge Downloader Doesn't Save Files (Unix)**
+
+If the Forge downloader fails to save files or run properly, try the following:
+
+```sh
 sudo apt-get install xvfb
 Xvfb :99 -ac &
 export DISPLAY=:99
 firefox --headless -CreateProfile selenium_profile
 ```
-These should display environment that firefox can use with headless options, run Xvfb in the background and puts DISPLAY variable to global
-# OS 
-Based on available architecture - *significantly* more admin options and server management options are available on Unix based operating system - if you can, switch to that.  
 
-# License
-Since it's just for fun it's free of charge, feel free to use it!
+This creates an environment for Firefox to use with headless options, runs Xvfb in the background, and sets the `DISPLAY` variable globally.
+
+## Operating System Recommendation
+
+For maximum functionality, including more admin and server management options, it is **strongly recommended** to run the web app on a Unix-based operating system.
+
+## License
+
+This project is free and open-source! Feel free to use and modify it as you like.
+
+---
